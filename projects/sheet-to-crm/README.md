@@ -21,7 +21,7 @@ Loads a messy CSV or Excel export into an Airtable table: maps columns, cleans a
 ```bash
 uv sync
 uv run python -m sheet_to_crm samples/companies.csv --dry-run
-# 2 valid records, 4 rejected (-> rejects.csv), 1 duplicates merged
+# 2 valid records, 3 rejected (-> rejects.csv), 1 duplicates merged
 
 export AIRTABLE_TOKEN=...      # personal access token with data.records:write on the base
 export AIRTABLE_BASE_ID=app...
