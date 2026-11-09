@@ -1,0 +1,13 @@
+{
+  "table": "Companies",
+  "key": "Domain",
+  "fields": {
+    "Company Name": {"to": "Name", "type": "text", "required": true},
+    "Website": {"to": "Domain", "type": "domain", "required": true},
+    "Industry": {"to": "Industry", "type": "text"},
+    "Employees": {"to": "Employees", "type": "number"},
+    "Annual Revenue (USD)": {"to": "Annual Revenue", "type": "number"},
+    "Country": {"to": "Country", "type": "text"},
+    "First Contact": {"to": "First Contact", "type": "date"}
+  }
+}
