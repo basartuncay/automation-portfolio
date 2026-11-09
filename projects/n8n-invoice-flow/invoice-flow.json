@@ -1,0 +1,95 @@
+{
+  "id": "invoiceFlow00001",
+  "name": "Invoice PDFs -> extractor API -> accept or review",
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "id": "a2",
+      "name": "Read invoice PDFs",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [220, 0],
+      "parameters": {"operation": "read", "fileSelector": "/data/invoices/*.pdf", "options": {}}
+    },
+    {
+      "id": "a3",
+      "name": "Extract (custom Python API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [440, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8077/extract",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [{"parameterType": "formBinaryData", "name": "file", "inputDataFieldName": "data"}]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a4",
+      "name": "Numbers add up?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [660, 0],
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2},
+          "conditions": [
+            {"id": "c1", "leftValue": "={{ $json.ok }}", "rightValue": "",
+             "operator": {"type": "boolean", "operation": "true", "singleValue": true}}
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a5",
+      "name": "To accounting",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, -100],
+      "parameters": {
+        "assignments": {"assignments": [{"id": "s1", "name": "route", "value": "accounting", "type": "string"}]},
+        "includeOtherFields": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a6",
+      "name": "To human review",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, 100],
+      "parameters": {
+        "assignments": {"assignments": [
+          {"id": "s2", "name": "route", "value": "review", "type": "string"},
+          {"id": "s3", "name": "reason", "value": "={{ $json.problems.join('; ') }}", "type": "string"}
+        ]},
+        "includeOtherFields": true,
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Start": {"main": [[{"node": "Read invoice PDFs", "type": "main", "index": 0}]]},
+    "Read invoice PDFs": {"main": [[{"node": "Extract (custom Python API)", "type": "main", "index": 0}]]},
+    "Extract (custom Python API)": {"main": [[{"node": "Numbers add up?", "type": "main", "index": 0}]]},
+    "Numbers add up?": {"main": [
+      [{"node": "To accounting", "type": "main", "index": 0}],
+      [{"node": "To human review", "type": "main", "index": 0}]
+    ]}
+  }
+}
