@@ -1,0 +1,12 @@
+[project]
+name = "doc-qa"
+version = "1.0.0"
+description = "Question answering over company documents with BM25 retrieval and Claude citations"
+requires-python = ">=3.11"
+dependencies = ["anthropic>=2.7,<3"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
