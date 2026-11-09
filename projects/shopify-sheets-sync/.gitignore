@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+seen.sqlite
+service-account*.json
+.env

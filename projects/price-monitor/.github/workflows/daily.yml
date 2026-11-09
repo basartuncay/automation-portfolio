@@ -1,0 +1,28 @@
+name: daily price check
+on:
+  schedule: [{ cron: "0 5 * * *" }]  # 05:00 UTC every day
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Restore last snapshot
+        uses: actions/cache/restore@v4
+        with: { path: data, key: snapshot-${{ github.run_id }}, restore-keys: snapshot- }
+      - run: uv sync --extra sheets
+      - run: uv run pytest -q
+      - name: Crawl and diff
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_APPLICATION_CREDENTIALS: sa.json
+          GOOGLE_SA_JSON: ${{ secrets.GOOGLE_SA_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SA_JSON" ]; then printf '%s' "$GOOGLE_SA_JSON" > sa.json; fi
+          uv run python -m price_monitor --min-products 500
+      - uses: actions/cache/save@v4
+        if: always()
+        with: { path: data, key: snapshot-${{ github.run_id }} }
+      - uses: actions/upload-artifact@v4
+        with: { name: price-report, path: data/ }

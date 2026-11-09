@@ -1,0 +1,15 @@
+[project]
+name = "price-monitor"
+version = "1.0.0"
+description = "Scheduled catalogue scraper with validation and price/stock change detection"
+requires-python = ">=3.11"
+dependencies = ["httpx>=0.27", "selectolax>=1.0"]
+
+[project.optional-dependencies]
+sheets = ["gspread>=6"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
