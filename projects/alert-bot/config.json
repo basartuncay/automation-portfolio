@@ -1,0 +1,10 @@
+{
+  "include": ["python", "scraping", "automation"],
+  "exclude": ["hiring freeze"],
+  "sources": [
+    {"name": "Hacker News", "url": "https://hnrss.org/newest?points=50"},
+    {"name": "Playwright releases", "url": "https://github.com/microsoft/playwright/releases.atom", "include": []},
+    {"name": "Lobsters", "url": "https://lobste.rs/hottest.json", "type": "json",
+     "fields": {"id": "short_id", "title": "title", "link": "url", "summary": "description"}}
+  ]
+}
