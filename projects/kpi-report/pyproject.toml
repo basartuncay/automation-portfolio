@@ -1,0 +1,15 @@
+[project]
+name = "kpi-report"
+version = "1.0.0"
+description = "Weekly KPI report from order data: week-over-week metrics, anomaly flags, Google Sheets and HTML email"
+requires-python = ">=3.11"
+dependencies = ["matplotlib>=3.8"]
+
+[project.optional-dependencies]
+sheets = ["gspread>=6"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
