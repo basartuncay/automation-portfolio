@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {"type": "string"},
+    "price": {"type": "number", "description": "numeric price without currency symbol"},
+    "currency": {"type": "string", "description": "ISO 4217 code"},
+    "in_stock": {"type": "boolean"},
+    "rating": {"type": "number", "description": "average rating out of 5"},
+    "specs": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "value": {"type": "string"}}}}
+  },
+  "required": ["name", "price"]
+}
