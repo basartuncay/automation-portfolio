@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Approvals</h1>
+<p class="sub">Actions the agent, or an MCP client such as Claude Desktop, asked for but may not do alone. Approving runs the action, with the policy checks applied again.</p>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>#</th><th>Action</th><th>Why it needs you</th><th>Requested by</th><th>Decision</th></tr></thead>
+  {% for a in approvals %}{% set args = a.args | fromjson %}<tr>
+    <td class="muted">{{ a.id }}</td>
+    <td><code>{{ a.tool }}</code><div class="small">{% for k, v in args.items() %}{{ k }}: <b>{{ v }}</b>{{ ', ' if not loop.last }}{% endfor %}</div></td>
+    <td class="small">{{ a.reason }}</td>
+    <td class="small">{{ a.requested_by }}{% if a.run_id %} · <a href="/runs/{{ a.run_id }}">run {{ a.run_id }}</a>{% endif %}</td>
+    <td>{% if a.status == 'pending' and user.role == 'manager' %}
+      <form method="post" action="/approvals/{{ a.id }}" style="display:flex;gap:6px"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="btn" name="decision" value="approve">Approve</button><button class="btn ghost" name="decision" value="reject">Reject</button></form>
+      {% else %}<span class="chip {{ a.status }}">{{ a.status }}</span>{% if a.decided_by %} <span class="small muted">{{ a.decided_by }}</span>{% endif %}{% endif %}</td>
+  </tr>{% else %}<tr><td colspan="5" class="muted" style="padding:24px;text-align:center">Nothing waiting.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

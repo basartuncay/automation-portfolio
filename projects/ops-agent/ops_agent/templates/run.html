@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block main %}
+<p class="small"><a href="/">← Tasks</a></p>
+<div class="head"><div>
+  <h1>{{ run.task }}</h1>
+  <p class="sub">Run #{{ run.id }} · {{ run.engine }} · {{ run.turns }} turns · {{ run.input_tokens }} in / {{ run.output_tokens }} out tokens · ${{ '%.4f' % cost }}</p>
+</div><span class="chip {{ run.status }}" data-status="{{ run.status }}" style="font-size:14px">{{ run.status.replace('_', ' ') }}</span></div>
+{% if run.status in ('queued', 'running') %}<div class="alert ok">Working… this page refreshes itself.</div><script>setTimeout(() => location.reload(), 1500)</script>{% endif %}
+{% if run.summary %}<div class="card" style="margin-bottom:16px"><b>Result</b><p style="margin:6px 0 0">{{ run.summary }}</p></div>{% endif %}
+<div class="card"><b>Trace</b> <span class="muted small">(append-only: every model turn, tool call, result and decision)</span>
+<ol class="trace">
+{% for s in steps %}{% set d = s.data | fromjson %}
+<li>
+  <div class="who"><b>{{ {'task': 'Task', 'model': 'Agent', 'tool': 'Tool', 'approval': 'Manager', 'waiting': 'Waiting', 'done': 'Finished', 'failed': 'Failed', 'note': 'Note'}[s.kind] }}</b>{{ s.at[11:] }}{% if s.ms is not none %} · {{ s.ms }} ms{% endif %}</div>
+  <div>
+  {% if s.kind == 'task' %}<b>{{ s.name }}</b> asked: {{ d.task }}
+  {% elif s.kind == 'model' %}{{ d.text or '' }}{% if d.tool_calls %}<div class="small muted">calls {% for c in d.tool_calls %}<code>{{ c.name }}</code>{{ ', ' if not loop.last }}{% endfor %}</div>{% endif %}
+  {% elif s.kind == 'tool' %}<code>{{ s.name }}</code> <span class="chip {{ d.status }}">{{ d.status.replace('_', ' ') }}</span>
+    <pre class="json">{{ d.input | pretty }}</pre>
+    {% if d.status == 'ok' %}<pre class="json">{{ d.result | pretty }}</pre>{% elif d.status == 'error' %}<div class="small" style="color:var(--bad);margin-top:6px">{{ d.error }}</div>
+    {% else %}{% set a = approvals.get(d.approval_id) %}
+      <div class="approval"><b>Needs approval:</b> {{ d.reason }}
+      {% if a and a.status == 'pending' and user.role == 'manager' %}
+        <form method="post" action="/approvals/{{ a.id }}" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back" value="/runs/{{ run.id }}">
+          <input type="text" name="note" placeholder="Note (optional)" style="max-width:280px">
+          <button class="btn" name="decision" value="approve">Approve</button><button class="btn ghost" name="decision" value="reject">Reject</button>
+        </form>
+      {% elif a and a.status == 'pending' %}<div class="small muted">Waiting for a manager.</div>
+      {% elif a %}<div class="small"><span class="chip {{ a.status }}">{{ a.status }}</span> by {{ a.decided_by }}{% if a.note %}: {{ a.note }}{% endif %}</div>{% endif %}
+      </div>
+    {% endif %}
+  {% elif s.kind == 'approval' %}{{ d.by }} <span class="chip {{ d.decision }}">{{ d.decision }}</span> <code>{{ s.name }}</code>{% if d.note %}: {{ d.note }}{% endif %}
+  {% elif s.kind == 'waiting' %}Paused until a manager decides. The run resumes on its own afterwards.
+  {% else %}{{ d.summary if d else '' }}{% endif %}
+  </div>
+</li>
+{% endfor %}
+</ol></div>
+{% endblock %}

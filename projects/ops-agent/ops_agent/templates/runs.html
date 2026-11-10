@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Tasks</h1>
+<p class="sub">Give the agent a back-office task in plain words. Every step is traced; refunds over €50, cancellations and big restocks wait for a manager. <span class="chip engine">Engine: {{ engine }}</span></p>
+{% if user.role != 'viewer' %}
+<form method="post" action="/tasks" class="card grid" style="margin-bottom:18px">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="task"><b>New task</b> <span class="muted small">e.g. "Refund €19.99 on order 1004 because the box arrived dented."</span></label>
+  <textarea class="task" id="task" name="task" required minlength="5" maxlength="4000"></textarea>
+  <div><button class="btn">Run task</button></div>
+</form>
+{% endif %}
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>#</th><th>Task</th><th>Status</th><th>Result</th><th class="num">Turns</th><th class="num">Cost</th></tr></thead>
+  {% for r in runs %}<tr class="row" onclick="location.href='/runs/{{ r.id }}'">
+    <td class="muted">{{ r.id }}</td><td style="max-width:380px"><a href="/runs/{{ r.id }}">{{ r.task }}</a><div class="muted small">{{ r.source }} · {{ r.created_at }}</div></td>
+    <td><span class="chip {{ r.status }}" data-status="{{ r.status }}">{{ r.status.replace('_', ' ') }}</span></td>
+    <td class="small" style="max-width:340px">{{ r.summary or '' }}</td><td class="num">{{ r.turns }}</td><td class="num">${{ '%.4f' % cost(r) }}</td></tr>
+  {% else %}<tr><td colspan="6" class="muted" style="padding:24px;text-align:center">No tasks yet. Write one above.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

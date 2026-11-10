@@ -1,0 +1,25 @@
+# Back-office AI agent with approvals, traces and evals. One command:
+#   ./setup.sh && docker compose up --build      then open http://127.0.0.1:8093
+# MCP clients (Claude Desktop / Claude Code) attach with:  docker compose exec -T web python -m ops_agent.mcp_server
+name: ops-agent
+
+services:
+  web:
+    build: .
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}  # empty = offline planner; set it to let Claude drive the agent
+      SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+      API_TOKEN: ${API_TOKEN:?run ./setup.sh first}  # for POST /api/tasks (n8n, helpdesk webhooks, cron)
+      DEMO_SEED: ${DEMO_SEED:-true}
+      AUTO_REFUND_LIMIT: ${AUTO_REFUND_LIMIT:-50}
+      AUTO_RESTOCK_LIMIT: ${AUTO_RESTOCK_LIMIT:-100}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:${PORT:-8093}:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  data:

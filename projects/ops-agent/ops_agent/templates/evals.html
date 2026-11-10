@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Evals</h1>
+<p class="sub">Each case runs the agent on a fresh copy of the shop and checks what changed in the data (money refunded or not, statuses, messages), not the wording of the reply. Run <code>python -m ops_agent.evals</code>; with an API key it measures Claude.</p>
+{% if report %}
+<div class="grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+  <div class="card stat"><b style="color:{{ 'var(--ok)' if report.passed == report.total else 'var(--bad)' }}">{{ report.passed }}/{{ report.total }}</b><span>cases passed</span></div>
+  <div class="card stat"><b style="font-size:18px">{{ report.engine }}</b><span>engine</span></div>
+  <div class="card stat"><b>${{ '%.4f' % report.cost_usd }}</b><span>API cost of the run · {{ report.at }}</span></div>
+</div>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>Case</th><th>Task</th><th>Result</th><th class="num">Turns</th></tr></thead>
+  {% for r in report.results %}<tr><td><span class="chip {{ 'done' if r.passed else 'failed' }}">{{ 'pass' if r.passed else 'fail' }}</span> <b class="small">{{ r.id }}</b></td>
+    <td class="small" style="max-width:320px">{{ r.task }}</td>
+    <td class="small" style="max-width:380px">{{ r.summary }}{% for f in r.failures %}<div style="color:var(--bad)">{{ f }}</div>{% endfor %}</td><td class="num">{{ r.turns }}</td></tr>{% endfor %}
+</table></div>
+{% else %}<div class="card muted">No eval report yet. Run <code>python -m ops_agent.evals</code>.</div>{% endif %}
+{% endblock %}

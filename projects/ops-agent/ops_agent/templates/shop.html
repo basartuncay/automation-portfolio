@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Shop activity</h1>
+<p class="sub">What actually changed in the shop's systems, whoever did it.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;align-items:start;margin-bottom:16px">
+  <div class="card" style="padding:0"><table><thead><tr><th>Refund</th><th class="num">Amount</th><th>By</th></tr></thead>
+    {% for r in refunds %}<tr><td>Order {{ r.order_id }}<div class="muted small">{{ r.reason }}</div></td><td class="num">€{{ '%.2f' % r.amount }}</td><td class="small">{{ r.by }}<div class="muted">{{ r.at }}</div></td></tr>
+    {% else %}<tr><td colspan="3" class="muted">No refunds yet.</td></tr>{% endfor %}</table></div>
+  <div class="card" style="padding:0"><table><thead><tr><th>Customer messages sent</th></tr></thead>
+    {% for m in outbox %}<tr><td class="small"><b>{{ m.to_email }}</b> · order {{ m.order_id }}<div>{{ m.body }}</div><div class="muted">{{ m.by }} · {{ m.at }}</div></td></tr>
+    {% else %}<tr><td class="muted">None yet.</td></tr>{% endfor %}</table></div>
+</div>
+<div class="grid" style="grid-template-columns:2fr 1fr;align-items:start">
+  <div class="card" style="padding:0"><table><thead><tr><th>Order</th><th>Customer</th><th>Status</th><th class="num">Total</th><th class="num">Refunded</th></tr></thead>
+    {% for o in orders %}<tr><td>{{ o.id }}</td><td>{{ o.name }}</td><td>{{ o.status }}</td><td class="num">€{{ '%.2f' % o.total }}</td><td class="num">{{ '€%.2f' % o.refunded if o.refunded else '' }}</td></tr>{% endfor %}</table></div>
+  <div class="card" style="padding:0"><table><thead><tr><th>Restock requests</th><th class="num">Qty</th></tr></thead>
+    {% for r in restocks %}<tr><td>{{ r.title }}<div class="muted small">{{ r.by }}</div></td><td class="num">{{ r.qty }}</td></tr>{% else %}<tr><td class="muted" colspan="2">None yet.</td></tr>{% endfor %}</table></div>
+</div>
+{% endblock %}
