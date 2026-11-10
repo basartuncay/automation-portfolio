@@ -64,7 +64,7 @@ class InvoiceFactory extends Factory
             if ($invoice->status === InvoiceStatus::Rejected) {
                 $invoice->notes = fake()->randomElement(['Duplicate invoice', 'Not ordered by us', 'Wrong VAT number']);
             }
-            $invoice->save();
+            $invoice->saveQuietly(); // demo data: don't flood the audit trail with seeding edits
         });
     }
 

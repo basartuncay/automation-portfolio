@@ -57,9 +57,9 @@ class InvoicesTable
                     ->query(fn (Builder $query) => $query->overdue()),
             ])
             ->recordActions([
-                self::transition('approve', 'Approve', InvoiceStatus::Approved, 'heroicon-o-check', 'info'),
-                self::transition('markPaid', 'Mark paid', InvoiceStatus::Paid, 'heroicon-o-banknotes', 'success'),
-                self::transition('reject', 'Reject', InvoiceStatus::Rejected, 'heroicon-o-x-mark', 'danger')
+                self::transition('approve', 'Approve', InvoiceStatus::Approved, 'heroicon-o-check', 'info', 'approve'),
+                self::transition('markPaid', 'Mark paid', InvoiceStatus::Paid, 'heroicon-o-banknotes', 'success', 'pay'),
+                self::transition('reject', 'Reject', InvoiceStatus::Rejected, 'heroicon-o-x-mark', 'danger', 'reject')
                     ->schema([Textarea::make('notes')->label('Reason')->required()])
                     ->action(function (Invoice $record, array $data) {
                         $record->notes = $data['notes'];
@@ -71,15 +71,16 @@ class InvoicesTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     BulkAction::make('approveSelected')
+                        ->visible(fn () => auth()->user()->hasRole(\App\Enums\UserRole::Approver, \App\Enums\UserRole::Admin))
                         ->label('Approve selected')
                         ->icon('heroicon-o-check')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $ok = $records->filter(fn (Invoice $r) => $r->status->canBecome(InvoiceStatus::Approved));
+                            $ok = $records->filter(fn (Invoice $r) => auth()->user()->can('approve', $r));
                             $ok->each(fn (Invoice $r) => $r->transitionTo(InvoiceStatus::Approved, auth()->user()));
                             $skipped = $records->count() - $ok->count();
                             Notification::make()
-                                ->title("{$ok->count()} approved".($skipped ? ", {$skipped} skipped (already paid, approved or rejected)" : ''))
+                                ->title("{$ok->count()} approved".($skipped ? ", {$skipped} skipped (not approvable by you)" : ''))
                                 ->success()->send();
                         })
                         ->deselectRecordsAfterCompletion(),
@@ -87,14 +88,15 @@ class InvoicesTable
             ]);
     }
 
-    private static function transition(string $name, string $label, InvoiceStatus $to, string $icon, string $color): Action
+    private static function transition(string $name, string $label, InvoiceStatus $to, string $icon, string $color, string $ability): Action
     {
         return Action::make($name)
             ->label($label)
             ->icon($icon)
             ->color($color)
             ->requiresConfirmation()
-            ->visible(fn (Invoice $record) => $record->status->canBecome($to))
+            ->authorize(fn (Invoice $record) => auth()->user()->can($ability, $record)) // InvoicePolicy: role + four-eyes
+            ->visible(fn (Invoice $record) => auth()->user()->can($ability, $record))
             ->action(function (Invoice $record) use ($to, $label) {
                 $record->transitionTo($to, auth()->user());
                 Notification::make()->title("{$label}: invoice {$record->number}")->success()->send();

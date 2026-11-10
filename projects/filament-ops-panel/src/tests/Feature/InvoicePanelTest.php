@@ -22,7 +22,7 @@ class InvoicePanelTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = User::factory()->create();
+        $this->admin = User::factory()->create(['role' => \App\Enums\UserRole::Admin]);
         config(['app.panel_admin_emails' => $this->admin->email]); // tests run outside "local", so access is enforced
         $this->actingAs($this->admin);
     }

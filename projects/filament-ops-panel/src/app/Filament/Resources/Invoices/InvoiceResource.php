@@ -6,6 +6,7 @@ use App\Filament\Resources\Invoices\Pages\CreateInvoice;
 use App\Filament\Resources\Invoices\Pages\EditInvoice;
 use App\Filament\Resources\Invoices\Pages\ListInvoices;
 use App\Filament\Resources\Invoices\Pages\ViewInvoice;
+use App\Filament\Resources\Invoices\RelationManagers\EventsRelationManager;
 use App\Filament\Resources\Invoices\RelationManagers\LinesRelationManager;
 use App\Filament\Resources\Invoices\Schemas\InvoiceForm;
 use App\Filament\Resources\Invoices\Schemas\InvoiceInfolist;
@@ -58,6 +59,7 @@ class InvoiceResource extends Resource
     {
         return [
             LinesRelationManager::class,
+            EventsRelationManager::class,
         ];
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
 class Invoice extends Model
@@ -32,6 +33,35 @@ class Invoice extends Model
             'approved_at' => 'datetime',
             'paid_at' => 'datetime',
         ];
+    }
+
+    /** Every create and change is written to invoice_events with the acting user (panel user or API token owner). */
+    protected static function booted(): void
+    {
+        static::created(fn (Invoice $invoice) => $invoice->log('created', Arr::only($invoice->getAttributes(), ['number', 'total', 'currency', 'status'])));
+
+        static::updated(function (Invoice $invoice) {
+            $changes = Arr::except($invoice->getChanges(), ['updated_at']);
+            if (! $changes) {
+                return;
+            }
+            $diff = [];
+            foreach ($changes as $field => $new) {
+                $diff[$field] = ['from' => $invoice->getOriginal($field) instanceof \BackedEnum ? $invoice->getOriginal($field)->value : $invoice->getOriginal($field), 'to' => $new];
+            }
+            $action = isset($changes['status']) ? (string) $invoice->status->value : 'edited';
+            $invoice->log($action, $diff);
+        });
+    }
+
+    public function log(string $action, ?array $changes = null): void
+    {
+        $this->events()->create(['action' => $action, 'changes' => $changes, 'user_id' => auth()->id()]);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(InvoiceEvent::class)->latest('id');
     }
 
     public function vendor(): BelongsTo
@@ -64,6 +94,10 @@ class Invoice extends Model
     {
         if (! $this->status->canBecome($next)) {
             throw new InvalidArgumentException("Cannot move invoice {$this->number} from {$this->status->value} to {$next->value}");
+        }
+        if ($next === InvoiceStatus::Paid && $by && $this->approved_by === $by->id) {
+            // Same rule as InvoicePolicy::pay, enforced here too so no code path can skip it.
+            throw new InvalidArgumentException("The approver of invoice {$this->number} cannot also mark it paid");
         }
         $this->status = $next;
         if ($next === InvoiceStatus::Approved) {
