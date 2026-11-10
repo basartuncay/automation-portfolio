@@ -54,6 +54,11 @@ jobs:
         run: |
           uv sync --all-extras
           uv run python make_samples.py /tmp/invoices
-          uv run uvicorn invoice_extractor.api:app --port 8077 &
+          # Start from the venv directly: a background `uv run` would hold uv's cache lock past the job.
+          .venv/bin/uvicorn invoice_extractor.api:app --port 8077 &
+          echo $! > /tmp/extractor.pid
           sleep 5
       - run: projects/n8n-invoice-flow/test_flow.sh /tmp/invoices
+      - name: Stop the extractor API
+        if: always()
+        run: kill "$(cat /tmp/extractor.pid)" || true
