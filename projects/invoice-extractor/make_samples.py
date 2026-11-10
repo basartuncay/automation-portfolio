@@ -15,6 +15,14 @@ def draw(path, lines):
     c.save()
 
 
+def scan(src, dst):
+    """An image-only copy of a PDF, like a scanner produces: no text layer at all."""
+    import pdfplumber
+
+    with pdfplumber.open(src) as pdf:
+        pdf.pages[0].to_image(resolution=200).original.convert("L").save(dst, "PDF", resolution=200)
+
+
 def acme(n, items, tax_rate=0.20, broken=False):
     sub = round(sum(q * p for _, q, p in items), 2)
     tax = round(sub * tax_rate, 2)
@@ -42,4 +50,6 @@ if __name__ == "__main__":
     draw(out / "acme_2_broken.pdf", acme(1043, [("Stapler", 3, 12.0)], broken=True))
     draw(out / "nordic_1.pdf", nordic(7781, [("Hydraulic hose", 4, 1250.5), ("Seal kit", 10, 39.9)]))
     draw(out / "unknown_vendor.pdf", ["Some Other Company", "Receipt 55", "Total 10.00"])
+    (out / "scanned").mkdir(exist_ok=True)  # kept apart so batch demos and the n8n test see the same 4 files
+    scan(out / "acme_1.pdf", out / "scanned" / "acme_1_scanned.pdf")
     print(f"wrote samples to {out}/")

@@ -4,7 +4,7 @@ Turns a folder of PDF invoices into clean spreadsheets: one row per invoice and 
 
 ## What it does
 
-- **Reads text PDFs** from several vendor layouts. Each vendor is one template in `TEMPLATES`, so adding a vendor is a few lines of config, not new code.
+- **Reads text PDFs and scanned PDFs.** Pages without a text layer are rendered at 300 dpi and read with Tesseract OCR (`ocr: true` in the output, so a human can take a closer look). Several vendor layouts are supported. Each vendor is one template in `TEMPLATES`, so adding a vendor is a few lines of config, not new code.
 - **Handles regional formats:** `1,234.50` and `1 234,50`, ISO and `DD.MM.YYYY` dates, different labels ("Invoice Number" vs "Bill No.", "Tax" vs "VAT").
 - **Checks the math:**
   - each line is qty × unit price = amount

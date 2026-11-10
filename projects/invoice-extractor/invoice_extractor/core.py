@@ -54,11 +54,26 @@ class Invoice:
     total: float | None = None
     lines: list[dict] = field(default_factory=list)
     problems: list[str] = field(default_factory=list)
+    ocr: bool = False  # True when the PDF had no text layer and was read by OCR: worth a closer look
 
 
-def extract_text(path: Path) -> str:
+def ocr_pages(pdf) -> str:
+    """Scanned PDFs have no text layer: render each page at 300 dpi and read it with Tesseract."""
+    try:
+        import pytesseract
+    except ImportError as e:
+        raise RuntimeError("scanned PDF and OCR is not installed (pip install .[ocr] + tesseract)") from e
+    return "\n".join(pytesseract.image_to_string(page.to_image(resolution=300).original, config="--psm 6")
+                     for page in pdf.pages)
+
+
+def extract_text(path: Path) -> tuple[str, bool]:
+    """(text, used_ocr)"""
     with pdfplumber.open(path) as pdf:
-        return "\n".join(page.extract_text() or "" for page in pdf.pages)
+        text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+        if text.strip():
+            return text, False
+        return ocr_pages(pdf), True
 
 
 def parse(text: str, file: str) -> Invoice:
@@ -110,6 +125,9 @@ def validate(inv: Invoice) -> None:
 
 def process(path: Path) -> Invoice:
     try:
-        return parse(extract_text(path), path.name)
+        text, used_ocr = extract_text(path)
+        inv = parse(text, path.name)
+        inv.ocr = used_ocr
+        return inv
     except Exception as e:  # a corrupt PDF must not stop the batch
         return Invoice(file=path.name, problems=[f"could not read PDF: {e}"])

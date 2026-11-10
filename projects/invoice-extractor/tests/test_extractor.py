@@ -46,3 +46,37 @@ def test_corrupt_pdf_does_not_crash(tmp_path):
 
 def test_eu_number_format():
     assert eu_num("1 234,50") == 1234.5 and eu_num("39,90") == 39.9
+
+
+import shutil  # noqa: E402
+
+from invoice_extractor import core  # noqa: E402
+
+
+def test_scanned_pdf_has_no_text_layer(samples):
+    import pdfplumber
+
+    with pdfplumber.open(samples / "scanned" / "acme_1_scanned.pdf") as pdf:
+        assert not (pdf.pages[0].extract_text() or "").strip()
+
+
+def test_scanned_pdf_goes_through_ocr(samples, monkeypatch):
+    text_layer = core.extract_text(samples / "acme_1.pdf")[0]
+    monkeypatch.setattr(core, "ocr_pages", lambda pdf: text_layer)  # stand-in for Tesseract
+    inv = process(samples / "scanned" / "acme_1_scanned.pdf")
+    assert inv.ocr is True and inv.problems == [] and inv.total == 202.78
+
+
+def test_scanned_pdf_without_ocr_installed_goes_to_review(samples, monkeypatch):
+    def missing(pdf):
+        raise RuntimeError("scanned PDF and OCR is not installed")
+
+    monkeypatch.setattr(core, "ocr_pages", missing)
+    assert "OCR is not installed" in process(samples / "scanned" / "acme_1_scanned.pdf").problems[0]
+
+
+@pytest.mark.skipif(shutil.which("tesseract") is None, reason="needs the tesseract binary (runs in Docker/CI)")
+def test_real_ocr_reads_the_scanned_invoice(samples):
+    inv = process(samples / "scanned" / "acme_1_scanned.pdf")
+    assert inv.ocr is True
+    assert (inv.number, inv.total) == ("INV-01042", 202.78), inv.problems
