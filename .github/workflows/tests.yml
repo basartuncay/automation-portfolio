@@ -1,0 +1,59 @@
+name: tests
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
+                  sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report]
+    defaults:
+      run:
+        working-directory: projects/${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --all-extras
+      - run: uv run pytest -q
+
+  niche-finder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 projects/apify-niche-finder/niche_finder.py test
+
+  laravel:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/filament-ops-panel/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: intl, zip, bcmath, pdo_sqlite
+      - run: composer install --no-interaction --prefer-dist
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php artisan test
+
+  n8n-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install -g n8n@2.4.6 && sudo apt-get install -y sqlite3
+      - name: Start the extractor API
+        working-directory: projects/invoice-extractor
+        run: |
+          uv sync --all-extras
+          uv run python make_samples.py /tmp/invoices
+          uv run uvicorn invoice_extractor.api:app --port 8077 &
+          sleep 5
+      - run: projects/n8n-invoice-flow/test_flow.sh /tmp/invoices

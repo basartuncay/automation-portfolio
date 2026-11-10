@@ -108,6 +108,10 @@ def create_app(secret: str, store: Store, mailer: Mailer) -> FastAPI:
         log.info("%s %s -> %s", event["id"], event["type"], result)
         return {"ok": True, "result": result}
 
+    @app.get("/health")
+    def health():
+        return {"ok": True}
+
     @app.get("/licenses/{key}")
     def check(key: str):
         row = store.db.execute("select status, product from licenses where key=?", (key,)).fetchone()
