@@ -68,7 +68,7 @@ wheels = [
 [[package]]
 name = "email-triage"
 version = "1.0.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
     { name = "pydantic" },

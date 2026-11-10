@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set active = 'kb' %}
+{% block main %}
+<h1>Knowledge base</h1>
+<p class="sub">Drafts quote only these documents. Questions they couldn't answer are listed so you know what to write next.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+  <div class="card">
+    <b>Unanswered customer questions ({{ gaps | length }})</b>
+    <table class="small">{% for g in gaps %}<tr><td><a href="/tickets/{{ g.ticket_id }}">{{ g.question }}</a><div class="muted">{{ g.from_addr }} · {{ g.at }}</div></td><td><span class="chip {{ g.status }}">{{ STATUSES[g.status] }}</span></td></tr>
+    {% else %}<tr><td class="muted">None yet.</td></tr>{% endfor %}</table>
+  </div>
+  <div class="card">
+    <b>Indexed sections ({{ chunks | length }})</b>
+    <table class="small">{% for c in chunks %}<tr><td><b>{{ c.title }}</b><div class="muted">{{ c.text[:160] }}{{ '…' if c.text | length > 160 }}</div></td></tr>{% endfor %}</table>
+  </div>
+</div>
+{% endblock %}

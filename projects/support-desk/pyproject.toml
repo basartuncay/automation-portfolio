@@ -1,0 +1,19 @@
+[project]
+name = "support-desk"
+version = "1.0.0"
+description = "Support inbox -> AI triage -> drafts grounded in company docs -> human approves and sends"
+requires-python = ">=3.11"
+dependencies = [
+    "email-triage", "doc-qa",
+    "fastapi>=0.115", "uvicorn>=0.30", "jinja2>=3.1", "itsdangerous>=2.2", "python-multipart>=0.0.9",
+]
+
+[tool.uv.sources]
+email-triage = { path = "../email-triage" }
+doc-qa = { path = "../doc-qa" }
+
+[dependency-groups]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

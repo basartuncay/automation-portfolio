@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% set active = 'all' if status == 'all' else 'queue' %}
+{% block main %}
+<h1>Support queue</h1>
+<p class="sub">Every email is triaged and, when the docs cover it, answered in a draft. Nothing goes out until a person sends it. <span class="chip engine">Engine: {{ engine }}</span></p>
+<div class="grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:18px">
+  <div class="card stat"><b>{{ counts.get('drafted', 0) }}</b><span>drafts ready to review</span></div>
+  <div class="card stat"><b>{{ counts.get('needs_human', 0) }}</b><span>need a person</span></div>
+  <div class="card stat"><b>{{ counts.get('sent', 0) }}</b><span>replies sent{% if stats.sent %}, {{ (100 * (stats.sent_unedited or 0) / stats.sent) | round | int }}% unedited{% endif %}</span></div>
+  <div class="card stat"><b>{{ counts.get('routed', 0) + counts.get('closed', 0) }}</b><span>routed or closed automatically</span></div>
+  <div class="card stat"><b>{{ gaps }}</b><span><a href="/knowledge">questions the docs don't answer</a></span></div>
+</div>
+<div class="tabs">
+  {% for key, label in [('open', 'Open'), ('drafted', 'Draft ready'), ('needs_human', 'Needs a person'), ('sent', 'Sent'), ('routed', 'Routed'), ('closed', 'Closed'), ('all', 'All')] %}
+  <a href="/?status={{ key }}" class="{{ 'on' if status == key }}">{{ label }}</a>
+  {% endfor %}
+</div>
+<div class="card" style="padding:0">
+<table>
+  <thead><tr><th>#</th><th>From</th><th>Subject</th><th>Category</th><th>Status</th><th>Why</th></tr></thead>
+  <tbody>
+  {% for t in tickets %}
+  <tr class="row" onclick="location.href='/tickets/{{ t.id }}'">
+    <td class="muted">{{ t.id }}</td>
+    <td>{{ t.from_name or t.from_addr }}<div class="muted small">{{ t.from_addr }}</div></td>
+    <td><a href="/tickets/{{ t.id }}">{{ t.subject or '(no subject)' }}</a>
+      {% if t.urgency == 'high' %}<span class="chip high">urgent</span>{% endif %}{% if t.injection %} <span class="chip flag">flagged</span>{% endif %}</td>
+    <td>{{ (t.category or '—').replace('_', ' ') }}</td>
+    <td><span class="chip {{ t.status }}" data-status="{{ t.status }}">{{ STATUSES[t.status] }}</span></td>
+    <td class="small muted" style="max-width:300px">{{ t.reason or ('reply sent' if t.status == 'sent' else 'draft grounded in the docs') }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="muted" style="padding:28px;text-align:center">Nothing here. New emails appear within seconds.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

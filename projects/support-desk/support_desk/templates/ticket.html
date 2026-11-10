@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% set active = 'queue' %}
+{% block main %}
+<p class="small"><a href="/">← Queue</a></p>
+<h1>{{ t.subject or '(no subject)' }}</h1>
+<p class="sub">#{{ t.id }} · {{ t.from_name or '' }} &lt;{{ t.from_addr }}&gt; · received {{ t.received_at }} UTC</p>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+{% if t.reason and t.status != 'sent' %}<div class="alert {{ 'bad' if t.injection else 'warn' }}">{{ t.reason }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1.1fr 1fr;align-items:start">
+  <div class="grid">
+    <div class="card">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="chip {{ t.status }}">{{ STATUSES[t.status] }}</span>
+        {% if t.category %}<span class="chip">{{ t.category.replace('_', ' ') }}</span>{% endif %}
+        {% if t.urgency %}<span class="chip {{ t.urgency }}">{{ t.urgency }} urgency</span>{% endif %}
+        {% if t.injection %}<span class="chip flag">prompt injection suspected</span>{% endif %}
+      </div>
+      <pre class="mail">{{ t.body }}</pre>
+    </div>
+    <div class="card">
+      <b>History</b> <span class="muted small">(append-only)</span>
+      <ul class="timeline small" style="padding-left:18px;margin-bottom:0">
+        {% for e in events %}
+        <li><b>{{ e.action }}</b> by {{ e.actor }} <span class="muted">· {{ e.at }}</span>
+          {% set d = e.detail | fromjson %}{% if d %}<div class="muted">{% for k, v in d.items() %}{{ k }}: {{ v }}{{ ', ' if not loop.last }}{% endfor %}</div>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="grid">
+    {% if t.status == 'sent' %}
+    <div class="card"><div class="alert ok">Reply sent {{ t.sent_at }} UTC</div><pre class="mail">{{ t.reply }}</pre></div>
+    {% elif t.status in ('drafted', 'needs_human') %}
+    <form class="card grid" method="post" action="/tickets/{{ t.id }}/send">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div><b>{{ 'AI draft' if t.draft else 'Your reply' }}</b>
+        {% if t.draft %}<span class="muted small"> · {{ engine }} · edit freely before sending</span>{% endif %}</div>
+      <textarea name="reply" aria-label="Reply">{{ t.draft or '' }}</textarea>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn" {{ 'disabled' if blocked }}>Approve &amp; send</button>
+        {% if blocked %}<span class="small muted">{{ blocked }}</span>{% endif %}
+      </div>
+    </form>
+    {% endif %}
+    {% if sources %}
+    <div class="card">
+      <b>Sources the draft is based on</b>
+      <ol class="sources small">{% for s in sources %}<li>{{ s }}</li>{% endfor %}</ol>
+    </div>
+    {% endif %}
+    {% if t.status not in ('sent', 'closed') and user.role != 'viewer' %}
+    <form method="post" action="/tickets/{{ t.id }}/close"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="btn ghost">Close without reply</button></form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

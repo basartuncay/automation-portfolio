@@ -1,0 +1,58 @@
+# Support inbox -> AI triage + drafts from your docs -> people approve and send. One command:
+#   ./setup.sh && docker compose up --build      then open http://127.0.0.1:8090
+name: support-desk
+
+x-app: &app
+  build:
+    context: .
+    additional_contexts:
+      email-triage: ../email-triage
+      doc-qa: ../doc-qa
+  environment: &env
+    ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}  # empty = offline rule-based engine; set it to draft with Claude
+    SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+    DEMO_SEED: ${DEMO_SEED:-true}
+    SUPPORT_FROM: support@shop.example
+    SMTP_HOST: mail
+    SMTP_PORT: "3025"
+    SMTP_STARTTLS: "false"  # local test server only; real SMTP uses 587 with STARTTLS (the default)
+  volumes:
+    - data:/data
+    - ${KB_PATH:-../doc-qa/samples}:/kb:ro  # the company docs drafts are grounded in
+  restart: unless-stopped
+
+services:
+  web:
+    <<: *app
+    ports: ["127.0.0.1:${PORT:-8090}:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+  worker:
+    <<: *app
+    command: ["python", "-m", "support_desk.worker"]
+    environment:
+      <<: *env
+      IMAP_HOST: mail
+      IMAP_PORT: "3143"
+      IMAP_SSL: "false"  # local test server only; real inboxes use 993 with SSL (the default)
+      IMAP_USER: support@shop.example
+      IMAP_PASSWORD: ${MAIL_PASSWORD:?run ./setup.sh first}
+      POLL_SECONDS: "3"
+    depends_on:
+      web: { condition: service_healthy }  # web creates the schema and demo users first
+      mail: { condition: service_started }
+
+  mail:
+    # Local test mail server (SMTP 3025, IMAP 3143). Point the worker and SMTP at your real mailbox in production.
+    image: greenmail/standalone:2.1.5
+    environment:
+      GREENMAIL_OPTS: >-
+        -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.hostname=0.0.0.0
+        -Dgreenmail.users=support:${MAIL_PASSWORD}@shop.example -Dgreenmail.users.login=email
+    ports: ["127.0.0.1:3025:3025", "127.0.0.1:3143:3143"]  # so you (and e2e.sh) can send mail and read replies
+
+volumes:
+  data:
