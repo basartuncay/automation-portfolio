@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>Pipeline runs</h1>
+<p class="sub">Each run extracts every source, builds the warehouse with dbt and runs every data test. Only fully green runs are published to the dashboard.</p></div>
+<form method="post" action="/runs"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn" {{ 'disabled' if running }}>{{ 'Running…' if running else 'Run now' }}</button></form></div>
+{% if flash %}<div class="alert ok">{{ flash }}</div>{% endif %}
+{% if running %}<script>setTimeout(() => location.reload(), 2000)</script>{% endif %}
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>#</th><th>Started (UTC)</th><th>Status</th><th>Rows loaded</th><th>dbt</th><th>What failed</th></tr></thead>
+  {% for r in runs %}{% set src = r.sources | fromjson %}<tr>
+    <td class="muted">{{ r.id }}</td><td class="small">{{ r.started }}<div class="muted">{{ r.trigger }}{% if r.seconds %} · {{ r.seconds }} s{% endif %}</div></td>
+    <td><span class="chip {{ r.status }}" data-status="{{ r.status }}">{{ r.status }}</span>{% if r.published %}<div class="small muted">published</div>{% endif %}</td>
+    <td class="small">{% if src %}{% for name, s in src.items() %}<div>{{ name }}: {% if s.error %}<b style="color:var(--bad)">failed</b>{% else %}{{ s.rows }}{% endif %}</div>{% endfor %}{% endif %}</td>
+    <td class="small">{{ r.models or 0 }} models<div>{{ r.tests_passed or 0 }} tests passed</div>{% if r.skipped %}<div class="muted">{{ r.skipped }} skipped (downstream of a failure)</div>{% endif %}</td>
+    <td class="small" style="max-width:420px">{% for f in (r.failures | fromjson or []) %}<div style="color:var(--bad);margin-bottom:4px"><b>{{ f.name }}</b>{% if f.rows %} ({{ f.rows }} bad rows){% endif %}{% if f.message %}: {{ f.message }}{% endif %}</div>{% endfor %}</td>
+  </tr>{% else %}<tr><td colspan="6" class="muted" style="padding:24px;text-align:center">No runs yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

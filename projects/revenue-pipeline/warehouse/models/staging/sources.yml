@@ -1,0 +1,10 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    description: Untouched copies of each source, append-only, one row per delivery (duplicates expected).
+    tables:
+      - name: shop_orders
+      - name: stripe_charges
+      - name: stripe_refunds
+      - name: ad_spend

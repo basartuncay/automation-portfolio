@@ -1,0 +1,32 @@
+version: 2
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: total
+        data_tests: [not_null]
+      - name: currency
+        data_tests: [{accepted_values: {arguments: {values: ["EUR"]}}}]
+      - name: channel
+        data_tests: [{accepted_values: {arguments: {values: ["google", "meta", "newsletter", "direct"]}}}]
+  - name: stg_charges
+    columns:
+      - name: charge_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests: [{relationships: {arguments: {to: ref('stg_orders'), field: order_id}}}]
+  - name: stg_refunds
+    columns:
+      - name: refund_id
+        data_tests: [unique, not_null]
+      - name: charge_id
+        data_tests: [{relationships: {arguments: {to: ref('stg_charges'), field: charge_id}}}]
+  - name: fct_orders
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+  - name: fct_daily
+    columns:
+      - name: day
+        data_tests: [unique, not_null]

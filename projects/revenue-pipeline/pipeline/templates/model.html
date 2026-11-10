@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Data model</h1>
+<p class="sub">Raw copies of each source → staging (typed, deduplicated) → intermediate → marts the dashboard reads. Built and tested with dbt on DuckDB.</p>
+<div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
+  <div class="card" style="padding:0"><table>
+    <thead><tr><th>Layer</th><th>Table</th><th>Kind</th><th class="num">Rows</th></tr></thead>
+    {% for t in tables %}<tr><td class="layer">{{ t.schema }}</td><td><b>{{ t.name }}</b></td><td class="small muted">{{ t.kind }}</td><td class="num">{{ '{:,}'.format(t.rows) }}</td></tr>{% endfor %}
+  </table></div>
+  <div class="card"><b>Custom data tests</b> <span class="muted small">(plus unique, not-null, accepted-values and relationship tests on keys)</span>
+    <ul class="small">{% for t in tests %}<li>{{ t.replace('_', ' ') }}</li>{% endfor %}</ul></div>
+</div>
+{% endblock %}

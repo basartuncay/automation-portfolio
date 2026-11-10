@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Revenue</h1>
+<p class="sub">Store orders, Stripe payments and Google/Meta ad spend in one place. Only builds that pass every data test are shown.</p>
+{% include "_banner.html" %}
+{% if empty %}<div class="card muted">No verified data yet. The first pipeline run is on its way.</div>{% else %}
+{% macro delta(a, b, pct=True, invert=False) -%}
+{% if a is not none and b %}{% set d = (a - b) / b * 100 %}<span class="delta {{ 'up' if (d >= 0) != invert else 'down' }}">{{ '+' if d >= 0 }}{{ '%.0f' % d }}% vs previous 30 days</span>{% endif %}
+{%- endmacro %}
+<div class="grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:16px">
+  <div class="card stat"><b>{{ cur.net | eur }}</b><span>net revenue, last 30 days</span><div>{{ delta(cur.net, prev.net) }}</div></div>
+  <div class="card stat"><b>{{ '%.0f' % cur.orders }}</b><span>orders</span><div>{{ delta(cur.orders, prev.orders) }}</div></div>
+  <div class="card stat"><b>{{ '%.2f' % cur.roas if cur.roas else '—' }}×</b><span>ROAS (net revenue / ad spend)</span><div>{{ delta(cur.roas, prev.roas) }}</div></div>
+  <div class="card stat"><b>{{ cur.cac | eur2 }}</b><span>blended CAC</span><div>{{ delta(cur.cac, prev.cac, invert=True) }}</div></div>
+  <div class="card stat"><b>{{ '%.1f' % cur.refund_rate }}%</b><span>refund rate</span><div>{{ delta(cur.refund_rate, prev.refund_rate, invert=True) }}</div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><b>Daily net revenue and ad spend</b> <span class="muted small">to {{ last }}</span>
+  <svg viewBox="0 0 {{ chart.w }} {{ chart.h }}" width="100%" role="img" aria-label="Daily net revenue and ad spend">
+    {% for ty, label in chart.ticks %}<line x1="{{ chart.pad }}" x2="{{ chart.w - 10 }}" y1="{{ ty }}" y2="{{ ty }}" stroke="#eef0f3"/><text x="{{ chart.pad - 6 }}" y="{{ ty + 4 }}" text-anchor="end" font-size="11" fill="#6b7280">{{ label }}</text>{% endfor %}
+    {% for b in chart.bars %}<rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" fill="#7dd3fc"><title>{{ b.tip }}</title></rect>{% endfor %}
+    <polyline points="{{ chart.line }}" fill="none" stroke="#ea580c" stroke-width="2.5"/>
+    <text x="{{ chart.pad }}" y="{{ chart.h - 8 }}" font-size="11" fill="#6b7280">{{ chart.first }}</text>
+    <text x="{{ chart.w - 10 }}" y="{{ chart.h - 8 }}" text-anchor="end" font-size="11" fill="#6b7280">{{ chart.last }}</text>
+  </svg>
+  <div class="small"><span style="display:inline-block;width:12px;height:10px;background:#7dd3fc"></span> net revenue &nbsp; <span style="display:inline-block;width:14px;height:3px;background:#ea580c;vertical-align:middle"></span> ad spend</div>
+</div>
+<div class="grid" style="grid-template-columns:1.1fr 1fr;align-items:start">
+  <div class="card" style="padding:0"><table>
+    <thead><tr><th>Channel, last 30 days</th><th class="num">Orders</th><th class="num">Net revenue</th><th class="num">Spend</th><th class="num">ROAS</th><th class="num">CAC</th></tr></thead>
+    {% for c in channels %}<tr><td><b>{{ c[0] }}</b></td><td class="num">{{ c[1] }}</td><td class="num">{{ c[2] | eur }}</td><td class="num">{{ c[4] | eur }}</td>
+      <td class="num">{{ '%.2f×' % c[5] if c[5] else '—' }}</td><td class="num">{{ c[6] | eur2 }}</td></tr>{% endfor %}
+  </table></div>
+  <div class="card"><b>Repeat customers by first-order month</b>
+    <table class="heat" style="margin-top:8px"><thead><tr><th>Cohort</th><th>Customers</th>{% for m in range(max_since + 1) %}<th>Month {{ m }}</th>{% endfor %}</tr></thead>
+    {% for (month, size), row in cohorts.items() %}<tr><td style="text-align:left">{{ month }}</td><td>{{ size }}</td>
+      {% for m in range(max_since + 1) %}{% set v = row.get(m) %}<td style="background:{{ 'rgba(3,105,161,%.2f)' % (v / 100 * 0.9 + 0.08) if v is not none else 'transparent' }};color:{{ '#fff' if v and v > 50 else 'inherit' }}">{{ '%.0f%%' % v if v is not none else '' }}</td>{% endfor %}</tr>{% endfor %}
+    </table></div>
+</div>
+{% endif %}
+{% endblock %}

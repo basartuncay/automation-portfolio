@@ -1,0 +1,7 @@
+{% if latest and latest.status == 'failed' %}
+<div class="banner bad"><b>The latest run failed ({{ latest.finished }} UTC):</b>
+  {% for f in latest.failures | fromjson %}{{ f.name }}{{ ', ' if not loop.last }}{% endfor %}.
+  {% if verified %}You're seeing data verified at {{ verified.finished }} UTC.{% endif %} <a href="/runs">Details</a></div>
+{% elif verified %}
+<div class="banner ok">All data tests passed. Verified {{ verified.finished }} UTC ({{ verified.models }} models, {{ verified.tests_passed }} tests).</div>
+{% endif %}

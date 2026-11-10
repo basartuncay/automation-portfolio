@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.env
+demo/out/
+data/
+warehouse/target/
+warehouse/logs/
+logs/
+*.duckdb

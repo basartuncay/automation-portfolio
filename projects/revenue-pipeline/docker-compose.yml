@@ -1,0 +1,47 @@
+# Orders + payments + ad spend -> tested DuckDB warehouse -> dashboard. One command:
+#   ./setup.sh && docker compose up --build      then open http://127.0.0.1:8096
+name: revenue-pipeline
+
+services:
+  web:
+    build: .
+    environment:
+      SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8096:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  pipeline:
+    build: .
+    command: ["python", "-m", "pipeline.run"]
+    environment:
+      SOURCES_URL: http://sources:8000
+      SOURCES_API_TOKEN: ${SOURCES_API_TOKEN:?run ./setup.sh first}
+      RUN_EVERY_MINUTES: ${RUN_EVERY_MINUTES:-60}
+      HTTP_BACKOFF: "1"
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      sources: { condition: service_healthy }
+    restart: unless-stopped
+
+  sources:
+    # Demo only: Shopify-, Stripe- and ad-platform-shaped APIs with 60 days of data, so nothing touches a real account.
+    build: .
+    command: ["uvicorn", "pipeline.sources:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      SOURCES_ADMIN_TOKEN: ${SOURCES_ADMIN_TOKEN:?run ./setup.sh first}
+      SOURCES_API_TOKEN: ${SOURCES_API_TOKEN}
+    ports: ["127.0.0.1:8097:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

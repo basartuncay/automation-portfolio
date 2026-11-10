@@ -1,0 +1,7 @@
+revenue:
+  target: main
+  outputs:
+    main:
+      type: duckdb
+      path: "{{ env_var('WAREHOUSE_PATH', 'warehouse.duckdb') }}"
+      threads: 4
