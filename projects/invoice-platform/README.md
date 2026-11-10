@@ -7,6 +7,10 @@ supplier email ──▶ IMAP inbox ──▶ intake worker ──▶ extractor 
    (PDF)                          retries, no loss     arithmetic checks           roles, four-eyes, audit trail
 ```
 
+**▶ [Watch the 1-minute demo](docs/demo.mp4)**: a real recording of the running stack. Emails arrive, a scanned PDF is read by OCR, one person approves and another pays, and the audit trail shows it all. It was recorded with Playwright by [`demo/record.py`](demo/record.py) and edited in Remotion ([`demo/video`](demo/video)).
+
+[![Demo video](docs/demo-thumb.png)](docs/demo.mp4)
+
 ![Invoices from email in the approval queue](docs/inbox-invoices.png)
 
 ![Audit trail: who changed what, when](docs/invoice-history.png)
