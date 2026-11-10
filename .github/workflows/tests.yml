@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
-                  sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor]
+                  sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}

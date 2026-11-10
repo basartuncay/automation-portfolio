@@ -1,0 +1,10 @@
+{
+  "actorSpecification": 1,
+  "name": "ai-schema-extractor",
+  "title": "AI Schema Extractor: any page to JSON (bring your own Claude key)",
+  "description": "Give URLs and a JSON schema; get clean JSON per page extracted by Claude. No selectors to maintain. Uses your own Anthropic API key, so you pay Anthropic directly and only a small per-page fee here.",
+  "version": "1.0",
+  "input": "./input_schema.json",
+  "dockerfile": "./Dockerfile",
+  "storages": {"dataset": {"actorSpecification": 1, "views": {"overview": {"title": "Results", "transformation": {"fields": ["url", "data", "error"]}, "display": {"component": "table"}}}}}
+}

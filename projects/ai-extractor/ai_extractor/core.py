@@ -94,8 +94,8 @@ def extract(client, http: httpx.Client, url: str, schema: dict, instructions: st
         text = text[:max_chars] + "\n[truncated]"
     try:
         resp = client.messages.create(**build_request(url, text, schema, instructions))
-    except anthropic.RateLimitError:
-        raise
+    except (anthropic.RateLimitError, anthropic.AuthenticationError):
+        raise  # a bad key or rate limit affects every page: let the caller stop or back off
     except anthropic.APIStatusError as e:
         return Result(url, error=f"API error {e.status_code}")
     except anthropic.APIConnectionError:

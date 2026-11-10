@@ -16,6 +16,8 @@ Production-style automation projects: scraping, data pipelines, API integrations
 | [JS-Site Scraper](projects/js-scraper) | Playwright rendering, or discovering and using the site's hidden JSON API | Playwright, httpx | 5 + 2 live |
 | [Keyword Alert Bot](projects/alert-bot) | RSS/Atom/JSON sources → Slack/Telegram, alerting once per new item | Python, httpx | 10 |
 | [Weekly KPI Report](projects/kpi-report) | Week-over-week KPIs, anomaly flags, a Sheets tab and an HTML email with a chart | Python, matplotlib | 6 |
+| [AI Web Extractor](projects/ai-extractor) | Any page + JSON schema → JSON via Claude structured outputs; no selectors; hidden-text injection stripped | Python, Claude API | 8 |
+| [AI Extractor Apify actor](projects/ai-extractor-actor) | The extractor as a pay-per-event Apify actor with bring-your-own-key; Docker image verified | Apify SDK, Docker | 4 |
 | [Apify Niche Finder](projects/apify-niche-finder) | Market research on the Apify Store: demand vs competition per target | Python (stdlib) | self-check |
 
 ## How they fit together

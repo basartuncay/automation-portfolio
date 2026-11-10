@@ -1,0 +1,16 @@
+{
+  "title": "AI Schema Extractor input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {"title": "Page URLs", "type": "array", "editor": "requestListSources", "description": "Pages to extract from (max 1000 per run).",
+                  "prefill": [{"url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"}]},
+    "schema": {"title": "JSON schema of the output", "type": "object", "editor": "json",
+               "description": "Object schema of the fields you want. Fields not listed in 'required' may come back null when the page doesn't state them.",
+               "prefill": {"type": "object", "properties": {"name": {"type": "string"}, "price": {"type": "number"}, "currency": {"type": "string"}, "in_stock": {"type": "boolean"}}, "required": ["name", "price"]}},
+    "instructions": {"title": "Extra instructions", "type": "string", "editor": "textfield", "description": "Optional, e.g. 'prices in EUR, dates as YYYY-MM-DD'."},
+    "anthropicApiKey": {"title": "Anthropic API key", "type": "string", "editor": "textfield", "isSecret": true,
+                        "description": "Your own key from console.anthropic.com. Stored encrypted by Apify; used only to call Claude for this run."}
+  },
+  "required": ["startUrls", "schema", "anthropicApiKey"]
+}
