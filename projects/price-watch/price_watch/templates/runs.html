@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Crawl health</h1>
+<p class="sub">Every crawl, per competitor. A crawl that finds far fewer products than expected is marked <b>suspicious</b> and changes nothing: that usually means the site's layout changed.</p>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>Competitor</th><th>Started (UTC)</th><th>Status</th><th class="num">Products</th><th class="num">Changes</th><th>Note</th></tr></thead>
+  {% for r in runs %}<tr><td>{{ r.name }}</td><td class="small muted">{{ r.started }}</td><td><span class="chip {{ r.status or '' }}">{{ r.status or 'running' }}</span></td>
+  <td class="num">{{ r.products if r.products is not none else '—' }}</td><td class="num">{{ r.changes if r.changes is not none else '—' }}</td><td class="small muted">{{ r.note or '' }}</td></tr>
+  {% else %}<tr><td colspan="6" class="muted" style="padding:24px;text-align:center">No crawls yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

@@ -475,7 +475,7 @@ wheels = [
 [[package]]
 name = "price-monitor"
 version = "1.0.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "httpx" },
     { name = "selectolax" },

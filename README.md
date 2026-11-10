@@ -6,6 +6,7 @@ Production-style automation projects: scraping, data pipelines, API integrations
 |---|---|---|---|
 | **[Invoice Platform](projects/invoice-platform)** ★ | **Flagship.** Supplier email → IMAP worker → extraction with OCR → approval panel, one `docker compose up`; no-loss retries, four-eyes payments, audit trail; verified end to end in CI; [1-min demo video](projects/invoice-platform/docs/demo.mp4) | Docker Compose, Laravel, Python, Tesseract | 8 + e2e |
 | **[Support Desk](projects/support-desk)** ★ | **AI flagship.** Support inbox → triage → reply drafted from your docs with sources → agent/lead approves and sends in thread; injection-aware, exactly-once send, knowledge-gap list; [1-min demo video](projects/support-desk/docs/demo.mp4) | Docker Compose, FastAPI, Claude API | 12 + e2e |
+| **[Price Watch](projects/price-watch)** ★ | **Scraping flagship.** Scheduled competitor crawls → price history → undercut/drop/stock alerts to Slack or Telegram → weekly digest email → panel with charts; catches site redesigns instead of reporting false removals; [1-min demo video](projects/price-watch/docs/demo.mp4) | Docker Compose, httpx, FastAPI, Slack | 9 + e2e |
 | [Invoice Desk](projects/filament-ops-panel) | Accounts-payable approval panel: roles, four-eyes rule, audit trail, bulk approve, dashboard, token-protected ingestion API; production FrankenPHP image | Laravel 13, Filament 5, Sanctum | 26 |
 | [Invoice Extractor](projects/invoice-extractor) | PDF invoices (text or scanned, via OCR) → clean tables, with arithmetic checks and a review queue; CLI and HTTP API | Python, pdfplumber, Tesseract, FastAPI | 14 |
 | [n8n Invoice Flow](projects/n8n-invoice-flow) | n8n workflow calling the custom extractor API and routing by result, verified end to end in real n8n | n8n, Python | e2e |
@@ -38,6 +39,12 @@ customer email ─▶ Support Desk worker ─▶ AI Email Triage ─▶ Document
 
 The [Support Desk](projects/support-desk) reuses the triage and Q&A projects as libraries.
 
+```
+competitor sites ─▶ Price Watch watcher ─▶ Price Monitor crawl + diff ─▶ history + alerts ─▶ Alert Bot (Slack/Telegram) + digest
+```
+
+The [Price Watch](projects/price-watch) does the same with the price monitor and the alert bot.
+
 The extractor's JSON output is the panel's API input, so a PDF can reach the approval queue in one pipe. See [Invoice Desk](projects/filament-ops-panel#works-with-the-rest-of-the-pipeline).
 
 ## Conventions across projects
@@ -55,4 +62,4 @@ cd projects/<name> && uv sync --all-extras && uv run pytest -q     # Python proj
 cd projects/filament-ops-panel && ./dev.sh php artisan test         # Laravel (Docker, no local PHP needed)
 ```
 
-CI (`.github/workflows/tests.yml`) runs all of the above, plus the n8n workflow and both flagship stacks end to end in Docker.
+CI (`.github/workflows/tests.yml`) runs all of the above, plus the n8n workflow and all three flagship stacks end to end in Docker.

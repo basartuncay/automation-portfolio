@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head">
+  <div><h1>Where you stand</h1>
+  <p class="sub">Your price against every competitor, from the latest crawl. Red means a rival is cheaper.</p></div>
+  <div class="btns">
+    <form method="post" action="/request/crawl"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Crawl now</button></form>
+    <form method="post" action="/request/digest"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Email weekly digest</button></form>
+  </div>
+</div>
+{% if flash %}<div class="alert ok">{{ flash }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:18px">
+  <div class="card stat"><b>{{ pos | length }}</b><span>products tracked against {{ comps | length }} competitors</span></div>
+  <div class="card stat"><b style="color:{{ '#b91c1c' if undercut else 'inherit' }}">{{ undercut }}</b><span>undercut right now</span></div>
+  <div class="card stat"><b>{{ health | selectattr('status', 'equalto', 'ok') | list | length }}/{{ health | length }}</b><span>competitor crawls healthy</span></div>
+  <div class="card stat"><b>{{ open_alerts }}</b><span><a href="/alerts">alerts in the last 24 h</a></span></div>
+</div>
+<div class="grid" style="grid-template-columns:1.75fr 1fr;align-items:start">
+  <div class="card" style="padding:0">
+    <table>
+      <thead><tr><th>Product</th><th class="num">Yours</th>{% for c in comps %}<th class="num">{{ c }}</th>{% endfor %}<th>Position</th></tr></thead>
+      <tbody>
+      {% for p in pos %}
+      <tr class="row" onclick="location.href='/products/{{ p.sku }}'">
+        <td><a href="/products/{{ p.sku }}">{{ p.title }}</a><div class="muted small">{{ p.sku }}</div></td>
+        <td class="num"><b>€{{ '%.2f' % p.ours }}</b></td>
+        {% for c in comps %}{% set r = p.competitors[c] %}
+        <td class="num">{% if r %}<span class="{{ 'oos' if not r.in_stock else ('cheaper' if r.price < p.ours else 'dearer') }}">€{{ '%.2f' % r.price }}</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        {% endfor %}
+        <td>{% if p.gap_pct is none %}<span class="chip">no data</span>{% elif p.gap_pct > 0 %}<span class="chip undercut" data-pos="undercut">{{ '%.1f' % p.gap_pct }}% above cheapest</span>{% else %}<span class="chip ok" data-pos="cheapest">cheapest</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="grid">
+    <div class="card"><b>Latest alerts</b>
+      <ul class="small" style="padding-left:18px;margin-bottom:0">
+      {% for a in alerts %}<li style="margin-bottom:8px"><span class="chip {{ a.kind }}">{{ a.kind.replace('_', ' ') }}</span> {{ a.message }} <span class="muted">· {{ a.at }}</span></li>
+      {% else %}<li class="muted">None yet. The first crawl is a baseline.</li>{% endfor %}
+      </ul></div>
+    <div class="card"><b>Crawl health</b>
+      <table class="small">{% for h in health %}<tr><td>{{ h.name }}</td><td><span class="chip {{ h.status or '' }}">{{ h.status or 'waiting' }}</span></td><td class="muted">{{ h.products or '' }}{{ ' products' if h.products }}<div>{{ h.finished or '' }}</div></td></tr>{% endfor %}</table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Alerts</h1>
+<p class="sub">Only products you sell trigger alerts. Each one is also sent to Slack or Telegram when configured, and is marked "sent" only after the channel accepts it.</p>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>When (UTC)</th><th>Kind</th><th>Message</th><th>Sent</th></tr></thead>
+  {% for a in alerts %}<tr><td class="small muted" style="white-space:nowrap">{{ a.at }}</td><td><span class="chip {{ a.kind }}">{{ a.kind.replace('_', ' ') }}</span></td><td>{{ a.message }}</td><td>{{ '✓' if a.notified else '…' }}</td></tr>
+  {% else %}<tr><td colspan="4" class="muted" style="padding:24px;text-align:center">No alerts yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

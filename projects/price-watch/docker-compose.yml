@@ -1,0 +1,72 @@
+# Competitor prices -> history, alerts, weekly digest, panel. One command:
+#   ./setup.sh && docker compose up --build      then open http://127.0.0.1:8091
+name: price-watch
+
+x-app: &app
+  build:
+    context: .
+    additional_contexts:
+      price-monitor: ../price-monitor
+      alert-bot: ../alert-bot
+  restart: unless-stopped
+
+x-env: &env
+  COMPETITORS: /config/competitors.json  # who to crawl (start URL, minimum expected products)
+  CATALOG: /config/our_catalog.csv       # what we sell and at what price
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+
+services:
+  web:
+    <<: *app
+    environment:
+      <<: *env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data, "${CONFIG_DIR:-./samples}:/config:ro"]
+    ports: ["127.0.0.1:${PORT:-8091}:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+  watcher:
+    <<: *app
+    command: ["python", "-m", "price_watch.watch"]
+    environment:
+      <<: *env
+      CRAWL_EVERY_MINUTES: ${CRAWL_EVERY_MINUTES:-360}
+      CRAWL_DELAY: "0.3"                   # seconds between pages: be polite to the sites you watch
+      DROP_PCT: "10"
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-http://shop:8000/hooks/slack}  # demo stand-in; use your real webhook
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      DIGEST_TO: pricing-team@shop.example
+      SMTP_HOST: mail
+      SMTP_PORT: "3025"
+      SMTP_STARTTLS: "false"               # local test server only; real SMTP uses 587 with STARTTLS (the default)
+    volumes: [data:/data, "${CONFIG_DIR:-./samples}:/config:ro"]
+    depends_on:
+      web: { condition: service_healthy }
+      shop: { condition: service_healthy }
+
+  shop:
+    # Demo only: two competitor shops and a Slack-compatible webhook, so the demo never scrapes a real site.
+    <<: *app
+    command: ["uvicorn", "price_watch.demo_shop:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      SHOP_CATALOG: /app/price-watch/samples/shop_catalog.json
+      SHOP_ADMIN_TOKEN: ${SHOP_ADMIN_TOKEN:?run ./setup.sh first}
+    ports: ["127.0.0.1:8092:8000"]  # so you (and e2e.sh) can change competitor prices
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+  mail:
+    # Local test mail server for the weekly digest (SMTP 3025, IMAP 3143).
+    image: greenmail/standalone:2.1.5
+    environment:
+      GREENMAIL_OPTS: -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.hostname=0.0.0.0
+    ports: ["127.0.0.1:3144:3143"]
+
+volumes:
+  data:

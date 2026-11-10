@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk]
+                  invoice-platform, support-desk, price-watch]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -91,4 +91,17 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/support-desk
+        run: docker compose logs --tail 80
+
+  price-watch-e2e:
+    # Price Watch stack in Docker: baseline crawl -> competitor price changes -> alerts in panel + Slack -> digest email.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: End-to-end test
+        working-directory: projects/price-watch
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/price-watch
         run: docker compose logs --tail 80

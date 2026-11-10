@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block body %}
+<div style="max-width:380px;margin:12vh auto" class="card">
+  <h1>Price Watch</h1>
+  <p class="sub">Competitor prices, tracked for you.</p>
+  {% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+  <form method="post" action="/login" class="grid">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="email" name="email" placeholder="Email" required autofocus aria-label="Email">
+    <input type="password" name="password" placeholder="Password" required aria-label="Password">
+    <button class="btn">Sign in</button>
+  </form>
+</div>
+{% endblock %}

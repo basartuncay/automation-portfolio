@@ -1,0 +1,4 @@
+[
+ {"name": "GadgetHub", "start_url": "http://shop:8000/gadgethub/catalogue/page-1.html", "min_products": 18},
+ {"name": "VoltMart", "start_url": "http://shop:8000/voltmart/catalogue/page-1.html", "min_products": 18}
+]

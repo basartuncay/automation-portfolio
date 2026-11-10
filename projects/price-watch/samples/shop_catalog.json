@@ -1,0 +1,146 @@
+[
+ {
+  "pid": "wireless-headphones-x200",
+  "title": "Wireless Headphones X200",
+  "gadgethub": 134.04,
+  "voltmart": 133.52
+ },
+ {
+  "pid": "noise-cancelling-earbuds-pro",
+  "title": "Noise-Cancelling Earbuds Pro",
+  "gadgethub": 95.09,
+  "voltmart": 91.41
+ },
+ {
+  "pid": "usb-c-charger-65w",
+  "title": "USB-C Charger 65W",
+  "gadgethub": 41.26,
+  "voltmart": 41.2
+ },
+ {
+  "pid": "mechanical-keyboard-k87",
+  "title": "Mechanical Keyboard K87",
+  "gadgethub": 100.5,
+  "voltmart": 105.99
+ },
+ {
+  "pid": "ergonomic-mouse-m3",
+  "title": "Ergonomic Mouse M3",
+  "gadgethub": 49.65,
+  "voltmart": 52.09
+ },
+ {
+  "pid": "27-inch-4k-monitor",
+  "title": "27-inch 4K Monitor",
+  "gadgethub": 334.35,
+  "voltmart": 338.55
+ },
+ {
+  "pid": "portable-ssd-1tb",
+  "title": "Portable SSD 1TB",
+  "gadgethub": 114.24,
+  "voltmart": 120.18
+ },
+ {
+  "pid": "webcam-1080p",
+  "title": "Webcam 1080p",
+  "gadgethub": 60.24,
+  "voltmart": 61.49
+ },
+ {
+  "pid": "bluetooth-speaker-mini",
+  "title": "Bluetooth Speaker Mini",
+  "gadgethub": 47.98,
+  "voltmart": 50.15
+ },
+ {
+  "pid": "smartwatch-active-2",
+  "title": "Smartwatch Active 2",
+  "gadgethub": 211.32,
+  "voltmart": 210.86
+ },
+ {
+  "pid": "fitness-band-lite",
+  "title": "Fitness Band Lite",
+  "gadgethub": 42.81,
+  "voltmart": 39.95
+ },
+ {
+  "pid": "laptop-stand-aluminium",
+  "title": "Laptop Stand Aluminium",
+  "gadgethub": 38.04,
+  "voltmart": 36.7
+ },
+ {
+  "pid": "power-bank-20000mah",
+  "title": "Power Bank 20000mAh",
+  "gadgethub": 42.96,
+  "voltmart": 43.32
+ },
+ {
+  "pid": "hdmi-cable-2m",
+  "title": "HDMI Cable 2m",
+  "gadgethub": 12.44,
+  "voltmart": 13.21
+ },
+ {
+  "pid": "wi-fi-router-ax3000",
+  "title": "Wi-Fi Router AX3000",
+  "gadgethub": 122.12,
+  "voltmart": 128.29
+ },
+ {
+  "pid": "smart-plug-duo",
+  "title": "Smart Plug Duo",
+  "gadgethub": 26.68,
+  "voltmart": 26.42
+ },
+ {
+  "pid": "led-desk-lamp",
+  "title": "LED Desk Lamp",
+  "gadgethub": 34.95,
+  "voltmart": 33.86
+ },
+ {
+  "pid": "microphone-usb-studio",
+  "title": "Microphone USB Studio",
+  "gadgethub": 80.2,
+  "voltmart": 82.2
+ },
+ {
+  "pid": "graphics-tablet-s",
+  "title": "Graphics Tablet S",
+  "gadgethub": 73.9,
+  "voltmart": 73.32
+ },
+ {
+  "pid": "e-reader-paper-7",
+  "title": "E-Reader Paper 7",
+  "gadgethub": 144.31,
+  "voltmart": 149.91
+ },
+ {
+  "pid": "action-camera-4k",
+  "title": "Action Camera 4K",
+  "gadgethub": 188.08,
+  "voltmart": 187.94
+ },
+ {
+  "pid": "tripod-flex",
+  "title": "Tripod Flex",
+  "gadgethub": 23.78,
+  "voltmart": 23.97
+ },
+ {
+  "pid": "phone-case-rugged",
+  "title": "Phone Case Rugged",
+  "gadgethub": 19.6,
+  "voltmart": 20.46
+ },
+ {
+  "pid": "car-charger-dual",
+  "title": "Car Charger Dual",
+  "gadgethub": 15.85,
+  "voltmart": 16.6
+ }
+]
