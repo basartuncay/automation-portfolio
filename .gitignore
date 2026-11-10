@@ -6,3 +6,7 @@ __pycache__/
 *.sqlite
 service-account*.json
 sa.json
+
+# private notes, kept local
+reports/
+research_notes/
