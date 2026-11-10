@@ -10,7 +10,8 @@ jobs:
       fail-fast: false
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
-                  sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor]
+                  sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
+                  invoice-platform]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -64,3 +65,17 @@ jobs:
       - name: Stop the extractor API
         if: always()
         run: kill "$(cat /tmp/extractor.pid)" || true
+
+  platform-e2e:
+    # The whole flagship stack in Docker: email in over SMTP -> intake -> OCR/extraction -> panel database.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: End-to-end test
+        working-directory: projects/invoice-platform
+        run: ./e2e.sh  # stack is left up so the log step below can read it; the runner is discarded anyway
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/invoice-platform
+        run: docker compose logs --tail 80

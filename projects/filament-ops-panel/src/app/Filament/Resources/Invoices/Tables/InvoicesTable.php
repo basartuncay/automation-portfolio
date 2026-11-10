@@ -41,6 +41,8 @@ class InvoicesTable
                 TextColumn::make('problems')
                     ->label('Review reason')
                     ->listWithLineBreaks()
+                    ->wrap()
+                    ->width('16rem')
                     ->placeholder('—')
                     ->color('warning')
                     ->toggleable(),

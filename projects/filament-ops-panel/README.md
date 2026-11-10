@@ -1,5 +1,7 @@
 # Invoice Desk: Laravel 13 + Filament 5 approval panel
 
+> Part of the [Invoice Platform](../invoice-platform): email → OCR/extraction → this panel, with one `docker compose up`.
+
 An accounts-payable panel where the finance team reviews, approves and pays supplier invoices. Invoices arrive automatically through a token-protected API, from the [Invoice Extractor](../invoice-extractor) or an [n8n flow](../n8n-invoice-flow). Anything whose numbers don't add up lands in "Needs review" with the reason.
 
 ![Dashboard](docs/dashboard.png)
@@ -29,6 +31,14 @@ An accounts-payable panel where the finance team reviews, approves and pays supp
   - full validation and rate limiting
   - idempotent per vendor + number: re-sending updates the invoice and replaces its lines
   - returns **409** instead of overwriting an invoice that's already approved, paid or rejected
+- **Roles and segregation of duties:**
+  - viewers only look
+  - approvers approve and reject
+  - payers mark paid, but never an invoice they approved themselves (four-eyes)
+  - admins also manage users
+
+  The rule lives in `InvoicePolicy` and is enforced again in the model.
+- **Append-only audit trail:** every create, edit, approval, payment and rejection is stored with the acting user (panel user or API token owner) and a field-by-field diff. It shows as a History tab on each invoice.
 - **Panel access:** open in local development. Elsewhere, only emails listed in `PANEL_ADMIN_EMAILS` can get in.
 
 ## Works with the rest of the pipeline
@@ -57,7 +67,7 @@ PORT=8089 ./dev.sh php artisan serve --host 0.0.0.0 --port 8089   # http://127.0
 ## Tests
 
 ```bash
-./dev.sh php artisan test      # 18 tests, 72 assertions
+./dev.sh php artisan test      # 26 tests, 108 assertions
 ```
 
 **API tests:**
@@ -67,6 +77,15 @@ PORT=8089 ./dev.sh php artisan serve --host 0.0.0.0 --port 8089   # http://127.0
 - a resend updates instead of duplicating
 - an approved invoice is never overwritten (409)
 - validation errors
+
+**Roles and audit tests:**
+- a viewer can't act
+- a payer can't approve, and an approver can't pay
+- four-eyes, in the UI and in the model
+- a second person can pay
+- the audit diff records who did what
+- API ingestion is attributed to the token owner
+- only admins manage users
 
 **Panel tests (Livewire):**
 - status rules, and an invalid transition throws
@@ -78,6 +97,10 @@ PORT=8089 ./dev.sh php artisan serve --host 0.0.0.0 --port 8089   # http://127.0
 - the overdue filter
 - per-currency totals
 - the panel is locked to listed admins outside local
+
+## Production image
+
+`src/Dockerfile` builds a FrankenPHP image that runs as `www-data` with SQLite on a `/data` volume. On start it migrates the database, can seed demo data (`DEMO_SEED=true`) and can register a known intake token (`INTAKE_TOKEN`). The whole system (inbox, OCR extractor, this panel) runs with one command in [invoice-platform](../invoice-platform).
 
 ## Stack
 

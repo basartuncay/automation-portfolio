@@ -4,8 +4,9 @@ Production-style automation projects: scraping, data pipelines, API integrations
 
 | Project | What it does | Stack | Tests |
 |---|---|---|---|
-| [Invoice Desk](projects/filament-ops-panel) | Accounts-payable approval panel: enforced workflow, bulk approve, dashboard, token-protected ingestion API | Laravel 13, Filament 5, Sanctum | 18 |
-| [Invoice Extractor](projects/invoice-extractor) | PDF invoices → clean tables, with arithmetic checks and a review queue; CLI and HTTP API | Python, pdfplumber, FastAPI | 10 |
+| **[Invoice Platform](projects/invoice-platform)** ★ | **Flagship.** Supplier email → IMAP worker → extraction with OCR → approval panel, one `docker compose up`; no-loss retries, four-eyes payments, audit trail; verified end to end in CI | Docker Compose, Laravel, Python, Tesseract | 8 + e2e |
+| [Invoice Desk](projects/filament-ops-panel) | Accounts-payable approval panel: roles, four-eyes rule, audit trail, bulk approve, dashboard, token-protected ingestion API; production FrankenPHP image | Laravel 13, Filament 5, Sanctum | 26 |
+| [Invoice Extractor](projects/invoice-extractor) | PDF invoices (text or scanned, via OCR) → clean tables, with arithmetic checks and a review queue; CLI and HTTP API | Python, pdfplumber, Tesseract, FastAPI | 14 |
 | [n8n Invoice Flow](projects/n8n-invoice-flow) | n8n workflow calling the custom extractor API and routing by result, verified end to end in real n8n | n8n, Python | e2e |
 | [AI Email Triage](projects/email-triage) | Classify inbound email and extract fields with Claude structured outputs; injection-aware routing | Python, Claude API | 7 |
 | [Document Q&A](projects/doc-qa) | Answers from company docs with sentence-level citations; says "not found" instead of guessing | Python, BM25, Claude citations | 8 |
@@ -23,10 +24,12 @@ Production-style automation projects: scraping, data pipelines, API integrations
 ## How they fit together
 
 ```
-PDF invoices ─▶ Invoice Extractor API ─▶ n8n flow ─▶ Invoice Desk (approve / pay)
-                      │                                  ▲
-                      └──────────── POST /api/invoices ──┘
+supplier email ─▶ intake worker ─▶ Invoice Extractor API (text + OCR) ─▶ Invoice Desk (approve / pay)
+                                        ▲                                      ▲
+PDF folder ─────▶ n8n flow ─────────────┘──────────── POST /api/invoices ──────┘
 ```
+
+The [Invoice Platform](projects/invoice-platform) runs the email path as one Docker Compose stack.
 
 The extractor's JSON output is the panel's API input, so a PDF can reach the approval queue in one pipe. See [Invoice Desk](projects/filament-ops-panel#works-with-the-rest-of-the-pipeline).
 

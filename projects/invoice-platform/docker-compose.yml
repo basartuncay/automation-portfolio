@@ -1,0 +1,53 @@
+# Email -> OCR/extraction -> approval panel, one command: ./setup.sh && docker compose up --build
+name: invoice-platform
+
+services:
+  panel:
+    build: ../filament-ops-panel/src
+    environment:
+      APP_KEY: ${APP_KEY:?run ./setup.sh first}
+      APP_URL: http://localhost:${PANEL_PORT:-8080}
+      DEMO_SEED: ${DEMO_SEED:-true}
+      PANEL_ADMIN_EMAILS: admin@example.com,approver@example.com,payer@example.com,viewer@example.com
+      INTAKE_TOKEN: ${INTAKE_TOKEN:?run ./setup.sh first}
+    volumes: [panel-data:/data]
+    ports: ["127.0.0.1:${PANEL_PORT:-8080}:8080"]
+    restart: unless-stopped
+
+  extractor:
+    build: ../invoice-extractor
+    environment:
+      EXTRACTOR_API_KEY: ${EXTRACTOR_API_KEY:?run ./setup.sh first}
+    expose: ["8000"]  # internal only: just the intake worker talks to it
+    restart: unless-stopped
+
+  mail:
+    # Local test mail server (SMTP 3025, IMAP 3143). Replace with the real inbox's IMAP settings in production.
+    image: greenmail/standalone:2.1.5
+    environment:
+      GREENMAIL_OPTS: >-
+        -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.hostname=0.0.0.0
+        -Dgreenmail.users=ap:${MAIL_PASSWORD:?run ./setup.sh first}@invoices.example -Dgreenmail.users.login=email
+    ports: ["127.0.0.1:3025:3025"]  # so you (and e2e.sh) can send test invoices from the host
+
+  intake:
+    build: .
+    environment:
+      IMAP_HOST: mail
+      IMAP_PORT: "3143"
+      IMAP_SSL: "false"  # local test server only; real inboxes use 993 with SSL (the default)
+      IMAP_USER: ap@invoices.example
+      IMAP_PASSWORD: ${MAIL_PASSWORD}
+      EXTRACTOR_URL: http://extractor:8000
+      EXTRACTOR_API_KEY: ${EXTRACTOR_API_KEY}
+      PANEL_URL: http://panel:8080
+      PANEL_TOKEN: ${INTAKE_TOKEN}
+      POLL_SECONDS: "5"
+    depends_on:
+      panel: { condition: service_healthy }
+      extractor: { condition: service_healthy }
+      mail: { condition: service_started }
+    restart: unless-stopped
+
+volumes:
+  panel-data:

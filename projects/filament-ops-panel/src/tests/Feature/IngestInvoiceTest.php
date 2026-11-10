@@ -92,4 +92,16 @@ class IngestInvoiceTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['total', 'currency', 'lines.0.description', 'lines.0.amount']);
     }
+
+    public function test_known_token_can_be_registered_idempotently_for_compose(): void
+    {
+        $bot = User::factory()->create(['email' => 'intake@example.com']);
+        $secret = str_repeat('k', 40);
+        $this->artisan('invoices:token', ['email' => 'intake@example.com', '--token' => $secret])->assertSuccessful();
+        $this->artisan('invoices:token', ['email' => 'intake@example.com', '--token' => $secret])->assertSuccessful();
+        $this->assertSame(1, $bot->tokens()->count());
+        $this->artisan('invoices:token', ['email' => 'intake@example.com', '--token' => 'short'])->assertFailed();
+
+        $this->postJson('/api/invoices', $this->payload(), ['Authorization' => "Bearer {$secret}"])->assertCreated();
+    }
 }
