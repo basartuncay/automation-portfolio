@@ -2,6 +2,8 @@
 import html, os, smtplib
 from email.message import EmailMessage
 
+from .db import money
+
 
 def positions(conn) -> list[dict]:
     """For each product we sell: our price, every competitor's current price, and whether we're undercut."""
@@ -13,7 +15,7 @@ def positions(conn) -> list[dict]:
         theirs = {r["name"]: r for r in rows if r["active"]}
         live = [r["price"] for r in theirs.values() if r["in_stock"]]
         cheapest = min(live) if live else None
-        out.append({"sku": o["sku"], "title": o["title"], "pid": o["pid"], "ours": o["our_price"],
+        out.append({"sku": o["sku"], "title": o["title"], "pid": o["pid"], "ours": o["our_price"], "currency": o["currency"],
                     "competitors": {c: theirs.get(c) for c in comps}, "cheapest": cheapest,
                     "gap_pct": None if cheapest is None else 100 * (o["our_price"] - cheapest) / o["our_price"]})
     return out
@@ -26,7 +28,7 @@ def build_digest(conn) -> tuple[str, str]:
     health = conn.execute("""select c.name, r.status, r.finished, r.products from competitors c left join runs r on r.id =
                              (select max(id) from runs where competitor_id = c.id) order by c.id""").fetchall()
     esc = html.escape
-    rows = "".join(f"<tr><td>{esc(p['title'])}</td><td>€{p['ours']:.2f}</td><td>€{p['cheapest']:.2f}</td>"
+    rows = "".join(f"<tr><td>{esc(p['title'])}</td><td>{money(p['ours'], p['currency'])}</td><td>{money(p['cheapest'], p['currency'])}</td>"
                    f"<td style='color:#b91c1c'>{p['gap_pct']:.1f}% above</td></tr>" for p in undercut) \
         or "<tr><td colspan=4>You are the cheapest (or tied) on every tracked product.</td></tr>"
     counts = ", ".join(f"{r['n']} {r['kind'].replace('_', ' ')}" for r in week) or "no alerts"

@@ -32,7 +32,7 @@ def wait_for(cond, what, tries=60):
     raise SystemExit(f"FAIL: timed out waiting for {what}")
 
 post("/login", "/login", email="pricing@example.com", password="password")
-wait_for(lambda: get("/runs").count(">ok<") >= 2, "the baseline crawl")
+wait_for(lambda: get("/runs").count("chip ok\">") >= 2, "the baseline crawl")
 print("baseline crawl done:", get("/").count('data-pos="cheapest"'), "of 12 products cheapest")
 
 shop("/voltmart/admin/set", {"pid": "wireless-headphones-x200", "price": 119.00})   # undercut
@@ -52,8 +52,8 @@ print("slack received:", len(json.loads(urllib.request.urlopen(SHOP + "/hooks/sl
 
 shop("/admin/layout", {"broken": True})  # simulate a competitor redesign
 post("/request/crawl", "/")
-wait_for(lambda: get("/runs").count(">suspicious<") >= 2, "suspicious runs")
-wait_for(lambda: get("/alerts").count("layout probably changed") == 2, "one scraper alert per competitor")
+wait_for(lambda: get("/runs").count("chip suspicious\">") >= 2, "suspicious runs")
+assert get("/alerts").count("layout probably changed") == 2, "one scraper alert per competitor"
 assert get("/").count('data-pos="undercut"') == 1, "a broken crawl must not change any prices"
 shop("/admin/layout", {"broken": False})
 print("layout change detected: nothing updated, one scraper alert per competitor")

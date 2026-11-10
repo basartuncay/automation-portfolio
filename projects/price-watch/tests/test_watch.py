@@ -70,6 +70,15 @@ def test_changes_raise_the_right_alerts_only_for_our_products(env):
     assert conn.execute("select count(*) from prices").fetchone()[0] == n and len(alerts(conn)) == 4
 
 
+def test_messages_use_our_catalogue_currency(env):
+    shop, conn, _ = env
+    conn.execute("update our_products set currency = 'GBP'")
+    run_all(conn, shop, None)
+    setp(shop, "voltmart", HEADPHONES, price=119.00)
+    run_all(conn, shop, None)
+    assert "£119.00 vs your £128.99" in conn.execute("select message from alerts").fetchone()[0]
+
+
 def test_price_drop_alert_when_still_above_us(env):
     shop, conn, _ = env
     run_all(conn, shop, None)

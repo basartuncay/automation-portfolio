@@ -8,9 +8,11 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 from . import db as store
+from .db import money
 from .report import positions
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
+templates.env.filters["money"] = money
 COLORS = ["#4f46e5", "#ea580c", "#0d9488", "#db2777"]
 
 

@@ -2,15 +2,15 @@
 {% block main %}
 <p class="small"><a href="/">← Products</a></p>
 <h1>{{ ours.title }}</h1>
-<p class="sub">{{ ours.sku }} · your price <b>€{{ '%.2f' % ours.our_price }}</b></p>
+<p class="sub">{{ ours.sku }} · your price <b>{{ ours.our_price | money(ours.currency) }}</b></p>
 <div class="card" style="margin-bottom:16px">
   <b>Price history</b>
   {% if chart.paths %}
   <svg viewBox="0 0 {{ chart.w }} {{ chart.h }}" width="100%" role="img" aria-label="Price history chart">
     {% for ty, v in chart.ticks %}<line x1="{{ chart.pad }}" x2="{{ chart.w - 12 }}" y1="{{ ty }}" y2="{{ ty }}" stroke="#eef0f3"/>
-    <text x="{{ chart.pad - 6 }}" y="{{ ty + 4 }}" text-anchor="end" font-size="11" fill="#6b7280">€{{ '%.0f' % v }}</text>{% endfor %}
+    <text x="{{ chart.pad - 6 }}" y="{{ ty + 4 }}" text-anchor="end" font-size="11" fill="#6b7280">{{ (v | money(ours.currency))[:-3] }}</text>{% endfor %}
     <line x1="{{ chart.pad }}" x2="{{ chart.w - 12 }}" y1="{{ chart.ours_y }}" y2="{{ chart.ours_y }}" stroke="#111827" stroke-dasharray="6 4" stroke-width="1.5"/>
-    <text x="{{ chart.w - 14 }}" y="{{ chart.ours_y - 6 }}" text-anchor="end" font-size="12" fill="#111827">yours €{{ '%.2f' % ours.our_price }}</text>
+    <text x="{{ chart.w - 14 }}" y="{{ chart.ours_y - 6 }}" text-anchor="end" font-size="12" fill="#111827">yours {{ ours.our_price | money(ours.currency) }}</text>
     {% for p in chart.paths %}<path d="{{ p.d }}" fill="none" stroke="{{ p.color }}" stroke-width="2.5"/>{% endfor %}
     <text x="{{ chart.pad }}" y="{{ chart.h - 6 }}" font-size="11" fill="#6b7280">{{ chart.first }}</text>
     <text x="{{ chart.w - 12 }}" y="{{ chart.h - 6 }}" text-anchor="end" font-size="11" fill="#6b7280">{{ chart.last }}</text>
@@ -22,7 +22,7 @@
   <div class="card" style="padding:0"><table>
     <thead><tr><th>Competitor</th><th class="num">Price</th><th>Stock</th><th>Last seen</th></tr></thead>
     {% for l in listings %}<tr><td><a href="{{ l.url }}" rel="noopener noreferrer">{{ l.competitor }}</a></td>
-      <td class="num {{ 'cheaper' if l.price < ours.our_price }}">€{{ '%.2f' % l.price }}</td>
+      <td class="num {{ 'cheaper' if l.price < ours.our_price }}">{{ l.price | money(ours.currency) }}</td>
       <td>{{ 'listed, ' if l.active else 'delisted, ' }}{{ 'in stock' if l.in_stock else 'out of stock' }}</td><td class="muted small">{{ l.last_seen }}</td></tr>{% endfor %}
   </table></div>
   <div class="card"><b>Alerts for this product</b>

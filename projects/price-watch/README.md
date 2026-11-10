@@ -39,6 +39,20 @@ Then press **Crawl now** in the panel.
 - Set `SLACK_WEBHOOK_URL`, or `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`, plus your SMTP server.
 - Remove the `shop` service.
 
+## Tried on a real website
+
+The same stack, pointed at a real public site with `CONFIG_DIR=./samples/live docker compose up`. The site is [books.toscrape.com](https://books.toscrape.com), a catalogue built for scraping practice. Results:
+- 11 products were crawled with 0 errors.
+- Prices were read in £, and each product was matched to our catalogue.
+- The book we priced above the site shows as undercut.
+- A second crawl of the unchanged site found 0 changes and raised no alerts.
+
+`LIVE=1 uv run pytest tests/test_live.py` repeats this check.
+
+![Panel running against books.toscrape.com](docs/live-site.png)
+
+The currency comes from the `currency` column of your catalogue (EUR by default). It is used in the panel, the alerts and the digest.
+
 ## Alerts
 
 | Situation | Alert |
@@ -84,7 +98,7 @@ PASS: baseline silent, undercut + stock alerts in panel and Slack, redesign caug
 ## Tests
 
 ```bash
-uv sync && uv run pytest -q      # 9 tests, offline, against the demo shop in-process
+uv sync && uv run pytest -q      # 10 tests offline against the demo shop in-process, plus 1 opt-in live test
 ```
 
 **Watcher tests:**
@@ -96,6 +110,7 @@ uv sync && uv run pytest -q      # 9 tests, offline, against the demo shop in-pr
 - an unreachable site alerts once
 - a Slack outage keeps alerts for retry, then they are delivered exactly once
 - digest content and email
+- alerts use the catalogue's currency
 
 **Panel tests:**
 - login

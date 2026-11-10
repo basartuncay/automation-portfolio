@@ -7,7 +7,8 @@ SCHEMA = """
 create table if not exists users (id integer primary key, email text unique not null, name text not null, pw_hash text not null);
 create table if not exists competitors (id integer primary key, name text unique not null, start_url text not null,
   min_products integer not null default 1);
-create table if not exists our_products (sku text primary key, title text not null, pid text not null, our_price real not null);
+create table if not exists our_products (sku text primary key, title text not null, pid text not null, our_price real not null,
+  currency text not null default 'EUR');
 create table if not exists products (  -- latest known state per competitor listing
   id integer primary key, competitor_id integer not null references competitors(id), pid text not null,
   title text not null, url text not null, price real not null, currency text not null, in_stock integer not null,
@@ -23,6 +24,14 @@ create table if not exists requests (id integer primary key, at text not null, k
 create table if not exists meta (key text primary key, value text);
 create index if not exists prices_by_product on prices(product_id, at);
 """
+
+
+SYMBOLS = {"EUR": "€", "GBP": "£", "USD": "$"}
+
+
+def money(v: float, currency: str = "EUR") -> str:
+    sym = SYMBOLS.get(currency)
+    return f"{sym}{v:,.2f}" if sym else f"{v:,.2f} {currency}"
 
 
 def now() -> str:
@@ -55,9 +64,10 @@ def load_config(db, competitors_json: Path, catalog_csv: Path) -> None:
                    (c["name"], c["start_url"], c.get("min_products", 1)))
     with open(catalog_csv, newline="") as f:
         for r in csv.DictReader(f):
-            db.execute("""insert into our_products (sku, title, pid, our_price) values (?, ?, ?, ?) on conflict(sku)
-                          do update set title = excluded.title, pid = excluded.pid, our_price = excluded.our_price""",
-                       (r["sku"], r["title"], r["pid"], float(r["our_price"])))
+            db.execute("""insert into our_products (sku, title, pid, our_price, currency) values (?, ?, ?, ?, ?) on conflict(sku)
+                          do update set title = excluded.title, pid = excluded.pid, our_price = excluded.our_price,
+                          currency = excluded.currency""",
+                       (r["sku"], r["title"], r["pid"], float(r["our_price"]), (r.get("currency") or "EUR").upper()))
     db.commit()
 
 

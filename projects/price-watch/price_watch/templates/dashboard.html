@@ -10,7 +10,7 @@
 </div>
 {% if flash %}<div class="alert ok">{{ flash }}</div>{% endif %}
 <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:18px">
-  <div class="card stat"><b>{{ pos | length }}</b><span>products tracked against {{ comps | length }} competitors</span></div>
+  <div class="card stat"><b>{{ pos | length }}</b><span>products tracked against {{ comps | length }} competitor{{ 's' if comps | length != 1 }}</span></div>
   <div class="card stat"><b style="color:{{ '#b91c1c' if undercut else 'inherit' }}">{{ undercut }}</b><span>undercut right now</span></div>
   <div class="card stat"><b>{{ health | selectattr('status', 'equalto', 'ok') | list | length }}/{{ health | length }}</b><span>competitor crawls healthy</span></div>
   <div class="card stat"><b>{{ open_alerts }}</b><span><a href="/alerts">alerts in the last 24 h</a></span></div>
@@ -23,9 +23,9 @@
       {% for p in pos %}
       <tr class="row" onclick="location.href='/products/{{ p.sku }}'">
         <td><a href="/products/{{ p.sku }}">{{ p.title }}</a><div class="muted small">{{ p.sku }}</div></td>
-        <td class="num"><b>€{{ '%.2f' % p.ours }}</b></td>
+        <td class="num"><b>{{ p.ours | money(p.currency) }}</b></td>
         {% for c in comps %}{% set r = p.competitors[c] %}
-        <td class="num">{% if r %}<span class="{{ 'oos' if not r.in_stock else ('cheaper' if r.price < p.ours else 'dearer') }}">€{{ '%.2f' % r.price }}</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td class="num">{% if r %}<span class="{{ 'oos' if not r.in_stock else ('cheaper' if r.price < p.ours else 'dearer') }}">{{ r.price | money(p.currency) }}</span>{% else %}<span class="muted">—</span>{% endif %}</td>
         {% endfor %}
         <td>{% if p.gap_pct is none %}<span class="chip">no data</span>{% elif p.gap_pct > 0 %}<span class="chip undercut" data-pos="undercut">{{ '%.1f' % p.gap_pct }}% above cheapest</span>{% else %}<span class="chip ok" data-pos="cheapest">cheapest</span>{% endif %}</td>
       </tr>

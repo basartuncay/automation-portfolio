@@ -13,13 +13,10 @@ from alert_bot.core import Notifier
 from price_monitor.core import crawl, diff
 
 from . import db as store
+from .db import money
 from .report import send_digest
 
 log = logging.getLogger("price-watch")
-
-
-def money(v: float) -> str:
-    return f"€{v:,.2f}"
 
 
 def last_status(conn, competitor_id: int) -> str | None:
@@ -86,15 +83,16 @@ def run_competitor(conn, comp, client: httpx.Client, drop_pct: float = 10.0) -> 
             if not mine:
                 continue  # we only alert on products we sell; everything is still recorded
             t, our = c["title"], mine["our_price"]
+            m = lambda v: money(v, mine["currency"])  # competitor prices are compared in our catalogue's currency
             if c["change"] == "price":
                 if c["new"] < our <= c["old"]:
-                    alert(conn, "undercut", f"{name} undercuts you on {t}: {money(c['new'])} vs your {money(our)} "
-                          f"(was {money(c['old'])}).", name, c["id"], t)
+                    alert(conn, "undercut", f"{name} undercuts you on {t}: {m(c['new'])} vs your {m(our)} "
+                          f"(was {m(c['old'])}).", name, c["id"], t)
                 elif c["new"] <= c["old"] * (1 - drop_pct / 100):
                     alert(conn, "price_drop", f"{name} cut {t} by {100 * (1 - c['new'] / c['old']):.0f}%: "
-                          f"{money(c['old'])} → {money(c['new'])} (yours {money(our)}).", name, c["id"], t)
+                          f"{m(c['old'])} → {m(c['new'])} (yours {m(our)}).", name, c["id"], t)
             elif c["change"] == "new" and c["new"] < our:
-                alert(conn, "undercut", f"{name} now lists {t} at {money(c['new'])}, below your {money(our)}.", name, c["id"], t)
+                alert(conn, "undercut", f"{name} now lists {t} at {m(c['new'])}, below your {m(our)}.", name, c["id"], t)
             elif c["change"] == "stock":
                 state = "back in stock" if c["new"] else "out of stock"
                 alert(conn, "stock", f"{name}: {t} is {state}.", name, c["id"], t)
