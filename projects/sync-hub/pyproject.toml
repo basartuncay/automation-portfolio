@@ -1,0 +1,18 @@
+[project]
+name = "sync-hub"
+version = "1.0.0"
+description = "Two-way CRM <-> e-commerce customer sync: OAuth, signed webhooks, polling, conflict review, dead-letter replay"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27", "cryptography>=43",
+    "fastapi>=0.115", "uvicorn>=0.30", "jinja2>=3.1", "itsdangerous>=2.2", "python-multipart>=0.0.9",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

@@ -1,0 +1,62 @@
+# Two-way store <-> CRM customer sync. One command:
+#   ./setup.sh && docker compose up --build      then open http://127.0.0.1:8094 and press "Connect CRM"
+name: sync-hub
+
+x-hub-env: &hub-env
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+  TOKEN_KEY: ${TOKEN_KEY:?run ./setup.sh first}        # encrypts OAuth tokens at rest
+  CRM_URL: http://apis:8000/crm                        # how the hub reaches the CRM (server to server)
+  CRM_PUBLIC_URL: http://127.0.0.1:8095/crm            # where your browser goes for the OAuth consent screen
+  CRM_CLIENT_ID: sync-hub
+  CRM_CLIENT_SECRET: ${CRM_CLIENT_SECRET:?run ./setup.sh first}
+  SHOP_URL: http://apis:8000/shop
+  SHOP_ACCESS_TOKEN: ${SHOP_ACCESS_TOKEN:?run ./setup.sh first}
+  SHOP_WEBHOOK_SECRET: ${SHOP_WEBHOOK_SECRET:?run ./setup.sh first}
+  PUBLIC_URL: http://127.0.0.1:8094
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *hub-env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8094:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "sync_hub.worker"]
+    environment:
+      <<: *hub-env
+      POLL_SECONDS: ${POLL_SECONDS:-3}
+      MAX_ATTEMPTS: ${MAX_ATTEMPTS:-6}
+      BACKOFF_SECONDS: ${BACKOFF_SECONDS:-2}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: a HubSpot-style CRM and a Shopify-style store, so nothing touches a real account.
+    build: .
+    command: ["uvicorn", "sync_hub.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      CRM_CLIENT_SECRET: ${CRM_CLIENT_SECRET}
+      CRM_TOKEN_TTL: ${CRM_TOKEN_TTL:-3600}
+      SHOP_ACCESS_TOKEN: ${SHOP_ACCESS_TOKEN}
+      SHOP_WEBHOOK_SECRET: ${SHOP_WEBHOOK_SECRET}
+      SHOP_WEBHOOK_URL: http://web:8000/webhooks/shop
+    ports: ["127.0.0.1:8095:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

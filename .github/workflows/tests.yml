@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk, price-watch, ops-agent]
+                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -117,4 +117,17 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/ops-agent
+        run: docker compose logs --tail 80
+
+  sync-hub-e2e:
+    # Sync Hub in Docker: OAuth connect, two-way sync, no loops, conflict, outage + replay, forged webhook, token refresh.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: End-to-end test
+        working-directory: projects/sync-hub
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/sync-hub
         run: docker compose logs --tail 80

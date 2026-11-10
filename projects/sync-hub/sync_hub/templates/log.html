@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% from "_diff.html" import diff %}
+{% block main %}
+<h1>Sync log</h1>
+<p class="sub">Every decision the hub made. "No change" is usually the echo of the hub's own write coming back: recognised and ignored, so nothing loops.</p>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>When (UTC)</th><th>Customer</th><th>Direction</th><th>Action</th><th>What changed</th></tr></thead>
+  {% for r in rows %}<tr><td class="small muted" style="white-space:nowrap">{{ r.at }}</td><td>{{ r.email or '' }}</td><td>{{ r.direction or '' }}</td>
+    <td><span class="chip {{ r.action.replace(' ', '_') }}">{{ r.action }}</span></td><td class="small">{{ diff(r.action, r.detail | fromjson) }}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted" style="padding:24px;text-align:center">Nothing yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

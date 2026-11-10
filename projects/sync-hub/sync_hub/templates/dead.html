@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>Dead letters</h1>
+<p class="sub">Changes that still failed after every retry, kept with their error. Fix the cause (a system was down, a token was revoked, bad data), then replay. Nothing was dropped.</p></div>
+{% if rows %}<form method="post" action="/dead/replay"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="event_id" value="all"><button class="btn">Replay all</button></form>{% endif %}</div>
+{% if request.query_params.get('flash') %}<div class="alert ok">{{ request.query_params.get('flash') }}</div>{% endif %}
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>#</th><th>Change</th><th>Attempts</th><th>Last error</th><th></th></tr></thead>
+  {% for e in rows %}{% set p = e.payload | fromjson %}<tr><td class="muted">{{ e.id }}</td>
+    <td>{{ e.source }} <span class="muted">{{ e.topic }}</span><div class="small">{{ p.email or (p.properties.email if p.properties else '') }}</div></td>
+    <td class="num">{{ e.attempts }}</td><td class="small" style="color:var(--bad)">{{ e.last_error }}</td>
+    <td><form method="post" action="/dead/replay"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="event_id" value="{{ e.id }}"><button class="btn ghost">Replay</button></form></td></tr>
+  {% else %}<tr><td colspan="5" class="muted" style="padding:24px;text-align:center">Nothing failed.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% macro diff(action, d) -%}
+{% if not d %}<span class="muted">—</span>
+{% elif action == 'updated' %}{% for f, v in d.items() %}<div class="diff"><b>{{ f }}</b> <del>{{ v[0] if v[0] is not none else 'empty' }}</del> → <ins>{{ v[1] }}</ins></div>{% endfor %}
+{% elif action == 'created' %}{% for f, v in d.fields.items() %}<span class="small">{{ f }}: <b>{{ v }}</b>{{ ', ' if not loop.last }}</span>{% endfor %}
+{% elif action == 'conflict' %}{% for f, v in d.items() %}<div><b>{{ f }}</b>: store says <b>{{ v.shop }}</b>, CRM says <b>{{ v.crm }}</b></div>{% endfor %}
+{% else %}<span class="small">{% for k, v in d.items() %}{{ k }}: {{ v }}{{ ', ' if not loop.last }}{% endfor %}</span>{% endif %}
+{%- endmacro %}

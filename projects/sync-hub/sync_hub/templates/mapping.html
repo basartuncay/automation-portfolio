@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Field mapping</h1>
+<p class="sub">Which fields sync, and in which direction. One-way fields have an owner: changes on the other side are not copied back.</p>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>Field</th><th>Direction</th><th>Why</th></tr></thead>
+  {% for f, (d, note) in fields.items() %}<tr><td><b>{{ f }}</b></td>
+    <td>{{ {'both': 'Store ⇄ CRM', 'shop>crm': 'Store → CRM', 'crm>shop': 'CRM → Store'}[d] }}</td><td class="small muted">{{ note }}</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

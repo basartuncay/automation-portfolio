@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% from "_diff.html" import diff %}
+{% block main %}
+<div class="head"><div><h1>Store ↔ CRM sync</h1>
+<p class="sub">Customers stay identical in the store and the CRM, in both directions. Conflicting edits wait for you; failures retry, then wait in Dead letters. Nothing is dropped.</p></div>
+{% if crm and crm.status == 'connected' %}<form method="post" action="/backfill"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Run a full sync</button></form>{% endif %}</div>
+{% if flash %}<div class="alert ok">{{ flash }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><b>Store</b> <span class="chip connected">connected</span><p class="small muted" style="margin:6px 0 0">Shopify-style Admin API with an access token. Changes arrive as signed webhooks (HMAC-SHA256 checked on every delivery).</p></div>
+  <div class="card"><b>CRM</b> {% if crm %}<span class="chip {{ crm.status }}">{{ crm.status.replace('_', ' ') }}</span>{% else %}<span class="chip dead">not connected</span>{% endif %}
+    <p class="small muted" style="margin:6px 0 10px">HubSpot-style contacts API over OAuth 2. Tokens refresh automatically and are stored encrypted. Changes are polled with a cursor.</p>
+    {% if not crm or crm.status != 'connected' %}<form method="post" action="/connect/crm"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Connect CRM</button></form>
+    {% else %}<span class="small muted">Connected {{ crm.connected_at }} UTC{% if crm.cursor %} · changes read up to {{ crm.cursor }}{% endif %}</span>{% endif %}</div>
+</div>
+<div class="grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+  <div class="card stat"><b>{{ n.links }}</b><span>customers linked across both systems</span></div>
+  <div class="card stat"><b>{{ n.done_today }}</b><span>changes processed today{% if n.queued %}, {{ n.queued }} queued{% endif %}</span></div>
+  <div class="card stat"><b style="color:{{ 'var(--warn)' if n.conflicts else 'inherit' }}">{{ n.conflicts }}</b><span><a href="/conflicts">conflicts to decide</a></span></div>
+  <div class="card stat"><b style="color:{{ 'var(--bad)' if n.dead else 'inherit' }}">{{ n.dead }}</b><span><a href="/dead">dead letters to replay</a></span></div>
+</div>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>When (UTC)</th><th>Customer</th><th>Direction</th><th>Action</th><th>What changed</th></tr></thead>
+  {% for r in recent %}<tr><td class="small muted" style="white-space:nowrap">{{ r.at }}</td><td>{{ r.email or '' }}</td><td>{{ r.direction or '' }}</td>
+    <td><span class="chip {{ r.action.replace(' ', '_') }}">{{ r.action }}</span></td><td class="small">{{ diff(r.action, r.detail | fromjson) }}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted" style="padding:24px;text-align:center">No changes yet. Connect the CRM, then edit a customer on either side.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

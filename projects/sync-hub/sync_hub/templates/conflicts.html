@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Conflicts</h1>
+<p class="sub">The same field was changed in both systems since the last sync, to different values. The hub overwrote neither. Pick the value to keep; it is written to the other system.</p>
+<div class="card" style="padding:0"><table>
+  <thead><tr><th>Customer</th><th>Field</th><th>Store</th><th>CRM</th><th>Decision</th></tr></thead>
+  {% for c in rows %}<tr><td>{{ c.email }}<div class="muted small">{{ c.at }}</div></td><td><b>{{ c.field }}</b></td>
+    <td>{{ c.shop_value | fromjson }}</td><td>{{ c.crm_value | fromjson }}</td>
+    <td>{% if c.status == 'open' %}<form method="post" action="/conflicts/{{ c.id }}" style="display:flex;gap:6px"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="btn ghost" name="winner" value="shop">Keep store value</button><button class="btn ghost" name="winner" value="crm">Keep CRM value</button></form>
+      {% else %}<span class="chip resolved">resolved</span> <span class="small muted">{{ c.resolution }} · {{ c.resolved_by }}</span>{% endif %}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted" style="padding:24px;text-align:center">No conflicts.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}
