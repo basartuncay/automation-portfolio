@@ -19,7 +19,7 @@ admin = lambda path, body=None: json.loads(urllib.request.urlopen(urllib.request
 api = lambda key, body: json.loads(urllib.request.urlopen(urllib.request.Request(APP + "/v1/events", json.dumps(body).encode(),
                                                                                   {"Authorization": f"Bearer {key}", "Content-Type": "application/json"})).read())
 ev = lambda n, k: {"metric": "api_calls", "quantity": n, "idempotency_key": k}
-META = {"file": "meter.webm", "who": "Real stack · local stand-in for Stripe Billing", "accent": "#635bff",
+META = {"file": "meter.webm", "who": "Real stack · local stand-in for Stripe Billing", "accent": "#e8590c", "bg": "#202124", "font": "'Helvetica Neue', Helvetica, sans-serif",
         "kicker": "Meter · real recording", "title": "Usage-based billing on Stripe, without surprises",
         "sub": "Usage counted once, reported to Stripe's meter and reconciled, alerts before overage, spend caps, and failed payments handled with a grace period.",
         "outro": "Python · FastAPI · SQLite · Stripe Billing (meters, subscriptions, signed webhooks) · Docker · e2e in GitHub Actions.",

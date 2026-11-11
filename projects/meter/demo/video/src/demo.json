@@ -1,7 +1,9 @@
 {
  "file": "meter.webm",
  "who": "Real stack · local stand-in for Stripe Billing",
- "accent": "#635bff",
+ "accent": "#e8590c",
+ "bg": "#202124",
+ "font": "'Helvetica Neue', Helvetica, sans-serif",
  "kicker": "Meter · real recording",
  "title": "Usage-based billing on Stripe, without surprises",
  "sub": "Usage counted once, reported to Stripe's meter and reconciled, alerts before overage, spend caps, and failed payments handled with a grace period.",
@@ -9,39 +11,39 @@
  "thumbKicker": "SAAS BILLING",
  "thumbTitle": "Usage billing that adds up",
  "thumbSub": "Meter · usage → Stripe → invoices",
- "trim": 1.23,
- "end": 56.19,
+ "trim": 1.3599999999999999,
+ "end": 57.08,
  "caps": [
   {
-   "from": 1.53,
+   "from": 1.66,
    "text": "A new customer on the Starter plan: created in Stripe with a subscription, API key shown once"
   },
   {
-   "from": 7.93,
+   "from": 8.04,
    "text": "The product sends usage. A batch retried after a timeout is counted once"
   },
   {
-   "from": 13.5,
+   "from": 13.61,
    "text": "Past 80% of the included calls: the customer gets an email. Then usage runs over"
   },
   {
-   "from": 19.62,
+   "from": 19.85,
    "text": "They set a spend cap. When the bill reaches it, the product is told to pause usage"
   },
   {
-   "from": 26.11,
+   "from": 26.44,
    "text": "Every event went to Stripe's meter. Reconciliation: our count and Stripe's agree"
   },
   {
-   "from": 30.0,
+   "from": 30.47,
    "text": "The period closes. The card is declined: past due, and after the grace period, paused"
   },
   {
-   "from": 45.9,
+   "from": 46.51,
    "text": "A new card, Stripe retries, the invoice is paid, and access is back at once"
   },
   {
-   "from": 51.29,
+   "from": 52.03,
    "text": "And every email the customer got along the way"
   }
  ]
