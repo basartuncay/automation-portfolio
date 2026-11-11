@@ -1,0 +1,44 @@
+{
+ "file": "reviewdesk.webm",
+ "who": "Real stack · local stand-ins for the Google Business Profile API and Slack",
+ "accent": "#e11d48",
+ "kicker": "Reviewdesk · real recording",
+ "title": "Every Google review answered, the hard ones by a person",
+ "sub": "Drafts in the reviewer's language that fit what they wrote, praise answered on its own, criticism and serious claims held for the manager with an alert.",
+ "outro": "Python · FastAPI · SQLite · Google Business Profile API · Slack webhooks · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "LOCAL BUSINESS",
+ "thumbTitle": "Reviews answered, nothing risky auto-posted",
+ "thumbSub": "Reviewdesk · Google reviews → drafts → approval",
+ "trim": 1.19,
+ "end": 40.05,
+ "caps": [
+  {
+   "from": 1.49,
+   "text": "New Google reviews for two locations. The serious ones wait for the manager, most urgent first"
+  },
+  {
+   "from": 5.5,
+   "text": "A food-poisoning claim: an alert went to Slack, and the draft takes it private without repeating the claim"
+  },
+  {
+   "from": 10.26,
+   "text": "A 2-star review in German: the draft answers each point, the salt, the wait and the price"
+  },
+  {
+   "from": 14.51,
+   "text": "The manager adds a personal line and posts it to Google"
+  },
+  {
+   "from": 18.48,
+   "text": "Praise is answered on its own, after a window in which anyone can still edit it"
+  },
+  {
+   "from": 30.29,
+   "text": "Posted: in English or German, by first name, mentioning what they liked"
+  },
+  {
+   "from": 35.13,
+   "text": "Per location: rating, how many got a reply, how fast, and what the complaints are about"
+  }
+ ]
+}

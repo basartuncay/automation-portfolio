@@ -1,0 +1,22 @@
+[project]
+name = "reviewdesk"
+version = "1.0.0"
+description = "Google reviews handled: drafts in the reviewer's language, approval for low ratings, alerts for serious ones, replies posted, ratings tracked"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "jinja2>=3.1",
+    "itsdangerous>=2.2",
+    "python-multipart>=0.0.9",
+    "tzdata>=2026.6",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

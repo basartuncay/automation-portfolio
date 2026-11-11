@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync, kickoff, paymatch, chatline, accessflow, meter, shipflow]
+                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync, kickoff, paymatch, chatline, accessflow, meter, shipflow, reviewdesk]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -261,4 +261,17 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/shipflow
+        run: docker compose logs --tail 80
+
+  reviewdesk-e2e:
+    # Reviewdesk in Docker: paging, policy, scheduled and approved replies, Slack alerts, answered-elsewhere, stats.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: End-to-end test
+        working-directory: projects/reviewdesk
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/reviewdesk
         run: docker compose logs --tail 80

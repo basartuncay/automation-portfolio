@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Ratings by location</h1><p class="sub">Average rating, how many reviews got a reply and how fast, and what the 1-3 star reviews complain about.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+{% for s in rows %}<div class="card" data-location="{{ s.loc.id }}"><h3 style="margin-top:0">{{ s.loc.name }}</h3>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat"><b>{{ s.avg or '—' }}</b><span>average of {{ s.count }}</span></div>
+  <div class="stat"><b>{{ s.replied }}%</b><span>answered</span></div><div class="stat"><b>{{ s.hours if s.hours is not none else '—' }}</b><span>hours to answer</span></div></div>
+  <p class="small muted">Complaints: {% for t, n in s.complaints %}<span class="topic">{{ t }} · {{ n }}</span>{% else %}none{% endfor %}</p></div>{% endfor %}
+</div>
+{% endblock %}
