@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Leads</h1>
+<p class="sub">Sorted by score. Click a lead to see why it scored what it did, and every email in and out.</p>
+<div class="head" style="margin-bottom:12px">
+  <div class="tabs"><a href="/leads" class="{{ 'on' if not status }}">All</a>{% for st in funnel if counts.get(st) %}<a href="/leads?status={{ st }}" class="{{ 'on' if status == st }}">{{ st.replace('_', ' ') }} · {{ counts[st] }}</a>{% endfor %}</div>
+  <form method="get" style="min-width:260px"><input type="hidden" name="status" value="{{ status }}"><input type="text" name="q" value="{{ q }}" placeholder="Search email, company, name"></form>
+</div>
+<div class="card"><table>
+  <tr><th class="num">Score</th><th>Person</th><th>Company</th><th>Status</th><th>Why</th></tr>
+  {% for l in rows %}
+  <tr class="row" onclick="location='/leads/{{ l.id }}'">
+    <td class="num"><span class="score {{ 'hi' if (l.score or 0) >= 50 else 'lo' }}">{{ l.score if l.score is not none else '—' }}</span></td>
+    <td><a href="/leads/{{ l.id }}">{{ l.first_name }} {{ l.last_name }}</a><div class="small muted">{{ l.title or '' }} · {{ l.email }}</div></td>
+    <td>{{ l.company or '—' }}<div class="small muted">{{ l.country or '' }}</div></td>
+    <td><span class="chip {{ l.status }}" data-status="{{ l.status }}">{{ l.status.replace('_', ' ') }}</span></td>
+    <td class="small muted">{{ l.reason or '' }}</td>
+  </tr>
+  {% else %}<tr><td colspan="5" class="muted">No leads here.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

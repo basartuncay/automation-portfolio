@@ -1,0 +1,53 @@
+# Google reviews handled. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8116
+name: reviewdesk
+
+x-env: &env
+  GOOGLE_URL: http://apis:8000/google                # for real use: https://mybusiness.googleapis.com
+  GOOGLE_TOKEN: ${GOOGLE_TOKEN:?run ./setup.sh first}
+  SLACK_WEBHOOK_URL: http://apis:8000/slack/hook     # your Slack incoming webhook
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8116:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "reviewdesk.worker"]
+    environment:
+      <<: *env
+      POLL_SECONDS: ${POLL_SECONDS:-30}
+      SYNC_MINUTES: ${SYNC_MINUTES:-15}
+      AUTO_DELAY_MINUTES: ${AUTO_DELAY_MINUTES:-60}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: the Google Business Profile reviews API and a Slack incoming webhook.
+    build: .
+    command: ["uvicorn", "reviewdesk.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      GOOGLE_TOKEN: ${GOOGLE_TOKEN}
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+    ports: ["127.0.0.1:8117:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

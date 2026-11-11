@@ -1,0 +1,34 @@
+{
+  "_comment": "Paste each tool into the agent's Custom Function list. Replace BASE_URL with the public tunnel/host and set header Authorization: Bearer <TOOL_TOKEN> (value kept out of this file).",
+  "tools": [
+    {"name": "check_availability", "description": "Prüft, ob zu Datum, Uhrzeit und Personenzahl ein Tisch frei ist.",
+     "url": "BASE_URL/tool/check_availability", "method": "POST",
+     "parameters": {"type": "object", "required": ["date", "time", "party"], "properties": {
+       "date": {"type": "string", "description": "YYYY-MM-DD"},
+       "time": {"type": "string", "description": "HH:MM, 24h"},
+       "party": {"type": "integer"}}}},
+    {"name": "create_reservation", "description": "Trägt die Reservierung ein. Erst nach Erfolg bestätigen.",
+     "url": "BASE_URL/tool/create_reservation", "method": "POST",
+     "parameters": {"type": "object", "required": ["name", "phone", "date", "time", "party"], "properties": {
+       "name": {"type": "string"}, "phone": {"type": "string"},
+       "date": {"type": "string", "description": "YYYY-MM-DD"},
+       "time": {"type": "string", "description": "HH:MM, 24h"},
+       "party": {"type": "integer"}, "notes": {"type": "string"}}}},
+    {"name": "find_reservation", "description": "Sucht Reservierungen nach Name und Telefonnummer.",
+     "url": "BASE_URL/tool/find_reservation", "method": "POST",
+     "parameters": {"type": "object", "required": ["name", "phone"], "properties": {
+       "name": {"type": "string"}, "phone": {"type": "string"}}}},
+    {"name": "cancel_reservation", "description": "Storniert eine Reservierung (ID und Telefonnummer müssen passen).",
+     "url": "BASE_URL/tool/cancel_reservation", "method": "POST",
+     "parameters": {"type": "object", "required": ["id", "phone"], "properties": {
+       "id": {"type": "integer"}, "phone": {"type": "string"}}}},
+    {"name": "send_sms", "description": "Stellt eine SMS-Bestätigung in die Warteschlange.",
+     "url": "BASE_URL/tool/send_sms", "method": "POST",
+     "parameters": {"type": "object", "required": ["phone", "text"], "properties": {
+       "phone": {"type": "string"}, "text": {"type": "string"}}}},
+    {"name": "request_callback", "description": "Notiert einen Rückrufwunsch für das Restaurant.",
+     "url": "BASE_URL/tool/request_callback", "method": "POST",
+     "parameters": {"type": "object", "required": ["name", "phone", "reason"], "properties": {
+       "name": {"type": "string"}, "phone": {"type": "string"}, "reason": {"type": "string"}}}}
+  ]
+}

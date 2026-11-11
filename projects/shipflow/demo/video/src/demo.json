@@ -1,0 +1,44 @@
+{
+ "file": "shipflow.webm",
+ "who": "Real stack · local stand-ins for a Sendcloud-style carrier API and the shop",
+ "accent": "#d97706",
+ "kicker": "Shipflow · real recording",
+ "title": "From paid order to tracked parcel, without the copy-paste",
+ "sub": "Carrier rules with reasons, address and customs checks, one label per order, the day's labels in one PDF, tracking back to the shop and problems surfaced.",
+ "outro": "Python · FastAPI · SQLite · Sendcloud-style carrier API · Shopify fulfillments · signed webhooks · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "E-COMMERCE OPS",
+ "thumbTitle": "Labels, customs and tracking, handled",
+ "thumbSub": "Shipflow · order → label → tracking",
+ "trim": 1.23,
+ "end": 43.01,
+ "caps": [
+  {
+   "from": 1.53,
+   "text": "Six paid orders arrive from the shop. Each is checked and gets a carrier by rule"
+  },
+  {
+   "from": 7.15,
+   "text": "DHL Warenpost, DHL to a Packstation, DPD in the EU, DHL Express with customs data. Labels made automatically"
+  },
+  {
+   "from": 11.42,
+   "text": "One order is on hold: the street has no house number. Fixed here, re-checked, labelled"
+  },
+  {
+   "from": 19.65,
+   "text": "End of the day: all new labels in one PDF for the printer"
+  },
+  {
+   "from": 24.05,
+   "text": "Printed parcels are marked shipped in the shop with carrier and tracking. The shop emails the customer"
+  },
+  {
+   "from": 29.91,
+   "text": "The carrier scans parcels. One is delivered; one address can't be found, and lands under Problems"
+  },
+  {
+   "from": 38.66,
+   "text": "Every decision explained, every step in the history"
+  }
+ ]
+}

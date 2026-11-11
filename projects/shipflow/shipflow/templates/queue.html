@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>{{ dict(tabs)[status] }}</h1>
+  <p class="sub">{{ {'ready': 'Checked and assigned to a carrier. Labels are created automatically, or with the button.', 'held': 'These can\'t ship until something is fixed: the reason is on each order.',
+     'labelled': 'Labels created. Print them as one PDF; printed parcels are marked as shipped in the shop with tracking.', 'shipped': 'On their way. Problems reported by the carrier move to Problems.',
+     'exception': 'The carrier reported a problem, or hasn\'t scanned the parcel for days.', 'delivered': 'Done.'}[status] }}</p></div>
+  <div class="btns">
+    {% if status == 'ready' %}<form method="post" action="/labels"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Create labels</button></form>{% endif %}
+    {% if status == 'labelled' %}<form method="post" action="/batches"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Print new labels</button></form>{% endif %}
+  </div></div>
+{% if msg %}<div class="alert ok">{{ msg }}{% if request.query_params.get('batch') %} <a href="/batches/{{ request.query_params.get('batch') }}.pdf">Open the PDF</a>{% endif %}</div>{% endif %}
+<div class="card"><table>
+  <tr><th>Order</th><th>Ship to</th><th>Items</th><th>Carrier</th><th>{{ 'Why' if status in ('held', 'exception') else 'Tracking' }}</th></tr>
+  {% for o in rows %}{% set a = o.address|fromjson %}
+  <tr class="row" onclick="location='/orders/{{ o.id }}'" data-order="{{ o.number }}" data-status="{{ o.status }}">
+    <td><a href="/orders/{{ o.id }}"><b>{{ o.number }}</b></a><div class="small muted">{{ o.received_at[11:16] }}{% if o.shipping == 'express' %} · express{% endif %}</div></td>
+    <td>{{ a.name }}<div class="small muted">{{ a.postcode }} {{ a.city }}, {{ a.country }}</div></td>
+    <td class="small">{% for l in o.lines|fromjson %}{{ l.qty }} × {{ l.sku }}{{ ', ' if not loop.last }}{% endfor %}<div class="muted">{{ '%.1f'|format((o.weight_g or 0) / 1000) }} kg</div></td>
+    <td>{% if o.carrier %}<span class="carrier">{{ carriers[o.carrier] }}</span><div class="rule">{{ o.service }}</div>{% else %}—{% endif %}</td>
+    <td>{% if status in ('held', 'exception') %}<span class="reason">{{ o.reason }}</span>{% elif o.tracking %}<a href="{{ o.tracking_url }}">{{ o.tracking }}</a>{% if o.last_event %}<div class="small muted">{{ o.last_event.replace('_', ' ') }}</div>{% endif %}{% else %}<span class="rule">{{ o.rule }}</span>{% endif %}</td>
+  </tr>
+  {% else %}<tr><td colspan="5" class="muted">Nothing here.</td></tr>{% endfor %}
+</table></div>
+{% if status == 'labelled' and batches %}<p class="small muted">Earlier batches: {% for b in batches %}<a href="/batches/{{ b.id }}.pdf">#{{ b.id }} ({{ b.parcels }})</a>{{ ', ' if not loop.last }}{% endfor %}</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Conversations</h1>
+<p class="sub">The bot answers order and return questions on WhatsApp and passes everything else to you. While you have a conversation, the bot stays quiet.</p>
+<div class="stats">
+  <div class="card stat"><b>{{ stats.total }}</b><span>conversations</span></div>
+  <div class="card stat"><b>{{ stats.bot }}</b><span>solved by the bot alone</span></div>
+  <div class="card stat"><b>{{ stats.human }}</b><span>handled by a person</span></div>
+  <div class="card stat"><b>{{ stats.returns }}</b><span>returns registered</span></div>
+  <div class="card stat"><b>{{ stats.opted }}</b><span>opted in to updates</span></div>
+</div>
+<div class="card list" style="padding:0">
+  {% for c in rows %}
+  <a class="row" href="/c/{{ c.id }}" data-conv="{{ c.wa_id }}" data-mode="{{ c.mode }}">
+    <div><b>{{ c.name or '+' ~ c.wa_id }}</b> <span class="small muted">+{{ c.wa_id }}</span> <span class="chip {{ c.mode }}">{{ {'bot': 'bot', 'human': 'person', 'closed': 'closed'}[c.mode] }}</span>
+      {% if c.outcome %}<span class="small muted">· {{ c.outcome }}</span>{% endif %}<div class="last">{{ c.last }}</div></div>
+    <div class="small muted" style="text-align:right">{{ c.updated_at[11:16] }}{% if c.unread %}<br><span class="unread">{{ c.unread }}</span>{% endif %}</div>
+  </a>
+  {% else %}<p class="muted" style="padding:16px">Nothing here.</p>{% endfor %}
+</div>
+{% endblock %}

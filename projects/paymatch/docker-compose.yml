@@ -1,0 +1,65 @@
+# Bank reconciliation. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8106 and import samples/statement.camt053.xml
+name: paymatch
+
+x-env: &env
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+  ACCOUNTING_URL: http://apis:8000/accounting       # your accounting system's API
+  ACCOUNTING_TOKEN: ${ACCOUNTING_TOKEN:?run ./setup.sh first}
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8106:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "paymatch.worker"]
+    environment:
+      <<: *env
+      SMTP_HOST: mail
+      SMTP_PORT: "3025"
+      SMTP_STARTTLS: "false"   # local test server only; real mailboxes use 587 with STARTTLS (the default)
+      FROM_EMAIL: buchhaltung@nordlicht-shop.example
+      POLL_SECONDS: ${POLL_SECONDS:-60}
+      DUNNING_AT: ${DUNNING_AT:-09:00}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+      mail: { condition: service_started }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: an accounting system with open invoices and a payments API, so nothing touches real books.
+    build: .
+    command: ["uvicorn", "paymatch.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      ACCOUNTING_TOKEN: ${ACCOUNTING_TOKEN}
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+    ports: ["127.0.0.1:8107:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+  mail:
+    # Local test mail server: the customers' mailboxes for the reminders (SMTP 3025, IMAP 3143). Any login works here.
+    image: greenmail/standalone:2.1.5
+    environment:
+      GREENMAIL_OPTS: >-
+        -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.hostname=0.0.0.0
+        -Dgreenmail.auth.disabled -Dgreenmail.users.login=email
+    ports: ["127.0.0.1:3031:3025", "127.0.0.1:3149:3143"]
+
+volumes:
+  data:

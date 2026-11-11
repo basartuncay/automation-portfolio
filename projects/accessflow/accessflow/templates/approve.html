@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Access request</title>
+<style>body{margin:0;font:16px/1.5 system-ui,sans-serif;background:#f6f7f9;color:#111827}.c{max-width:460px;margin:12vh auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px}
+button{border:0;border-radius:8px;padding:11px 18px;font:600 15px system-ui;cursor:pointer;margin-right:8px}.y{background:#4338ca;color:#fff}.n{background:#fff;border:1px solid #e5e7eb}</style></head>
+<body><div class="c"><h1 style="font-size:22px;margin-top:0">Privileged access request</h1>
+<p>{{ g.name }} would get <b>{{ g.system }} {{ g.resource }}</b>. As {{ g.name.split()[0] }}'s manager, {{ g.mgr_name }}, you decide.</p>
+{% if done %}<p><b>{{ done }}</b></p>{% else %}<form method="post"><button class="y" name="decision" value="approve">Approve</button><button class="n" name="decision" value="deny">Deny</button></form>{% endif %}
+</div></body></html>

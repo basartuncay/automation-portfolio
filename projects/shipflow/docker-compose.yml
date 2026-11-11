@@ -1,0 +1,59 @@
+# Shipping automation. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8114
+name: shipflow
+
+x-env: &env
+  CARRIER_URL: http://apis:8000/carrier              # for real use: https://panel.sendcloud.sc
+  CARRIER_KEY: ${CARRIER_KEY:?run ./setup.sh first}
+  CARRIER_SECRET: ${CARRIER_SECRET:?run ./setup.sh first}   # also signs the carrier's webhooks
+  SHOP_URL: http://apis:8000/shop                     # for real use: https://<shop>.myshopify.com
+  SHOP_TOKEN: ${SHOP_TOKEN:?run ./setup.sh first}
+  SHOP_WEBHOOK_SECRET: ${SHOP_WEBHOOK_SECRET:?run ./setup.sh first}
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8114:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "shipflow.worker"]
+    environment:
+      <<: *env
+      POLL_SECONDS: ${POLL_SECONDS:-5}
+      AUTO_LABEL: ${AUTO_LABEL:-true}
+      STUCK_DAYS: ${STUCK_DAYS:-3}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: a Sendcloud-style carrier API and a Shopify-style shop. No real label is bought.
+    build: .
+    command: ["uvicorn", "shipflow.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      <<: *env
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      FAKES_PUBLIC_URL: http://apis:8000
+      CARRIER_WEBHOOK_URL: http://web:8000/webhooks/carrier
+      SHOP_WEBHOOK_URL: http://web:8000/webhooks/shop
+    ports: ["127.0.0.1:8115:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

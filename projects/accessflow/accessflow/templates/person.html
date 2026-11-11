@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/">← People</a></p>
+{% set ph = phase(e) %}
+<h1>{{ e.name }}</h1>
+<p class="sub">{{ e.title }}, {{ e.department }} · {{ e.email }}{% if e.github %} · GitHub {{ e.github }}{% endif %} · <span class="chip {{ ph.replace(' ', '_') }}">{{ ph }}</span>
+  · started {{ e.start_date }}{% if e.end_date %} · last day {{ e.end_date }}{% endif %}{% if manager %} · manager {{ manager.name }}{% endif %}</p>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Access</h3><table>
+    {% for g in grants %}<tr><td>{{ g.system }}</td><td>{{ g.resource }}{% if g.privileged %} <span class="chip awaiting_approval">privileged</span>{% endif %}</td>
+      <td><span class="chip {{ g.state }}" data-grant="{{ g.system }}:{{ g.resource }}:{{ g.state }}">{{ g.state.replace('_', ' ') }}</span>{% if g.approved_by %}<div class="small muted">by {{ g.approved_by }}</div>{% endif %}</td></tr>
+    {% else %}<tr><td class="muted">No access yet.</td></tr>{% endfor %}</table>
+    {% if manager and ph in ('active', 'leaving') %}
+    <form method="post" action="/people/{{ e.id }}/request" class="btns" style="margin-top:14px;align-items:center"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <select name="access">{% for s, r in privileged %}<option value="{{ s }} {{ r }}">{{ s }} {{ r }}</option>{% endfor %}</select>
+      <button class="btn ghost">Request (needs {{ manager.name }}'s approval)</button></form>
+    {% endif %}
+  </div>
+  <div class="card"><h3 style="margin-top:0">Actions</h3><table>
+    {% for a in actions %}<tr><td><span class="chip {{ a.status }}">{{ a.status }}</span></td><td>{{ a.system }} {{ a.op.replace('_', ' ') }} <b>{{ a.target if a.target != 'account' }}</b><div class="small muted">{{ a.detail or a.error or '' }}{% if a.attempts > 1 %} · {{ a.attempts }} tries{% endif %}</div></td><td class="small muted">{{ (a.done_at or a.created_at)[11:19] }}</td></tr>
+    {% else %}<tr><td class="muted">None.</td></tr>{% endfor %}</table></div>
+</div>
+<div class="card"><h3 style="margin-top:0">Audit trail</h3><table>
+  {% for l in log %}<tr><td class="small muted" style="width:160px">{{ l.at }}</td><td style="width:170px">{{ l.who }}</td><td>{{ l.what }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/">← Conversations</a></p>
+<div class="head">
+  <div><h1>{{ c.name or '+' ~ c.wa_id }}</h1><p class="sub">+{{ c.wa_id }} · <span class="chip {{ c.mode }}" data-mode="{{ c.mode }}">{{ {'bot': 'bot', 'human': 'person', 'closed': 'closed'}[c.mode] }}</span>
+    {% if c.assigned_to %} · with {{ c.assigned_to }}{% endif %} · {{ 'opted in to updates' if c.opted_in else 'not opted in' }}{% if c.outcome %} · {{ c.outcome }}{% endif %}</p></div>
+  <div class="btns">
+    {% for to, label in [('human', 'Take over'), ('bot', 'Hand back to the bot'), ('closed', 'Close')] if to != c.mode %}
+    <form method="post" action="/c/{{ c.id }}/mode"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn {{ 'ghost' if to != 'closed' }}" name="to" value="{{ to }}">{{ label }}</button></form>{% endfor %}
+  </div>
+</div>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:2fr 1fr">
+  <div class="card">
+    <div class="thread">
+      {% for m in msgs %}
+      <div class="bub {{ m.direction }} {{ 'failed' if m.status == 'failed' }}">
+        {% if m.direction == 'out' %}<div class="who">{{ m.author }}</div>{% endif %}
+        <div style="white-space:pre-wrap">{{ m.body }}</div>
+        <div class="meta">{{ m.at[11:16] }}{% if m.direction == 'out' %} · <span data-status="{{ m.status }}">{{ {'sent': '✓', 'delivered': '✓✓', 'read': '✓✓ read', 'failed': 'not sent'}.get(m.status, m.status) }}</span>{% endif %}{% if m.error %} · {{ m.error }}{% endif %}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if left > 0 %}
+    <p class="window open">Customer service window open: {{ left // 3600 }} h {{ left % 3600 // 60 }} min left for free-form replies.</p>
+    <form method="post" action="/c/{{ c.id }}/reply" class="grid"><input type="hidden" name="csrf" value="{{ csrf }}"><textarea class="reply" name="body" placeholder="Reply on WhatsApp…" required></textarea><div><button class="btn">Send</button></div></form>
+    {% else %}
+    <p class="window shut">More than 24 hours since the customer's last message: WhatsApp only allows approved templates now{% if not c.opted_in %}, and this customer hasn't opted in{% endif %}.</p>
+    <form method="post" action="/c/{{ c.id }}/template" class="btns" style="align-items:center"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="text" name="order" placeholder="Order number" style="max-width:160px" required><button class="btn ghost">Send "order shipped" template</button></form>
+    {% endif %}
+  </div>
+  <div class="grid" style="align-content:start">
+    {% if returns %}<div class="card"><h3 style="margin-top:0">Returns</h3>{% for r in returns %}<p><b>{{ r.shop_return_id }}</b> · order {{ r.order_no }} · {{ r.item }}<br><span class="small muted">{{ r.reason.replace('_', ' ') }} · <a href="{{ r.label_url }}">label</a></span></p>{% endfor %}</div>{% endif %}
+    <div class="card"><h3 style="margin-top:0">Earlier conversations</h3>{% for h in history %}<p class="small"><a href="/c/{{ h.id }}">{{ h.opened_at[:16] }}</a> · {{ h.outcome or 'no outcome' }}</p>{% else %}<p class="small muted">None.</p>{% endfor %}</div>
+  </div>
+</div>
+{% endblock %}

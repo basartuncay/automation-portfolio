@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Actions</h1><p class="sub">Every change made in Google, Slack and GitHub, retried with backoff. Later steps for a system wait for earlier ones.</p>
+<div class="card"><table>
+  <tr><th>Status</th><th>Person</th><th>Change</th><th>Result</th><th>When</th><th></th></tr>
+  {% for a in rows %}<tr><td><span class="chip {{ a.status }}">{{ a.status }}</span></td><td>{{ a.name }}</td><td>{{ a.system }} {{ a.op.replace('_', ' ') }} <b>{{ a.target if a.target != 'account' }}</b></td>
+    <td class="small">{{ a.detail or '' }}{% if a.error %}<div style="color:var(--bad)">{{ a.error }}</div>{% endif %}{% if a.attempts > 1 %}<div class="muted">{{ a.attempts }} tries</div>{% endif %}</td>
+    <td class="small muted">{{ (a.done_at or a.created_at) }}</td>
+    <td>{% if a.status == 'failed' %}<form class="mini" method="post" action="/actions/{{ a.id }}/retry"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Retry</button></form>{% endif %}</td></tr>
+  {% endfor %}
+</table></div>
+{% endblock %}

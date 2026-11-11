@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02">
+  <BkToCstmrStmt>
+    <GrpHdr><MsgId>STMT-20261111</MsgId><CreDtTm>2026-11-11T06:00:00</CreDtTm></GrpHdr>
+    <Stmt>
+      <Id>STMT-20261111-1</Id><Acct><Id><IBAN>DE27100777770209299700</IBAN></Id></Acct>
+      <Ntry>
+        <Amt Ccy="EUR">1190.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-09</Dt></BookgDt><ValDt><Dt>2026-11-09</Dt></ValDt><AcctSvcrRef>2026BANKREF0001</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>NORDLICHT SHOP GMBH</Nm></Dbtr><DbtrAcct><Id><IBAN>DE89370400440532013000</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>RE-2026-0101 KD-1001</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">2332.40</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-10</Dt></BookgDt><ValDt><Dt>2026-11-10</Dt></ValDt><AcctSvcrRef>2026BANKREF0002</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>Kaffeekontor Hamburg GmbH</Nm></Dbtr><DbtrAcct><Id><IBAN>DE12500105170648489890</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>Rechnung 2026 0102 abzgl. 2% Skonto</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">832.50</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-10</Dt></BookgDt><ValDt><Dt>2026-11-10</Dt></ValDt><AcctSvcrRef>2026BANKREF0003</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>Bergwerk Outdoor</Nm></Dbtr><DbtrAcct><Id><IBAN>AT611904300234573201</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>RE20260103</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">749.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-10</Dt></BookgDt><ValDt><Dt>2026-11-10</Dt></ValDt><AcctSvcrRef>2026BANKREF0004</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>Tulpen Design</Nm></Dbtr><DbtrAcct><Id><IBAN>NL91ABNA0417164300</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>RE-2026-0104 en RE-2026-0105</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">400.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-10</Dt></BookgDt><ValDt><Dt>2026-11-10</Dt></ValDt><AcctSvcrRef>2026BANKREF0005</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>Greenleaf Cosmetics</Nm></Dbtr><DbtrAcct><Id><IBAN>DE75512108001245126199</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>Teilzahlung RE-2026-0106</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">560.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-11</Dt></BookgDt><ValDt><Dt>2026-11-11</Dt></ValDt><AcctSvcrRef>2026BANKREF0006</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>Mia Wagner</Nm></Dbtr><DbtrAcct><Id><IBAN>DE02120300000000202051</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>Danke!</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">2000.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-11</Dt></BookgDt><ValDt><Dt>2026-11-11</Dt></ValDt><AcctSvcrRef>2026BANKREF0007</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>Urban Sneaker GmbH</Nm></Dbtr><DbtrAcct><Id><IBAN>DE44500105175407324931</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>Invoice RE-2026-0111</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">2500.00</Amt><CdtDbtInd>DBIT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-11</Dt></BookgDt><ValDt><Dt>2026-11-11</Dt></ValDt><AcctSvcrRef>2026BANKREF0008</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Cdtr><Nm>Hausverwaltung Nord</Nm></Cdtr><CdtrAcct><Id><IBAN>DE02100100100006820101</IBAN></Id></CdtrAcct></RltdPties>
+          <RmtInf><Ustrd>Miete Dezember</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">89.00</Amt><CdtDbtInd>CRDT</CdtDbtInd><Sts>BOOK</Sts>
+        <BookgDt><Dt>2026-11-11</Dt></BookgDt><ValDt><Dt>2026-11-11</Dt></ValDt><AcctSvcrRef>2026BANKREF0009</AcctSvcrRef>
+        <NtryDtls><TxDtls>
+          <Refs><EndToEndId>NOTPROVIDED</EndToEndId></Refs>
+          <RltdPties><Dbtr><Nm>AMAZON PAYMENTS EUROPE</Nm></Dbtr><DbtrAcct><Id><IBAN>LU89751000135104200E</IBAN></Id></DbtrAcct></RltdPties>
+          <RmtInf><Ustrd>Auszahlung 4471-2201</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+      </Ntry>
+    </Stmt>
+  </BkToCstmrStmt>
+</Document>

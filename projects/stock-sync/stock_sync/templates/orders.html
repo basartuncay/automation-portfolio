@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Orders</h1>
+<p class="sub">Every channel order and what it did to stock. An order reserves all its units or none.</p>
+<div class="tabs"><a href="/orders" class="{{ 'on' if not status }}">All</a>{% for st in ['reserved', 'oversold', 'shipped', 'cancelled'] if counts.get(st) %}<a href="/orders?status={{ st }}" class="{{ 'on' if status == st }}">{{ st }} · {{ counts[st] }}</a>{% endfor %}</div>
+<div class="card"><table>
+  <tr><th>Channel</th><th>Order</th><th>Lines</th><th>Status</th><th>Received</th></tr>
+  {% for o in rows %}<tr><td>{{ o.channel|capitalize }}</td><td>{{ o.external_id }}</td><td>{{ o.lines }}</td><td><span class="chip {{ o.status }}" data-status="{{ o.status }}">{{ o.status }}</span></td><td class="small muted">{{ o.created_at }}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted">No orders yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

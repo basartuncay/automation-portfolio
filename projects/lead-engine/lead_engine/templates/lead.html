@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block main %}
+{% set e = l.enrichment|fromjson %}{% set chk = l.email_check|fromjson %}
+<p><a href="/leads">← Leads</a></p>
+<div class="head">
+  <div><h1>{{ l.first_name }} {{ l.last_name }}</h1><p class="sub">{{ l.title or 'No title' }} at {{ l.company or l.domain }} · {{ l.email }} · <span class="chip {{ l.status }}">{{ l.status.replace('_', ' ') }}</span>{% if l.crm_id %} · in CRM (#{{ l.crm_id }}){% endif %}</p></div>
+  <div class="btns">
+    {% for a, label in [('enroll', 'Start sequence'), ('interested', 'Mark interested'), ('stop', 'Stop sequence'), ('suppress', 'Never contact')] %}
+      {% if (a == 'enroll' and l.status in ('qualified', 'disqualified', 'finished')) or (a in ('stop', 'interested') and l.status == 'in_sequence') or (a == 'suppress' and l.status not in ('unsubscribed', 'bounced')) %}
+      <form method="post" action="/leads/{{ l.id }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn {{ 'ghost' if a != 'enroll' }}" name="action" value="{{ a }}">{{ label }}</button></form>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Score <span class="score {{ 'hi' if (l.score or 0) >= 50 else 'lo' }}">{{ l.score if l.score is not none else '—' }}</span></h3>
+    <ul class="points">{% for h in l.score_detail|fromjson or [] %}<li><span>{{ h.label }}</span><span class="{{ 'plus' if h.points > 0 else 'minus' }}">{{ '%+d'|format(h.points) }}</span></li>{% else %}<li class="muted">Not scored yet.</li>{% endfor %}</ul>
+    {% if l.reason %}<p class="small muted">{{ l.reason }}</p>{% endif %}
+  </div>
+  <div class="card"><h3 style="margin-top:0">Company</h3>
+    {% if e %}<dl class="kv"><dt>Name</dt><dd>{{ e.name }}</dd><dt>Industry</dt><dd>{{ e.industry }}</dd><dt>Employees</dt><dd>{{ e.employees }}</dd>
+      <dt>Country</dt><dd>{{ e.country }}</dd><dt>Tech</dt><dd>{{ ', '.join(e.tech) or '—' }}</dd><dt>Website</dt><dd>{{ l.website }}</dd></dl>
+    {% else %}<p class="muted">No company data{% if l.domain %} for {{ l.domain }}{% endif %}.</p>{% endif %}
+  </div>
+  <div class="card"><h3 style="margin-top:0">Email address</h3>
+    {% if chk %}<dl class="kv"><dt>Check</dt><dd>{{ chk.status }}{% if chk.sub_status %} ({{ chk.sub_status }}){% endif %}</dd><dt>Type</dt><dd>{{ ', '.join(chk.kinds) or 'personal work address' }}</dd></dl>{% else %}<p class="muted">Not checked yet.</p>{% endif %}
+    <h3>Sources</h3><ul class="small" style="padding-left:18px">{% for s in sources %}<li>{{ s.source }} <span class="muted">{{ s.at[:16] }}</span></li>{% endfor %}</ul>
+  </div>
+</div>
+<div class="grid" style="grid-template-columns:1.4fr 1fr">
+  <div class="card"><h3 style="margin-top:0">Conversation</h3>
+    {% if enrollment %}<p class="small muted">Sequence: step {{ enrollment.step }} · {{ enrollment.status }}{% if enrollment.stop_reason %} ({{ enrollment.stop_reason }}){% endif %}</p>{% endif %}
+    {% for m in emails %}
+    <div class="email {{ m.direction }}"><b>{{ m.subject }}</b> <span class="chip {{ m.classification or 'out' }}">{{ (m.classification or 'sent').replace('_', ' ') }}</span> <span class="small muted">{{ m.at }} UTC</span><pre>{{ m.body }}</pre></div>
+    {% else %}<p class="muted">No emails yet.</p>{% endfor %}
+  </div>
+  <div class="card"><h3 style="margin-top:0">Timeline</h3>
+    <ul class="timeline" style="padding-left:18px">{% for ev in events %}<li><b>{{ ev.kind.replace('_', ' ') }}</b> {{ ev.detail }} <span class="small muted">{{ ev.at[5:16] }}</span></li>{% endfor %}</ul>
+  </div>
+</div>
+{% endblock %}

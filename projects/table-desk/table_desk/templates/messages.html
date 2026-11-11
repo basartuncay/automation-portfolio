@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Messages</h1>
+<p class="sub">Texts the system couldn't answer by itself and callback requests from the phone agent land here. STORNO/CANCEL and YES replies are handled automatically.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Guest texts</h3><table>
+    {% for m in inbox %}<tr><td>{{ m.from_ }}<div class="small muted">{{ m.at }} UTC</div></td><td>{{ m.body }}<div class="small muted">{{ m.handled_as.replace('_', ' ') }}</div></td>
+      <td>{% if not m.done %}<form class="mini" method="post" action="/panel/messages/inbox/{{ m.id }}/done"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Done</button></form>{% endif %}</td></tr>
+    {% else %}<tr><td class="muted">No texts.</td></tr>{% endfor %}</table></div>
+  <div class="card"><h3 style="margin-top:0">Callback requests</h3><table>
+    {% for c in callbacks %}<tr><td>{{ c.name }}<div class="small muted">{{ c.phone }}</div></td><td>{{ c.message }}</td>
+      <td>{% if not c.done %}<form class="mini" method="post" action="/panel/messages/callbacks/{{ c.id }}/done"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Called back</button></form>{% endif %}</td></tr>
+    {% else %}<tr><td class="muted">No callback requests.</td></tr>{% endfor %}</table></div>
+</div>
+<div class="card"><h3 style="margin-top:0">Sent and scheduled</h3><table>
+  <tr><th>Status</th><th>Kind</th><th>To</th><th>Text</th><th>Tries</th><th></th></tr>
+  {% for m in outbox %}<tr><td><span class="chip {{ m.status }}" data-status="{{ m.status }}">{{ m.status }}</span></td><td>{{ m.kind }}</td><td>{{ m.to_ }}</td>
+    <td class="small">{{ m.body }}{% if m.last_error %}<div style="color:var(--bad)">{{ m.last_error }}</div>{% endif %}</td><td class="num">{{ m.attempts }}</td>
+    <td>{% if m.status == 'failed' %}<form class="mini" method="post" action="/panel/messages/outbox/{{ m.id }}/retry"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Retry</button></form>{% endif %}</td></tr>
+  {% endfor %}
+</table></div>
+{% endblock %}

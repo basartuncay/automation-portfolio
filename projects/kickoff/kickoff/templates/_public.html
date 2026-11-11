@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Basar Tuncay · automation & integrations{% endblock %}</title>
+<style>
+:root { --ink:#1b1f1d; --paper:#fbfbf9; --line:#e2e4df; --accent:#2f5d50; --mute:#666b66; --bad:#a3261f; --ok:#22603f; }
+* { box-sizing:border-box; } body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width:720px; margin:0 auto; padding:48px 16px 80px; }
+.brand { font-weight:700; letter-spacing:-.01em; color:var(--accent); margin-bottom:28px; }
+h1 { font:600 34px/1.15 Georgia, "Times New Roman", serif; margin:0 0 12px; letter-spacing:-.01em; }
+h2 { font:600 20px/1.3 Georgia, serif; margin:32px 0 10px; }
+.lead { color:var(--mute); margin:0 0 28px; }
+label { display:block; font-size:14px; font-weight:600; margin:16px 0 6px; } .hint { font-weight:400; color:var(--mute); }
+input[type=text], input[type=email], textarea { width:100%; border:1px solid var(--line); background:#fff; border-radius:10px; padding:11px 12px; font:inherit; }
+textarea { min-height:140px; } input:focus-visible, textarea:focus-visible, button:focus-visible { outline:3px solid #9cc5b8; outline-offset:1px; }
+.pkg { border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 16px; margin-bottom:10px; } .pkg:has(input:checked) { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+.pkg label { margin:0; font-weight:400; display:flex; gap:10px; align-items:flex-start; } .pkg b { display:block; } .opts { margin:8px 0 0 28px; font-size:14px; }
+.opts label { font-weight:400; margin:4px 0; }
+.go { border:0; border-radius:10px; padding:13px 22px; font:600 16px system-ui; background:var(--accent); color:#fff; cursor:pointer; margin-top:22px; }
+.msg { border-radius:10px; padding:10px 14px; margin:14px 0; } .msg.bad { background:#fbeceb; color:var(--bad); } .msg.ok { background:#e8f3ed; color:var(--ok); }
+.doc { background:#fff; border:1px solid var(--line); border-radius:14px; padding:28px; } table { width:100%; border-collapse:collapse; } td { padding:9px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+td.n { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; } tr.total td { font-weight:700; border-bottom:0; }
+.small { font-size:13px; color:var(--mute); } code { font:12px ui-monospace, Menlo, monospace; word-break:break-all; }
+.hp { position:absolute; left:-9999px; } ol.terms { padding-left:20px; } .sign { margin-top:28px; border-top:2px solid var(--ink); padding-top:20px; }
+.typed { font:italic 22px Georgia, serif !important; }
+</style>
+</head>
+<body><div class="wrap"><div class="brand">Basar Tuncay · automation &amp; integrations</div>{% block content %}{% endblock %}</div></body>
+</html>

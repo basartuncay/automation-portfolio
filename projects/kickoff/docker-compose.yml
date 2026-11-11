@@ -1,0 +1,75 @@
+# Client onboarding. One command:
+#   ./setup.sh && docker compose up --build     enquiry form http://127.0.0.1:8104 , studio panel /board
+name: kickoff
+
+x-env: &env
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+  PUBLIC_URL: http://127.0.0.1:8104
+  STRIPE_URL: http://apis:8000/stripe                 # for real use: https://api.stripe.com
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:?run ./setup.sh first}
+  STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:?run ./setup.sh first}
+  PROJECTS_URL: http://apis:8000/projects
+  PROJECTS_TOKEN: ${PROJECTS_TOKEN:?run ./setup.sh first}
+  STORAGE_URL: http://apis:8000/storage
+  STORAGE_TOKEN: ${STORAGE_TOKEN:?run ./setup.sh first}
+  FROM_EMAIL: basar@studio.example
+  STUDIO_EMAIL: basar@studio.example
+  DAY_SECONDS_SCALE: ${DAY_SECONDS_SCALE:-1}          # demo/e2e only: shrinks the days between reminders
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8104:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "kickoff.worker"]
+    environment:
+      <<: *env
+      SMTP_HOST: mail
+      SMTP_PORT: "3025"
+      SMTP_STARTTLS: "false"   # local test server only; real mailboxes use 587 with STARTTLS (the default)
+      POLL_SECONDS: ${POLL_SECONDS:-5}
+      BACKOFF_SCALE: ${BACKOFF_SCALE:-1}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+      mail: { condition: service_started }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: Stripe, a project tool and file storage with the real request shapes. No real card or account.
+    build: .
+    command: ["uvicorn", "kickoff.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      <<: *env
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      STRIPE_WEBHOOK_URL: http://web:8000/webhooks/stripe
+      FAKES_PUBLIC_URL: http://127.0.0.1:8105
+    ports: ["127.0.0.1:8105:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+  mail:
+    # Local test mail server: the clients' mailboxes (SMTP 3025, IMAP 3143). Any login works here.
+    image: greenmail/standalone:2.1.5
+    environment:
+      GREENMAIL_OPTS: >-
+        -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.hostname=0.0.0.0
+        -Dgreenmail.auth.disabled -Dgreenmail.users.login=email
+    ports: ["127.0.0.1:3029:3025", "127.0.0.1:3147:3143"]
+
+volumes:
+  data:

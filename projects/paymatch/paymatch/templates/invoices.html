@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><h1>Invoices &amp; reminders</h1><form method="post" action="/dunning"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Run reminders now</button></form></div>
+<p class="sub">Open invoices from the accounting system. Overdue ones get a friendly reminder after 7 days, a second after 21, a final one with a fee after 35, never two within a week, none while a payment that might be theirs is waiting for review, and none at all when the newest bank data is more than 3 days old. They run daily at 09:00.</p>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+<div class="card" style="margin-bottom:16px"><table>
+  <tr><th>Invoice</th><th>Customer</th><th>Due</th><th class="num">Total</th><th class="num">Open</th><th>Status</th><th>Reminder</th></tr>
+  {% for i in rows %}{% set overdue = i.open_cents > 0 and i.due < today %}
+  <tr><td><b>{{ i.number }}</b></td><td>{{ i.customer }}</td><td>{{ i.due }}</td><td class="num">{{ i.total_cents|euro }}</td><td class="num">{{ i.open_cents|euro }}</td>
+    <td><span class="chip {{ 'overdue' if overdue else ('paid' if i.open_cents == 0 else ('partial' if i.open_cents < i.total_cents else 'open')) }}" data-inv="{{ i.number }}">{{ 'overdue' if overdue else ('paid' if i.open_cents == 0 else ('partly paid' if i.open_cents < i.total_cents else 'open')) }}</span></td>
+    <td>{% if i.level %}level {{ i.level }}{% endif %}</td></tr>
+  {% endfor %}
+</table></div>
+<div class="card"><h3 style="margin-top:0">Letters</h3><table>
+  {% for l in letters %}<tr><td><span class="chip {{ 'paid' if l.status == 'sent' else 'open' }}">{{ l.status }}</span></td><td><b>{{ l.subject }}</b><div class="small muted">to {{ l.to_ }}</div></td></tr>
+  {% else %}<tr><td class="muted">No reminders sent.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

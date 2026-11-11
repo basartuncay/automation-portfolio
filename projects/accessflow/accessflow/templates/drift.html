@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>Drift</h1><p class="sub">Access that exists but nobody planned: accounts with no current employee behind them, admin rights without an approval. Service accounts (svc-…, …-bot) are ignored.</p></div>
+<form method="post" action="/drift/scan"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Scan now</button></form></div>
+<div class="card"><table>
+  <tr><th>System</th><th>Account</th><th>Finding</th><th>Status</th><th></th></tr>
+  {% for d in rows %}<tr data-drift="{{ d.system }}:{{ d.account }}:{{ d.status }}"><td>{{ d.system }}</td><td><b>{{ d.account }}</b></td><td>{{ d.detail }}<div class="small muted">found {{ d.found_at }}</div></td>
+    <td><span class="chip {{ d.status }}">{{ d.status }}</span>{% if d.resolved_by %}<div class="small muted">{{ d.resolved_by }}</div>{% endif %}</td>
+    <td>{% if d.status == 'open' %}<form class="mini" method="post" action="/drift/{{ d.id }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="action" value="remove">Remove access</button> <button name="action" value="accept">Known exception</button></form>{% endif %}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted">Nothing found. Every account belongs to someone who should have it.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

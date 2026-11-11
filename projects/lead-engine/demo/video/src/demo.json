@@ -1,0 +1,56 @@
+{
+ "file": "leads.webm",
+ "who": "Real stack · real SMTP/IMAP · local stand-ins for the data APIs and CRM",
+ "accent": "#7c3aed",
+ "kicker": "Lead Engine · real recording",
+ "title": "From a CSV export to a booked call, without spamming anyone",
+ "sub": "Merge, verify, enrich and score leads with reasons, send a short threaded sequence, read the replies, and hand only real interest to the CRM.",
+ "outro": "Python · FastAPI · SQLite · SMTP/IMAP · HubSpot-style CRM API · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "OUTBOUND",
+ "thumbTitle": "Leads scored with reasons, replies sorted",
+ "thumbSub": "Lead Engine · import → sequence → CRM",
+ "trim": 1.06,
+ "end": 54.5,
+ "caps": [
+  {
+   "from": 1.36,
+   "text": "An Apollo export with 20 rows: duplicates, a broken address, a shared inbox, a personal Gmail"
+  },
+  {
+   "from": 4.52,
+   "text": "Columns recognised, 18 new leads, the duplicate merged, the broken row skipped, each with its reason"
+  },
+  {
+   "from": 9.02,
+   "text": "Each lead is verified and enriched by company domain, then scored against the ideal-customer rules"
+  },
+  {
+   "from": 15.86,
+   "text": "Every point is explained, so a salesperson can see why"
+  },
+  {
+   "from": 21.95,
+   "text": "Qualified leads get a personal first email, sent in office hours under a daily cap"
+  },
+  {
+   "from": 26.54,
+   "text": "The replies come in by email: one interested, one out of office until a date, one asking to stop"
+  },
+  {
+   "from": 33.24,
+   "text": "Lena wants a call: her sequence stops and she goes to the CRM as a contact with a deal"
+  },
+  {
+   "from": 39.81,
+   "text": "Out of office until a date: the next email waits until the day after"
+  },
+  {
+   "from": 44.14,
+   "text": "Asked to stop: suppressed for good, a later import can't bring her back"
+  },
+  {
+   "from": 49.46,
+   "text": "Everyone else gets the follow-ups as replies in the same thread"
+  }
+ ]
+}

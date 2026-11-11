@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Pipeline</h1>
+<p class="sub">From imported contact to a reply worth a call. {{ sent_today }} of {{ s.daily_cap }} emails sent today; sending {% for d in s.send_window.days %}{{ ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d] }}{{ ', ' if not loop.last }}{% endfor %} {{ s.send_window['from'] }}–{{ s.send_window.to }} ({{ s.send_window.timezone }}).</p>
+<div class="grid" style="grid-template-columns:1.2fr 1fr">
+  <div class="card"><h3 style="margin-top:0">Funnel</h3>
+    <div class="funnel">{% for label, v in steps %}
+      <div class="bar"><span>{{ label }}</span><div class="fill" style="width:{{ (100 * v / top)|round(1) }}%"></div><span class="num">{{ v }}</span></div>{% endfor %}
+    </div>
+    <div class="tabs" style="margin-top:18px">{% for st in funnel if counts.get(st) %}<a href="/leads?status={{ st }}">{{ st.replace('_', ' ') }} · {{ counts[st] }}</a>{% endfor %}</div>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Latest</h3>
+    <ul class="timeline" style="padding-left:18px">{% for e in recent %}
+      <li><a href="/leads/{{ e.lead_id }}">{{ e.first_name or e.email }}{% if e.company %} ({{ e.company }}){% endif %}</a>: {{ e.detail }} <span class="small muted">{{ e.at[11:16] }}</span></li>
+    {% else %}<li class="muted">Nothing yet. Import a CSV to start.</li>{% endfor %}</ul>
+  </div>
+</div>
+{% endblock %}

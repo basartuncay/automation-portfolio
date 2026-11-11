@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Exceptions</h1>
+<p class="sub">What needs a person: orders that couldn't be filled, stock promised but not physically there, channels that refused an update.</p>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+<div class="card"><table>
+  <tr><th>Kind</th><th>What happened</th><th>When</th><th></th></tr>
+  {% for e in rows %}<tr><td><span class="chip {{ e.kind if e.status == 'open' else 'resolved' }}">{{ e.kind.replace('_', ' ') }}</span></td><td>{{ e.detail }}{% if e.status != 'open' %}<div class="small muted">resolved by {{ e.resolved_by }}</div>{% endif %}</td><td class="small muted">{{ e.at }}</td>
+    <td>{% if e.status == 'open' %}{% if e.order_id and e.ostatus == 'oversold' %}<form class="mini" method="post" action="/orders/{{ e.order_id }}/retry"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Try to reserve again</button></form>{% endif %}
+      <form class="mini" method="post" action="/exceptions/{{ e.id }}/resolve"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Resolved</button></form>{% endif %}</td></tr>
+  {% else %}<tr><td colspan="4" class="muted">Nothing needs attention.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

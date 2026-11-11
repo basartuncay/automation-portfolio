@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Stripe reconciliation</h1><p class="sub">This period's usage as counted here against Stripe's meter, per customer. Unreported events are sent first, so a difference means something was lost or double-counted.</p>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="card"><table><tr><th>Customer</th><th class="num">Counted here</th><th class="num">Stripe's meter</th><th></th></tr>
+  {% for r in rows %}<tr data-recon="{{ r.name }}:{{ 'ok' if r.ok else 'diff' }}"><td>{{ r.name }}</td><td class="num">{{ '{:,}'.format(r.ours) }}</td><td class="num">{{ '{:,}'.format(r.stripe) }}</td>
+    <td>{% if r.ok %}<span class="chip paid">matches</span>{% else %}<span class="chip restricted">differs by {{ '{:,}'.format(r.stripe - r.ours) }}</span>{% endif %}</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

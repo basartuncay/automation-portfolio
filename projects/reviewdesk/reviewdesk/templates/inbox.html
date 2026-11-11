@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>{{ dict(tabs)[status] }}</h1>
+  <p class="sub">{{ {'awaiting_approval': 'Low ratings, criticism and anything serious wait for you. Edit the draft or post it as it is.',
+     'scheduled': 'Positive reviews: the draft posts by itself when the review window ends. Change it before then if you like.',
+     'posted': 'Replies on Google.', 'replied_elsewhere': 'Someone already answered these in the Google app.', 'skipped': 'Left without a reply.'}[status] }}</p></div>
+  <form method="post" action="/sync"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Check for new reviews</button></form></div>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+<div class="card">
+  {% for r in rows %}
+  <div class="review" data-review="{{ r.id }}" data-status="{{ r.status }}">
+    <div>
+      {% if r.urgent %}<div class="urgent">{{ r.urgent }}: answer today</div>{% endif %}
+      <div><span class="stars">{{ '★' * r.stars }}<i>{{ '★' * (5 - r.stars) }}</i></span> <b>{{ r.author }}</b> <span class="small muted">· {{ r.loc }} · {{ r.created[:10] }} · {{ r.lang|upper }}</span></div>
+      <p class="quote">{{ r.text or '(rating without text)' }}</p>
+      <div>{% for t in r.topics|fromjson %}<span class="topic">{{ t }}</span>{% endfor %}</div>
+    </div>
+    <div>
+      {% if r.status in ('awaiting_approval', 'scheduled') %}
+      <form method="post" action="/reviews/{{ r.id }}" class="grid"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <textarea name="text">{{ r.draft }}</textarea>
+        <div class="btns"><button class="btn" name="action" value="post">{{ 'Approve and post' if r.status == 'awaiting_approval' else 'Post now' }}</button><button class="btn ghost" name="action" value="skip">Don't reply</button>
+        {% if r.post_after %}<span class="small muted" style="align-self:center">posts by itself at {{ r.post_after[11:16] }} UTC</span>{% endif %}</div>
+      </form>
+      {% else %}<p class="quote small">{{ r.final or r.draft }}</p><p class="small muted">{{ r.decided_by or '' }} {{ r.posted_at or '' }}</p>{% endif %}
+    </div>
+  </div>
+  {% else %}<p class="muted">Nothing here.</p>{% endfor %}
+</div>
+{% endblock %}

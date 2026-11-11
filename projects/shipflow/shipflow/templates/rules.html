@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Carrier rules</h1><p class="sub">Checked in this order; the first that applies decides. Every order shows the rule that picked its carrier.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+<div class="card"><ol>
+  <li>Address complete, house number present, postcode valid for the country, phone for non-EU, all SKUs known. Otherwise <b>on hold</b> with the reason.</li>
+  <li>Over {{ max_kg }} kg: <b>on hold</b>, book freight by hand.</li>
+  <li>Outside the EU: <b>DHL Express</b> with customs data (CN23). A product without an HS code holds the order.</li>
+  <li>Packstation address: <b>DHL</b> (only DHL delivers there).</li>
+  <li>Express paid: <b>DHL Express</b> next day.</li>
+  <li>Germany: <b>DHL Warenpost</b> under 1 kg, else <b>DHL Paket</b>.</li>
+  <li>Other EU countries: <b>DPD Classic</b>.</li>
+</ol></div>
+<div class="card"><h3 style="margin-top:0">Products</h3><table><tr><th>SKU</th><th class="num">Weight</th><th>HS code</th><th>Origin</th></tr>
+  {% for p in products %}<tr><td>{{ p.sku }}<div class="small muted">{{ p.title }}</div></td><td class="num">{{ p.weight_g }} g</td><td>{{ p.hs_code or '—' }}</td><td>{{ p.origin }}</td></tr>{% endfor %}</table></div>
+</div>
+{% endblock %}

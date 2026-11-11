@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Min Ramen Bar Karlsruhe (Entwurf)</title>
+<meta name="description" content="Ramen, Poké Bowls und Gyoza in der Karlsruher Waldstraße. Täglich 11:30 bis 22:00. Tisch online reservieren.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lacquer:#B3201A; --lacquer-deep:#7A110D; --miso:#F0B65B; --ink:#1A1210; --ink-2:#2A1D19;
+  --paper:#F3E7CF; --broth:#FFF1D0; --scallion:#7DB35A; --mut:#BBA99A;
+  --display:"Dela Gothic One","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--broth);font:18px/1.6 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--miso);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+.draft{background:var(--ink);color:var(--mut);text-align:center;padding:7px 16px;font-size:14px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--lacquer);position:relative;overflow:hidden;padding:36px 0 0}
+.hero .wrap{display:grid;gap:8px 24px;grid-template-areas:"title" "bowl" "text";position:relative}
+.kana{position:absolute;right:-6px;top:0;font:400 clamp(120px,26vw,300px)/1 var(--display);color:transparent;
+  -webkit-text-stroke:2px rgba(255,241,208,.16);writing-mode:vertical-rl;pointer-events:none;user-select:none}
+h1{grid-area:title;font:400 clamp(58px,19vw,150px)/.92 var(--display);margin:0;letter-spacing:-.01em;position:relative;z-index:1}
+.bowl{grid-area:bowl;width:min(88vw,430px);margin:6px auto 0;position:relative;z-index:1;filter:drop-shadow(0 22px 28px rgba(0,0,0,.35))}
+.bowl svg{display:block;width:100%;height:auto;overflow:visible}
+.hero-text{grid-area:text;position:relative;z-index:1;padding-bottom:70px}
+.lead{font-size:clamp(19px,4.6vw,24px);max-width:30ch;margin:6px 0 22px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;font:700 18px var(--body);text-decoration:none;border:0;cursor:pointer;
+  padding:15px 26px;border-radius:999px;background:var(--miso);color:var(--ink)}
+.btn:hover{background:#ffc873}
+.btn.ghost{background:transparent;color:var(--broth);box-shadow:inset 0 0 0 2px rgba(255,241,208,.55)}
+.btn.ghost:hover{background:rgba(255,241,208,.1)}
+.wave{position:absolute;left:0;bottom:-1px;width:100%;height:46px;display:block}
+
+@media(min-width:860px){
+  .hero{padding-top:56px}
+  .hero .wrap{grid-template-columns:1.05fr 1fr;grid-template-areas:"title bowl" "text bowl";align-content:center;min-height:640px}
+  .bowl{width:min(100%,500px);margin:0 0 0 auto;align-self:center}
+  .hero-text{padding-bottom:90px}
+}
+
+/* toppings land in the bowl once on load */
+.drop{opacity:0;transform:translateY(-46px) scale(1.18);transform-box:fill-box;transform-origin:center;
+  animation:land .55s cubic-bezier(.2,.9,.3,1.15) forwards;animation-delay:var(--d,0s)}
+@keyframes land{to{opacity:1;transform:none}}
+.steam path{animation:steam 5s ease-in-out infinite;opacity:.0}
+.steam path:nth-child(2){animation-delay:1.4s}.steam path:nth-child(3){animation-delay:2.8s}
+@keyframes steam{0%{opacity:0;transform:translateY(8px)}40%{opacity:.45}100%{opacity:0;transform:translateY(-26px)}}
+@media(prefers-reduced-motion:reduce){.drop{opacity:1;transform:none;animation:none}.steam{display:none}html{scroll-behavior:auto}}
+
+/* ---------- menu ---------- */
+section{padding:72px 0}
+h2{font:400 clamp(34px,8vw,64px)/1 var(--display);margin:0 0 14px;letter-spacing:-.01em}
+.sub{color:var(--mut);max-width:44ch;margin:0 0 40px}
+.menu{display:grid;gap:36px 56px}
+@media(min-width:860px){.menu{grid-template-columns:1fr 1fr}}
+.group h3{font:400 26px/1.1 var(--display);color:var(--miso);margin:0 0 6px}
+.group .hint{color:var(--mut);font-size:16px;margin:0 0 10px}
+.group ul{list-style:none;margin:0;padding:0}
+.group li{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid rgba(255,241,208,.14);font-size:21px;font-weight:500}
+.group li small{color:var(--mut);font-size:15px;font-weight:400;align-self:center;text-align:right}
+.tag{display:inline-block;margin:2px 8px 2px 0;padding:3px 12px;border-radius:999px;background:var(--ink-2);color:var(--broth);font-size:15px}
+.fine{margin-top:34px;color:var(--mut);font-size:15px}
+
+/* ---------- booking ---------- */
+#reservieren{background:var(--paper);color:var(--ink);padding:78px 0 84px}
+#reservieren h2{color:var(--lacquer)}
+#reservieren .sub{color:#5a4a3c}
+.panel{background:#fff;border-radius:28px;padding:26px 20px;box-shadow:0 18px 40px rgba(60,30,10,.14);max-width:720px}
+@media(min-width:600px){.panel{padding:36px}}
+.field{margin:0 0 26px}
+.field label,.field>legend{display:block;font-weight:700;margin:0 0 10px;padding:0}
+.check{font-weight:400}
+fieldset{border:0;margin:0;padding:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.chip{flex:0 0 auto;scroll-snap-align:start;font:500 17px var(--body);color:var(--ink);background:#fff;border:2px solid #d9c9ad;
+  padding:10px 16px;border-radius:12px;cursor:pointer;min-height:46px}
+.chip:hover{border-color:var(--lacquer)}
+.chip[aria-pressed=true]{background:var(--lacquer);border-color:var(--lacquer);color:#fff}
+.times{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
+.stepper{display:inline-flex;align-items:center;border:2px solid #d9c9ad;border-radius:14px;overflow:hidden}
+.stepper button{width:52px;height:50px;border:0;background:#fbf4e6;font:700 26px var(--body);color:var(--lacquer);cursor:pointer}
+.stepper button:disabled{color:#c4b49c;cursor:not-allowed}
+.stepper output{min-width:70px;text-align:center;font:700 20px var(--body)}
+input[type=text],input[type=tel],textarea{width:100%;font:500 18px var(--body);color:var(--ink);padding:13px 14px;border:2px solid #d9c9ad;border-radius:12px;background:#fff}
+input:focus,textarea:focus{border-color:var(--lacquer);outline:none;box-shadow:0 0 0 3px rgba(179,32,26,.2)}
+.two{display:grid;gap:16px}
+@media(min-width:600px){.two{grid-template-columns:1fr 1fr}}
+.check{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#5a4a3c}
+.check input{margin-top:4px;width:20px;height:20px;accent-color:var(--lacquer);flex:0 0 auto}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.msg{min-height:1.4em;margin:6px 0 0;font-size:16px;color:#5a4a3c}
+.msg.err{color:#a3120d;font-weight:700}
+.submit{width:100%;margin-top:14px;background:var(--lacquer);color:#fff;font-size:20px;padding:18px}
+.submit:hover{background:#9c1913}
+.submit:disabled{background:#c9a39f;cursor:wait}
+.done{background:#fff;border-radius:28px;padding:34px 24px;max-width:720px;box-shadow:0 18px 40px rgba(60,30,10,.14)}
+.done h3{font:400 34px/1.1 var(--display);color:var(--lacquer);margin:0 0 10px}
+.done dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:18px 0 24px}
+.done dt{color:#7a6a5a}.done dd{margin:0;font-weight:700}
+.link{background:none;border:0;padding:0;font:inherit;color:var(--lacquer);text-decoration:underline;cursor:pointer}
+
+/* ---------- info ---------- */
+.info{display:grid;gap:36px}
+@media(min-width:860px){.info{grid-template-columns:1.1fr 1fr}}
+.hours{font:400 clamp(40px,9vw,76px)/1 var(--display);margin:0 0 8px}
+.rate{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:26px}
+.rate b{font:400 56px/1 var(--display);color:var(--miso)}
+.contact p{margin:0 0 14px}
+.contact a{text-underline-offset:4px}
+footer{padding:34px 0 60px;color:var(--mut);font-size:15px;border-top:1px solid rgba(255,241,208,.14)}
+</style>
+</head>
+<body>
+
+<div class="draft">Entwurf, nicht veröffentlicht. Inhalte noch nicht vom Restaurant freigegeben.</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kana" aria-hidden="true">ラーメン</div>
+    <h1>Min<br>Ramen<br>Bar</h1>
+
+    <div class="bowl" role="img" aria-label="Gezeichnete Schüssel Ramen mit Nudeln, Schweinebauch, Ei, Nori und Frühlingszwiebeln">
+      <svg viewBox="0 0 400 400" id="bowl">
+        <defs>
+          <radialGradient id="broth" cx="45%" cy="40%" r="70%">
+            <stop offset="0" stop-color="#F6C46B"/><stop offset="1" stop-color="#D4852A"/>
+          </radialGradient>
+        </defs>
+        <circle cx="200" cy="200" r="196" fill="#1A1210"/>
+        <circle cx="200" cy="200" r="186" fill="none" stroke="#E9B44C" stroke-width="2.5"/>
+        <circle cx="200" cy="200" r="176" fill="#2A1613"/>
+        <circle cx="200" cy="200" r="160" fill="url(#broth)"/>
+        <g id="noodles" fill="none" stroke-linecap="round"></g>
+
+        <g class="steam" fill="none" stroke="#FFF1D0" stroke-width="6" stroke-linecap="round">
+          <path d="M150 -10c-16 -22 16 -34 0 -58"/><path d="M205 -18c-16 -22 16 -34 0 -58"/><path d="M258 -8c-16 -22 16 -34 0 -58"/>
+        </g>
+
+        <!-- scallions -->
+        <g transform="translate(0 0)"><g class="drop" style="--d:1.15s" fill="none" stroke="#7DB35A" stroke-width="3.2">
+          <circle cx="128" cy="205" r="4.5"/><circle cx="141" cy="222" r="4"/><circle cx="168" cy="196" r="4.5"/>
+          <circle cx="216" cy="228" r="4"/><circle cx="236" cy="205" r="4.5"/><circle cx="262" cy="232" r="4"/>
+          <circle cx="188" cy="262" r="4.5"/><circle cx="214" cy="284" r="4"/><circle cx="262" cy="190" r="4"/>
+          <circle cx="150" cy="120" r="4"/><circle cx="196" cy="168" r="4.5"/><circle cx="246" cy="270" r="4"/>
+          <circle cx="112" cy="176" r="4"/><circle cx="288" cy="214" r="4.5"/>
+        </g></g>
+        <!-- menma (bamboo shoots) -->
+        <g transform="translate(0 0)"><g class="drop" style="--d:1s" fill="#C69A55">
+          <rect x="96" y="238" width="22" height="7" rx="3" transform="rotate(20 107 241)"/>
+          <rect x="283" y="152" width="22" height="7" rx="3" transform="rotate(-24 294 155)"/>
+          <rect x="228" y="300" width="22" height="7" rx="3" transform="rotate(10 239 303)"/>
+        </g></g>
+        <!-- nori -->
+        <g transform="translate(150 70) rotate(16)"><g class="drop" style="--d:.2s">
+          <rect x="0" y="0" width="46" height="74" rx="4" fill="#1D2B21"/>
+          <path d="M8 10h30M8 24h30M8 38h30M8 52h30" stroke="#2f4635" stroke-width="2"/>
+        </g></g>
+        <!-- chashu -->
+        <g transform="translate(142 148)"><g class="drop" style="--d:.45s">
+          <circle r="40" fill="#C98B63" stroke="#8A4F32" stroke-width="6"/>
+          <circle r="27" fill="none" stroke="#E3B38E" stroke-width="3"/>
+          <path d="M-18 -4c10 -12 24 -8 30 2s-6 22 -18 20" fill="none" stroke="#F2D2B3" stroke-width="3" stroke-linecap="round"/>
+        </g></g>
+        <g transform="translate(232 282)"><g class="drop" style="--d:.65s">
+          <circle r="38" fill="#C98B63" stroke="#8A4F32" stroke-width="6"/>
+          <circle r="25" fill="none" stroke="#E3B38E" stroke-width="3"/>
+          <path d="M-14 6c4 -14 20 -14 24 -2" fill="none" stroke="#F2D2B3" stroke-width="3" stroke-linecap="round"/>
+        </g></g>
+        <!-- ajitama eggs -->
+        <g transform="translate(262 150)"><g class="drop" style="--d:.85s">
+          <ellipse rx="27" ry="31" fill="#FFF4DC" stroke="#E9D2A4" stroke-width="3"/>
+          <circle cy="3" r="16" fill="#F2A71B"/><circle cx="-5" cy="-3" r="4.5" fill="#FFD27A"/>
+        </g></g>
+        <g transform="translate(298 200) rotate(24)"><g class="drop" style="--d:1s">
+          <ellipse rx="25" ry="29" fill="#FFF4DC" stroke="#E9D2A4" stroke-width="3"/>
+          <circle cy="3" r="15" fill="#F2A71B"/><circle cx="-5" cy="-3" r="4" fill="#FFD27A"/>
+        </g></g>
+        <!-- narutomaki -->
+        <g transform="translate(150 266)"><g class="drop" style="--d:.7s">
+          <circle r="26" fill="#FFF0F0" stroke="#F2CFCF" stroke-width="3"/>
+          <path d="M0 0c6 -2 10 4 6 9s-14 3 -15 -6s8 -17 18 -14s14 17 4 26" fill="none" stroke="#E4677A" stroke-width="4" stroke-linecap="round"/>
+        </g></g>
+        <!-- sesame -->
+        <g transform="translate(0 0)"><g class="drop" style="--d:1.3s" fill="#FFF8E8">
+          <ellipse cx="186" cy="214" rx="3.4" ry="2"/><ellipse cx="206" cy="246" rx="3.4" ry="2"/>
+          <ellipse cx="170" cy="240" rx="3.4" ry="2"/><ellipse cx="238" cy="236" rx="3.4" ry="2"/>
+          <ellipse cx="204" cy="196" rx="3.4" ry="2"/><ellipse cx="124" cy="256" rx="3.4" ry="2"/>
+        </g></g>
+        <!-- chopsticks -->
+        <g stroke-linecap="round" fill="none"><g class="drop" style="--d:1.45s">
+          <path d="M352 412 L212 28" stroke="#6b3f1d" stroke-width="12" opacity=".35" transform="translate(8 10)"/>
+          <path d="M352 412 L212 28" stroke="#D9A25C" stroke-width="9"/>
+          <path d="M376 400 L250 18" stroke="#6b3f1d" stroke-width="12" opacity=".35" transform="translate(8 10)"/>
+          <path d="M376 400 L250 18" stroke="#C48B45" stroke-width="9"/>
+        </g></g>
+      </svg>
+    </div>
+
+    <div class="hero-text">
+      <p class="lead">Ramen, Poké Bowls und Gyoza in der Waldstraße. Jeden Tag von 11:30 bis 22:00.</p>
+      <div class="cta">
+        <a class="btn" href="#reservieren">Tisch reservieren</a>
+        <a class="btn ghost" href="#karte">Was es gibt</a>
+      </div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 46" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 46V22c60 18 120 18 180 0s120-18 180 0 120 18 180 0 120-18 180 0 120 18 180 0 120-18 180 0 120 18 180 0 120-18 180 0V46z" fill="#1A1210"/>
+  </svg>
+</header>
+
+<main>
+<section id="karte">
+  <div class="wrap">
+    <h2>Heute Hunger?</h2>
+    <p class="sub">Eine Auswahl aus unserer Karte. Ramen gibt es in Größe M oder L, Bowls kannst du nach deinem Geschmack zusammenstellen.</p>
+    <div class="menu">
+      <div class="group">
+        <h3>Ramen</h3>
+        <ul>
+          <li>Miso Ramen <small>M oder L</small></li>
+          <li>Tonkotsu Ramen <small>mit Chashu</small></li>
+          <li>Shoyu Ramen <small>auch mit Hähnchen</small></li>
+        </ul>
+      </div>
+      <div class="group">
+        <h3>Poké Bowls</h3>
+        <ul>
+          <li>Green Bowl</li>
+          <li>Korean Heat</li>
+          <li>Big Island Bowl</li>
+          <li>Exotic Breath Bowl</li>
+        </ul>
+      </div>
+      <div class="group">
+        <h3>Zum Teilen</h3>
+        <ul>
+          <li>Gyoza</li>
+          <li>Takoyaki</li>
+          <li>Ebi Tempura</li>
+        </ul>
+      </div>
+      <div class="group">
+        <h3>Dazu</h3>
+        <p class="hint">Gibt es auch</p>
+        <span class="tag">Reisgerichte</span><span class="tag">Udon</span><span class="tag">Vegane Gerichte</span>
+        <span class="tag">Hausgemachte Limonaden</span><span class="tag">Desserts</span>
+      </div>
+    </div>
+    <p class="fine">Das ist eine Auswahl. Die vollständige Karte mit Preisen und Allergenen liefert das Restaurant.</p>
+  </div>
+</section>
+
+<section id="reservieren">
+  <div class="wrap">
+    <h2>Dein Tisch</h2>
+    <p class="sub">Tag, Uhrzeit und Personenzahl wählen. Die Bestätigung siehst du sofort hier. Ab 9 Personen ruf uns bitte an: <a href="tel:+4972114597578">0721 14597578</a>.</p>
+
+    <form class="panel" id="form" novalidate>
+      <fieldset class="field">
+        <legend>Tag</legend>
+        <div class="chips" id="days"></div>
+      </fieldset>
+
+      <div class="field">
+        <label for="party-out">Personen</label>
+        <div class="stepper">
+          <button type="button" id="minus" aria-label="Eine Person weniger">−</button>
+          <output id="party-out" aria-live="polite">2</output>
+          <button type="button" id="plus" aria-label="Eine Person mehr">+</button>
+        </div>
+      </div>
+
+      <fieldset class="field">
+        <legend>Uhrzeit</legend>
+        <div class="times" id="times" aria-live="polite"></div>
+        <p class="msg" id="times-msg"></p>
+      </fieldset>
+
+      <div class="two field">
+        <div><label for="name">Name</label><input type="text" id="name" name="name" autocomplete="name" maxlength="80" required></div>
+        <div><label for="phone">Telefon</label><input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="18" required></div>
+      </div>
+      <div class="field"><label for="notes">Wünsche (optional)</label>
+        <textarea id="notes" name="notes" rows="2" maxlength="200" placeholder="z.B. Kinderstuhl, Allergie, Geburtstag"></textarea></div>
+      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <label class="check"><input type="checkbox" id="consent" required>
+        <span>Ich bin einverstanden, dass Name und Telefonnummer für diese Reservierung gespeichert werden.</span></label>
+
+      <button class="btn submit" id="submit" type="submit">Tisch reservieren</button>
+      <p class="msg" id="form-msg" role="alert"></p>
+    </form>
+
+    <div class="done" id="done" hidden>
+      <h3>Dein Tisch steht.</h3>
+      <p>Wir freuen uns auf dich. Bitte sei pünktlich: Wir halten den Tisch 15 Minuten.</p>
+      <dl>
+        <dt>Wann</dt><dd id="d-when"></dd>
+        <dt>Personen</dt><dd id="d-party"></dd>
+        <dt>Auf den Namen</dt><dd id="d-name"></dd>
+      </dl>
+      <p>Kannst du doch nicht? <button class="link" id="cancel" type="button">Reservierung stornieren</button></p>
+      <p class="msg" id="done-msg" role="status"></p>
+    </div>
+  </div>
+</section>
+
+<section id="info">
+  <div class="wrap info">
+    <div>
+      <h2>Jeden Tag offen</h2>
+      <p class="hours">11:30 bis 22:00</p>
+      <p class="sub" style="margin:0">Dine in und Take-away.</p>
+      <div class="rate"><b>4,6</b><span>von 5 bei 2.591 Google-Bewertungen.<br><a href="https://maps.app.goo.gl/Sr5geDbLTx2EQ2Sq5">Bewertungen auf Google Maps lesen</a></span></div>
+    </div>
+    <div class="contact">
+      <h2 style="font-size:34px">So findest du uns</h2>
+      <p>Waldstraße 19<br>76133 Karlsruhe<br><a href="https://maps.app.goo.gl/Sr5geDbLTx2EQ2Sq5">Route auf Google Maps</a></p>
+      <p>Telefon <a href="tel:+4972114597578">0721 14597578</a><br>WhatsApp <a href="https://wa.me/4917671236932">0176 71236932</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Min Ramen Bar, Waldstraße 19, 76133 Karlsruhe. Impressum und Datenschutz folgen vor der Veröffentlichung.</div>
+</footer>
+
+<script>
+// ---- noodles: wavy rings drawn once ----
+(function(){
+  const g=document.getElementById("noodles");let s="";
+  for(let k=0;k<7;k++){
+    const R=36+k*18,ph=k*1.3;let d="";
+    for(let a=0;a<=360;a+=6){
+      const t=a*Math.PI/180,r=R+Math.sin(t*6+ph)*4.5;
+      d+=(a?"L":"M")+(200+r*Math.cos(t)).toFixed(1)+" "+(200+r*Math.sin(t)).toFixed(1);
+    }
+    s+=`<path d="${d}Z" stroke="#F4DC96" stroke-width="8.5"/><path d="${d}Z" stroke="#FFF4CF" stroke-width="2.2" opacity=".75" transform="translate(-1 -2)"/>`;
+  }
+  g.innerHTML=s;
+})();
+
+// ---- booking ----
+const $=id=>document.getElementById(id);
+const st={date:null,party:2,time:null};
+const fmtDay=new Intl.DateTimeFormat("de-DE",{weekday:"short",day:"numeric",month:"numeric"});
+const fmtLong=new Intl.DateTimeFormat("de-DE",{weekday:"long",day:"numeric",month:"long"});
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const api=(p,body)=>fetch(p,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+  .then(r=>r.json()).catch(()=>({error:"Keine Verbindung. Bitte versuche es gleich noch einmal oder ruf uns an."}));
+
+(function days(){
+  const box=$("days"),now=new Date();
+  for(let i=0;i<10;i++){
+    const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
+    const b=document.createElement("button");
+    b.type="button";b.className="chip";b.dataset.date=iso(d);
+    b.textContent=i===0?"Heute":i===1?"Morgen":fmtDay.format(d);
+    b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{st.date=b.dataset.date;st.time=null;[...box.children].forEach(c=>c.setAttribute("aria-pressed",c===b));loadSlots();};
+    box.appendChild(b);
+  }
+})();
+
+function setParty(n){
+  st.party=Math.min(8,Math.max(1,n));$("party-out").textContent=st.party;
+  $("minus").disabled=st.party<=1;$("plus").disabled=st.party>=8;st.time=null;loadSlots();
+}
+$("minus").onclick=()=>setParty(st.party-1);
+$("plus").onclick=()=>setParty(st.party+1);
+
+let seq=0;
+async function loadSlots(){
+  const box=$("times"),msg=$("times-msg");box.textContent="";
+  if(!st.date){msg.textContent="Wähle zuerst einen Tag.";return;}
+  msg.textContent="Freie Zeiten werden geladen…";const my=++seq;
+  const r=await api("/api/slots",{date:st.date,party:st.party});
+  if(my!==seq)return; // a newer request replaced this one
+  if(r.error){msg.className="msg err";msg.textContent=r.error;return;}
+  msg.className="msg";
+  if(!r.slots.length){msg.textContent="An diesem Tag ist nichts mehr frei. Probier einen anderen Tag oder ruf uns an.";return;}
+  msg.textContent="";
+  r.slots.forEach(t=>{
+    const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;
+    b.setAttribute("aria-pressed",String(st.time===t));
+    b.onclick=()=>{st.time=t;[...box.children].forEach(c=>c.setAttribute("aria-pressed",c===b));};
+    box.appendChild(b);
+  });
+}
+
+$("form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const m=$("form-msg");m.className="msg err";
+  const f=new FormData(e.target);
+  if(!st.date)return m.textContent="Bitte wähle einen Tag.";
+  if(!st.time)return m.textContent="Bitte wähle eine Uhrzeit.";
+  if(!f.get("name").trim())return m.textContent="Bitte gib deinen Namen an.";
+  if(!/^\+?[\d ]{6,18}$/.test(f.get("phone").trim()))return m.textContent="Bitte gib eine gültige Telefonnummer an, nur Ziffern.";
+  if(!$("consent").checked)return m.textContent="Bitte stimme der Speicherung deiner Angaben zu.";
+  $("submit").disabled=true;m.className="msg";m.textContent="Wir tragen deinen Tisch ein…";
+  const r=await api("/api/book",{name:f.get("name"),phone:f.get("phone"),notes:f.get("notes"),website:f.get("website"),
+    date:st.date,time:st.time,party:st.party});
+  $("submit").disabled=false;
+  if(r.error){m.className="msg err";m.textContent=r.error;loadSlots();return;}
+  m.textContent="";showDone({id:r.id,token:r.token,start:r.start,party:r.party,name:f.get("name").trim()});
+});
+
+let current=null;
+function showDone(b){
+  current=b;
+  const d=new Date(b.start);
+  $("d-when").textContent=`${fmtLong.format(d)}, ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")} Uhr`;
+  $("d-party").textContent=b.party===1?"1 Person":`${b.party} Personen`;
+  $("d-name").textContent=b.name;
+  $("form").hidden=true;$("done").hidden=false;$("done-msg").textContent="";
+  $("done").scrollIntoView({behavior:"smooth",block:"center"});
+}
+$("cancel").onclick=async()=>{
+  if(!current||!confirm("Reservierung wirklich stornieren?"))return;
+  const r=await api("/api/cancel",{id:current.id,token:current.token});
+  if(r.error){$("done-msg").textContent=r.error;return;}
+  current=null;$("done").hidden=true;$("form").hidden=false;$("form").reset();
+  st.time=null;loadSlots();$("form-msg").className="msg";$("form-msg").textContent="Deine Reservierung ist storniert.";
+};
+setParty(2);
+</script>
+</body>
+</html>

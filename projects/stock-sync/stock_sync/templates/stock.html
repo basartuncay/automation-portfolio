@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Stock</h1>
+<p class="sub">One ledger, every channel. Each listing shows what's available minus its safety buffer; a change anywhere reaches every channel within seconds. {{ open_orders }} order{{ ' is' if open_orders == 1 else 's are' }} reserved and waiting to ship.</p>
+<div class="card" style="margin-bottom:16px"><table>
+  <tr><th>SKU</th><th class="num">On hand</th><th class="num">Reserved</th><th class="num">Available</th>{% for c in channels %}<th class="num">{{ c|capitalize }} shows</th>{% endfor %}</tr>
+  {% for r in rows %}
+  <tr class="row" onclick="location='/sku/{{ r.s.sku }}'">
+    <td><a href="/sku/{{ r.s.sku }}"><b>{{ r.s.sku }}</b></a><div class="small muted">{{ r.s.name }}{% if r.limit %} · limited by {{ r.limit }}{% endif %}</div></td>
+    <td class="num">{{ '—' if r.s.is_bundle else r.s.on_hand }}</td><td class="num">{{ '—' if r.s.is_bundle else r.s.reserved }}</td>
+    <td class="num"><span class="big {{ 'low' if r.low }}" data-sku="{{ r.s.sku }}" data-available="{{ r.available }}">{{ r.available }}</span></td>
+    {% for c in channels %}{% set l = r.listings.get(c) %}
+    <td class="num">{% if l %}<span class="shown"><span class="{{ 'zero' if l.last_pushed == 0 else ('stale' if l.last_pushed != l.target else '') }}" data-channel="{{ c }}" data-sku="{{ r.s.sku }}">{{ '…' if l.last_pushed is none else l.last_pushed }}</span>{% if l.buffer %}<small>−{{ l.buffer }} buffer</small>{% endif %}{% if l.max_qty is not none %}<small>max {{ l.max_qty }}</small>{% endif %}</span>{% else %}<span class="muted">not listed</span>{% endif %}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+<p class="small muted" style="margin:10px 0 0">Red: sold out on that channel. Amber: an update is on its way. Bundles have no stock of their own: they show as many as their scarcest part allows.</p></div>
+<div class="card"><h3 style="margin-top:0">Latest sync activity</h3><table>
+  {% for e in log %}<tr><td class="small muted" style="width:150px">{{ e.at }}</td><td style="width:100px">{{ e.channel }}</td><td style="width:130px">{{ e.sku or '' }}</td><td><b>{{ e.action }}</b> {{ e.detail }}</td></tr>{% else %}<tr><td class="muted">Nothing yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

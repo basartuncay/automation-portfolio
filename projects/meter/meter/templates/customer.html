@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/">← Customers</a></p>
+<h1>{{ c.name }}</h1>
+<p class="sub">{{ plan.name }} · period {{ c.period_start[:10] }} – {{ c.period_end[:10] }} · <span class="chip {{ c.status }}" data-status="{{ c.status }}">{{ c.status.replace('_', ' ') }}</span> · Stripe {{ c.stripe_customer }}</p>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1.4fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Usage this period: {{ '{:,}'.format(used) }} of {{ '{:,}'.format(plan.included) }} included</h3>
+    <div class="chart">{% for d in days %}<div class="{{ 'late' if d.late }}" style="height:{{ (100 * d.q / top)|round(1) }}%" title="{{ d.d }}: {{ '{:,}'.format(d.q) }}"><span>{{ d.d[8:] }}</span></div>{% else %}<p class="muted">No usage yet.</p>{% endfor %}</div>
+    <p class="small muted" style="margin-top:26px">Amber: usage that arrived after its period closed, billed in this one. {{ unreported }} event(s) not yet reported to Stripe.</p></div>
+  <div class="grid" style="align-content:start">
+    <div class="card"><h3 style="margin-top:0">Next invoice so far</h3><p class="big" style="font-size:28px;font-weight:800;margin:0">{{ projected|euro }}</p>
+      <p class="small muted">{{ plan.base_cents|euro }} plan{% if over %} + {{ '{:,}'.format(used - plan.included) }} calls over the included amount at {{ plan.overage_cents_per_1k|euro }} per started 1,000{% endif %}.</p>
+      <div class="ent {{ 'yes' if ent.allowed else 'no' }}" data-allowed="{{ ent.allowed }}">API access: {{ 'allowed' if ent.allowed else 'blocked' }} ({{ ent.reason }})</div></div>
+    <div class="card"><h3 style="margin-top:0">Plan and spend cap</h3>
+      <form method="post" action="/customers/{{ c.id }}/plan" class="form-row" style="margin-bottom:10px"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <label>Plan<select name="plan">{% for p in plans %}<option value="{{ p.id }}" {{ 'selected' if p.id == plan.id }}>{{ p.name }} ({{ p.base_cents|euro }})</option>{% endfor %}</select></label><button class="btn ghost">Change plan</button></form>
+      {% if pending %}<p class="small muted">Moves to {{ pending.name }} on {{ c.period_end[:10] }}.</p>{% endif %}
+      <form method="post" action="/customers/{{ c.id }}/cap" class="form-row"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <label>Spend cap (EUR per period, empty for none)<input name="cap" value="{{ '%.2f'|format(c.spend_cap_cents / 100) if c.spend_cap_cents else '' }}" style="width:140px"></label><button class="btn ghost">Save cap</button></form></div>
+  </div>
+</div>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+  <div class="card"><h3 style="margin-top:0">Invoices (from Stripe)</h3><table>
+    {% for i in invoices %}<tr data-invoice="{{ i.number }}:{{ i.status }}"><td><b>{{ i.number }}</b><div class="small muted">{{ i.period_start[:10] }} – {{ i.period_end[:10] }}</div></td><td class="num">{{ i.amount_due|euro }}</td>
+      <td><span class="chip {{ i.status }}">{{ i.status }}</span>{% if i.attempt_count > 1 %}<div class="small muted">{{ i.attempt_count }} attempts</div>{% endif %}</td></tr>
+    {% else %}<tr><td class="muted">No invoices yet.</td></tr>{% endfor %}</table></div>
+  <div class="card"><h3 style="margin-top:0">History</h3><ul class="timeline" style="padding-left:18px">{% for l in log %}<li>{{ l.what }} <span class="small muted">{{ l.who }} · {{ l.at }}</span></li>{% endfor %}</ul></div>
+</div>
+{% endblock %}

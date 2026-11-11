@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/">← Stock</a></p>
+<h1>{{ s.sku }} · {{ s.name }}</h1>
+<p class="sub">{% if s.is_bundle %}Bundle: {{ available }} can be sold right now.{% else %}{{ s.on_hand }} on hand, {{ s.reserved }} reserved for open orders, {{ available }} available. Low-stock alert at {{ s.low_at }}.{% endif %}</p>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Channels</h3>
+    {% for l in listings %}
+    <form method="post" action="/listings/{{ l.id }}" class="form-row" style="margin-bottom:12px"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <div style="min-width:150px"><b>{{ l.channel|capitalize }}</b><div class="small muted">{{ l.channel_ref }} · shows {{ '…' if l.last_pushed is none else l.last_pushed }}{% if l.push_error %} · <span style="color:var(--bad)">{{ l.push_error }}</span>{% endif %}</div></div>
+      <label>Safety buffer<input type="number" name="buffer" value="{{ l.buffer }}" min="0" style="width:80px"></label>
+      <label>Show at most<input name="max_qty" value="{{ l.max_qty if l.max_qty is not none else '' }}" placeholder="no cap" style="width:90px"></label>
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" name="enabled" value="1" {{ 'checked' if l.enabled }}> synced</label>
+      <button class="btn ghost">Save</button>
+    </form>
+    {% else %}<p class="muted">Not listed on any channel.</p>{% endfor %}
+  </div>
+  <div class="card">
+    {% if s.is_bundle %}<h3 style="margin-top:0">Made of</h3><table>{% for p in parts %}<tr><td><a href="/sku/{{ p.part }}">{{ p.part }}</a></td><td>{{ p.name }}</td><td class="num">× {{ p.qty }}</td></tr>{% endfor %}</table>
+    {% else %}<h3 style="margin-top:0">Adjust stock</h3>
+      <form method="post" action="/sku/{{ s.sku }}/adjust" class="form-row"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <label>Change<input type="number" name="delta" required style="width:90px" placeholder="-2"></label>
+        <label style="flex:1">Reason<input name="reason" required placeholder="2 broken in the warehouse"></label><button class="btn">Book it</button></form>
+      {% if used_in %}<p class="small muted">Also sold as part of {% for b in used_in %}<a href="/sku/{{ b.bundle }}">{{ b.bundle }}</a>{{ ', ' if not loop.last }}{% endfor %}.</p>{% endif %}
+    {% endif %}
+  </div>
+</div>
+{% if not s.is_bundle %}
+<div class="card"><h3 style="margin-top:0">Ledger</h3><table>
+  <tr><th>When</th><th>Movement</th><th class="num">Qty</th><th class="num">On hand after</th><th class="num">Reserved after</th><th>Reference</th></tr>
+  {% for m in moves %}<tr><td class="small muted">{{ m.at }}</td><td><span class="chip {{ m.kind }}">{{ m.kind }}</span></td><td class="num">{{ '%+d'|format(m.qty) if m.kind == 'adjust' else m.qty }}</td>
+    <td class="num">{{ m.on_hand_after }}</td><td class="num">{{ m.reserved_after }}</td><td class="small">{{ m.ref }}<div class="muted">{{ m.note }}</div></td></tr>{% endfor %}
+</table></div>
+{% endif %}
+{% endblock %}

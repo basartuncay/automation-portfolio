@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Tables &amp; hours</h1>
+<p class="sub">How the restaurant is set up. Bar seats are never handed out on the website: they're kept for walk-ins, staff and the phone agent.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+  <div class="card"><h3 style="margin-top:0">Tables</h3><table>{% for t in tables %}<tr><td><b>{{ t.id }}</b></td><td>{{ t.seats }} seats</td><td>{{ t.area }}</td><td>{{ 'online' if t.online else 'staff only' }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h3 style="margin-top:0">Tables that can be joined</h3><table>{% for c in combos %}<tr><td><b>{{ c.tables }}</b></td><td>{{ c.seats }} seats</td></tr>{% endfor %}</table></div>
+  <div class="card"><h3 style="margin-top:0">Opening hours</h3><table>{% for d in days %}<tr><td>{{ d }}</td><td>{% for a, b in s.hours.get(loop.index0|string, []) %}{{ a }}–{{ b }}{{ ', ' if not loop.last }}{% else %}closed{% endfor %}</td></tr>{% endfor %}</table></div>
+</div>
+<div class="card" style="margin-top:16px"><h3 style="margin-top:0">Rules</h3><ul>
+  <li>Stay length: {% for k, v in s.stay_minutes.items() %}{{ 'up to ' ~ k if k != '99' else 'larger parties' }} people {{ v }} min{{ '; ' if not loop.last }}{% endfor %}. Last seating one hour before closing.</li>
+  <li>Online up to {{ s.online_max_party }} people, phone agent up to {{ s.phone_max_party }}; bigger groups are passed to staff. Bookings up to {{ s.booking_horizon_days }} days ahead.</li>
+  <li>Reminder {{ s.reminder_hours }} h before (skipped when booked at short notice). Waitlist offers stay open {{ s.offer_minutes }} min.</li>
+  <li>Guests' names, numbers and messages are removed {{ s.retention_days }} days after the visit.</li>
+</ul></div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Sync log</h1><p class="sub">Every push, order, shipment and drift, newest first.</p>
+<div class="card"><table>
+  <tr><th>When</th><th>Channel</th><th>SKU</th><th>What</th></tr>
+  {% for e in rows %}<tr><td class="small muted">{{ e.at }}</td><td>{{ e.channel }}</td><td>{{ e.sku or '' }}</td><td><b>{{ e.action }}</b> {{ e.detail }}</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

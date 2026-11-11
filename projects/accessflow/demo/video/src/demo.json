@@ -1,0 +1,48 @@
+{
+ "file": "accessflow.webm",
+ "who": "Real stack · local stand-ins for the HR system, Google Workspace, Slack and GitHub",
+ "accent": "#6366f1",
+ "kicker": "Accessflow · real recording",
+ "title": "Access that follows the HR record: joiners, movers, leavers",
+ "sub": "Google Workspace, Slack and GitHub kept in line with the HR system, privileged access approved by managers, drift found, every change audited.",
+ "outro": "Python · FastAPI · SQLite · Google Admin SDK · Slack SCIM · GitHub API · signed webhooks · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "IT AUTOMATION",
+ "thumbTitle": "Offboarded everywhere in 2 seconds",
+ "thumbSub": "Accessflow · HR → Google, Slack, GitHub",
+ "trim": 1.28,
+ "end": 50.78,
+ "caps": [
+  {
+   "from": 1.58,
+   "text": "Everyone's access comes from the HR system: Google, Slack, and GitHub for engineers"
+  },
+  {
+   "from": 5.59,
+   "text": "HR hires Mira for Engineering, starting today. Her accounts and groups appear on their own"
+  },
+  {
+   "from": 15.06,
+   "text": "Jonas needs GitHub admin rights. IT can ask, but only his manager can approve"
+  },
+  {
+   "from": 18.99,
+   "text": "Hanna gets the request as a Slack message with a signed link, and approves"
+  },
+  {
+   "from": 27.89,
+   "text": "Then Jonas leaves, effective immediately. Every account, group and admin right goes within seconds"
+  },
+  {
+   "from": 32.98,
+   "text": "His Drive goes to his manager, and his open sessions are ended"
+  },
+  {
+   "from": 36.75,
+   "text": "Drift: someone added a contractor as admin by hand, and a stray Slack account exists"
+  },
+  {
+   "from": 41.97,
+   "text": "Found, and removed with one click each. All of it lands in the audit trail"
+  }
+ ]
+}

@@ -1,0 +1,59 @@
+# Multi-channel inventory. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8102
+name: stock-sync
+
+x-env: &env
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+  SHOPIFY_URL: http://apis:8000/shopify          # for real use: https://<shop>.myshopify.com
+  SHOPIFY_TOKEN: ${SHOPIFY_TOKEN:?run ./setup.sh first}
+  SHOPIFY_WEBHOOK_SECRET: ${SHOPIFY_WEBHOOK_SECRET:?run ./setup.sh first}
+  AMAZON_URL: http://apis:8000/amazon            # for real use: https://sellingpartnerapi-eu.amazon.com (token from LWA)
+  AMAZON_TOKEN: ${AMAZON_TOKEN:?run ./setup.sh first}
+  WMS_URL: http://apis:8000/wms
+  WMS_TOKEN: ${WMS_TOKEN:?run ./setup.sh first}
+  WMS_WEBHOOK_SECRET: ${WMS_WEBHOOK_SECRET:?run ./setup.sh first}
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8102:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "stock_sync.worker"]
+    environment:
+      <<: *env
+      PUSH_SECONDS: ${PUSH_SECONDS:-1}
+      AMAZON_POLL_SECONDS: ${AMAZON_POLL_SECONDS:-60}
+      RECONCILE_MINUTES: ${RECONCILE_MINUTES:-60}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: Shopify, Amazon SP-API and warehouse stand-ins with the real request shapes.
+    build: .
+    command: ["uvicorn", "stock_sync.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      <<: *env
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      HUB_URL: http://web:8000
+    ports: ["127.0.0.1:8103:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

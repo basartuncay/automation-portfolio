@@ -1,0 +1,21 @@
+{% extends "_public.html" %}
+{% block content %}
+<h1>Tell me about the project</h1>
+<p class="lead">You'll get a written proposal with a fixed price, usually within a day. No call needed to get started.</p>
+{% if error %}<div class="msg bad">{{ error }}</div>{% endif %}
+<form method="post" action="/enquire">
+  <input type="hidden" name="csrf" value="{{ csrf }}"><input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <label>What do you need?</label>
+  {% for pk in packages %}
+  <div class="pkg"><label><input type="radio" name="package" value="{{ pk.id }}" {{ 'checked' if (form.package or '1') == pk.id|string }} required>
+    <span><b>{{ pk.name }} · from {{ pk.base_cents|money }}</b>{{ pk.summary }}</span></label>
+    <div class="opts">{% for o in pk.options|fromjson %}<label><input type="checkbox" name="options" value="{{ o.key }}" {{ 'checked' if o.default }}> {{ o.name }} (+{{ o.cents|money }})</label>{% endfor %}</div></div>
+  {% endfor %}
+  <label for="brief">The project <span class="hint">which systems, what goes wrong today, any deadline</span></label>
+  <textarea id="brief" name="brief" required minlength="20">{{ form.brief or '' }}</textarea>
+  <label for="name">Your name</label><input type="text" id="name" name="name" value="{{ form.name or '' }}" required autocomplete="name">
+  <label for="email">Email</label><input type="email" id="email" name="email" value="{{ form.email or '' }}" required autocomplete="email">
+  <label for="company">Company <span class="hint">optional</span></label><input type="text" id="company" name="company" value="{{ form.company or '' }}" autocomplete="organization">
+  <button class="go">Ask for a proposal</button>
+</form>
+{% endblock %}

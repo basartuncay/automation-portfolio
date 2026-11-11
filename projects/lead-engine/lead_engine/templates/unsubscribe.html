@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Unsubscribe</title>
+<style>body{margin:0;font:16px/1.5 system-ui,sans-serif;background:#f6f7f9;color:#111827}.c{max-width:440px;margin:14vh auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px}
+button{border:0;border-radius:8px;padding:11px 18px;font:600 15px system-ui;background:#111827;color:#fff;cursor:pointer}</style></head>
+<body><div class="c">
+{% if done %}<h1 style="font-size:22px;margin-top:0">You're unsubscribed</h1><p>You won't get any more emails from us. Sorry for the interruption.</p>
+{% else %}<h1 style="font-size:22px;margin-top:0">Stop these emails?</h1><p>One click and you won't hear from us again.</p>
+<form method="post"><button>Unsubscribe</button></form>{% endif %}
+</div></body></html>

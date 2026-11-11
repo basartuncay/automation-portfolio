@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/board">← Clients</a></p>
+<div class="head">
+  <div><h1>{{ c.company or c.name }}</h1><p class="sub">{{ c.name }} &lt;{{ c.email }}&gt; · {{ pkg.name }} · <span class="chip {{ c.stage }}" data-stage="{{ c.stage }}">{{ c.stage.replace('_', ' ') }}</span></p></div>
+  <div class="btns">
+    {% if p.status == 'draft' %}<form method="post" action="/clients/{{ c.id }}/send"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Send proposal v{{ p.version }}</button></form>{% endif %}
+    {% if p.status in ('sent', 'viewed', 'expired') %}<form method="post" action="/clients/{{ c.id }}/withdraw"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Withdraw &amp; revise</button></form>{% endif %}
+    {% if c.stage in ('enquiry', 'proposal_sent', 'viewed') %}<form method="post" action="/clients/{{ c.id }}/lost"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Mark lost</button></form>{% endif %}
+  </div>
+</div>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}{% if err %}<div class="alert bad">{{ err }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1.5fr 1fr;margin-bottom:16px">
+  <div class="card">
+    <h3 style="margin-top:0">Proposal v{{ p.version }} <span class="chip {{ p.status }}">{{ p.status }}</span> <span class="small muted">{{ p.total_cents|money }}, deposit {{ p.deposit_pct }}% = {{ deposit|money }}, valid until {{ p.valid_until }}</span></h3>
+    {% if p.status == 'draft' %}
+    <form method="post" action="/clients/{{ c.id }}/proposal" class="grid"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <textarea name="intro" style="min-height:70px">{{ p.intro }}</textarea>
+      <table class="items"><tr><th>Line</th><th>Detail</th><th class="num">EUR</th></tr>
+        {% for i in items + [{'name': '', 'detail': '', 'cents': 0}] %}<tr><td><input name="item_name" value="{{ i.name }}" placeholder="Add a line"></td><td><input name="item_detail" value="{{ i.detail }}"></td>
+          <td style="width:120px"><input name="item_amount" value="{{ '%.2f'|format(i.cents / 100) if i.name else '' }}" inputmode="decimal"></td></tr>{% endfor %}
+      </table>
+      <div class="btns" style="align-items:center"><label class="small muted">Deposit <input name="deposit_pct" value="{{ p.deposit_pct }}" style="width:60px;border:1px solid var(--line);border-radius:8px;padding:6px"> %</label><button class="btn ghost">Save draft</button></div>
+    </form>
+    {% else %}
+    <table>{% for i in items %}<tr><td>{{ i.name }}<div class="small muted">{{ i.detail }}</div></td><td class="num">{{ i.cents|money }}</td></tr>{% endfor %}</table>
+    <p class="small muted">Client link: <a href="/p/{{ p.token }}" target="_blank">/p/{{ p.token[:10] }}…</a></p>
+    {% endif %}
+    <h3>Brief</h3><p style="white-space:pre-wrap">{{ c.brief }}</p>
+  </div>
+  <div class="grid">
+    {% if sig %}<div class="card"><h3 style="margin-top:0">Signature</h3><dl class="kv"><dt>Typed name</dt><dd>{{ sig.name }}</dd><dt>At</dt><dd>{{ sig.at }}</dd><dt>IP</dt><dd>{{ sig.ip }}</dd><dt>SHA-256</dt><dd><code>{{ sig.sha256 }}</code></dd></dl>
+      <p><a href="/p/{{ p.token }}/pdf">Signed PDF</a></p></div>{% endif %}
+    {% if pay %}<div class="card"><h3 style="margin-top:0">Deposit</h3><p><span class="chip {{ pay.status }}">{{ pay.status }}</span> {{ pay.amount_cents|money }} <span class="small muted">{{ pay.session_id }}</span></p></div>{% endif %}
+    {% if steps %}<div class="card"><h3 style="margin-top:0">Setup</h3><ul class="steps">{% for s in steps %}<li><span>{{ s.name.replace('_', ' ') }}{% if s.error %}<div class="small" style="color:var(--bad)">{{ s.error }}</div>{% endif %}</span>
+      <span><span class="chip {{ s.status }}" data-step="{{ s.name }}">{{ s.status }}</span>{% if s.status == 'failed' %} <form class="mini" method="post" action="/steps/{{ s.id }}/retry"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Retry</button></form>{% endif %}</span></li>{% endfor %}</ul></div>{% endif %}
+    <div class="card"><h3 style="margin-top:0">Emails</h3><table>{% for m in emails %}<tr><td><span class="chip {{ m.status }}">{{ m.status }}</span></td><td class="small"><b>{{ m.subject }}</b><div class="muted">{{ m.kind.replace('_', ' ') }}{% if m.status == 'queued' %} · due later{% endif %}</div></td></tr>{% endfor %}</table></div>
+  </div>
+</div>
+<div class="card"><h3 style="margin-top:0">Timeline</h3><ul class="timeline" style="padding-left:18px">{% for e in events %}<li><b>{{ e.kind.replace('_', ' ') }}</b> {{ e.detail }} <span class="small muted">{{ e.at }}</span></li>{% endfor %}</ul></div>
+{% for o in older %}<p class="small muted">Older: v{{ o.version }} {{ o.status }}</p>{% endfor %}
+{% endblock %}
