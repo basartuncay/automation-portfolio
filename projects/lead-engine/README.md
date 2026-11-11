@@ -16,6 +16,10 @@ Most outbound setups are five tools glued together: an export from Apollo, a spr
                                                       CRM contact + deal (HubSpot API)
 ```
 
+**▶ [Watch the 62-second demo](docs/demo.mp4)**: a real recording of the running stack, made with [`demo/record.py`](demo/record.py) (Playwright) and [`demo/video`](demo/video) (Remotion). The replies in it are real emails sent over SMTP.
+
+[![Demo video](docs/demo-thumb.png)](docs/demo.mp4)
+
 | Every point explained, every email in one thread | The funnel |
 |---|---|
 | ![A lead](docs/lead.png) | ![Pipeline](docs/pipeline.png) |
