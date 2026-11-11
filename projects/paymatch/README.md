@@ -17,6 +17,10 @@ Paymatch reads the statement, settles what it is sure about in the accounting sy
                └──────────────────────────────▶ daily reminders, level 1/2/3, only for what's really open
 ```
 
+**▶ [Watch the 48-second demo](docs/demo.mp4)**: a real recording of the running stack, made with [`demo/record.py`](demo/record.py) (Playwright) and [`demo/video`](demo/video) (Remotion).
+
+[![Demo video](docs/demo-thumb.png)](docs/demo.mp4)
+
 | Every match explained | The two a person has to decide |
 |---|---|
 | ![Payments](docs/payments.png) | ![Review](docs/review.png) |

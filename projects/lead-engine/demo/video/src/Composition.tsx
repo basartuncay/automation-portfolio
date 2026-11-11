@@ -51,7 +51,7 @@ export const Video: React.FC = () => (
     <Sequence durationInFrames={INTRO}><Fade len={INTRO}><Title kicker={D.kicker} title={D.title} sub={D.sub} /></Fade></Sequence>
     <Sequence from={INTRO} durationInFrames={CLIP}><ClipScene /></Sequence>
     <Sequence from={INTRO + CLIP} durationInFrames={OUTRO}>
-      <Fade len={OUTRO}><Title kicker="Source, tests and CI" title="github.com/basartuncay/automation-portfolio" size={76} sub={D.outro} /></Fade>
+      <Fade len={OUTRO}><Title kicker="Source, tests and CI" title="github.com/basartuncay/automation-portfolio" size={64} sub={D.outro} /></Fade>
     </Sequence>
   </AbsoluteFill>
 );
