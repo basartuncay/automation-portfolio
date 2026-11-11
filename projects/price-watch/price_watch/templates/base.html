@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Price Watch{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#0d9488; --brand-soft:#f0fdfa;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#ffffff; --card:#fff; --ink:#1a1a1a; --mute:#666666; --line:#e4e4e4; --brand:#a3001e; --brand-soft:#fbe6ea;
+        --ok:#1d7a4e; --ok-soft:#e6f4ec; --warn:#a35d00; --warn-soft:#fdf1dc; --bad:#a3001e; --bad-soft:#fbe6ea; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -46,6 +46,27 @@ ol.sources li { margin-bottom:8px; } .timeline li { margin-bottom:8px; }
 .chip.ok { background:var(--ok-soft); color:var(--ok); } .chip.suspicious, .chip.price_drop, .chip.stock, .chip.scraper_check { background:var(--warn-soft); color:var(--warn); }
 .chip.failed, .chip.undercut, .chip.crawl_failed { background:var(--bad-soft); color:var(--bad); }
 .btns { display:flex; gap:10px; } .head { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+/* identity */
+body { font:14.5px/1.5 Arial, "Helvetica Neue", sans-serif; }
+.shell { grid-template-columns:216px 1fr; }
+nav { background:#a3001e; color:#ffd7de; padding:24px 14px; }
+nav .logo { color:#fff; font:800 30px/.95 "Avenir Next Condensed", "Arial Narrow", sans-serif; letter-spacing:-.01em; margin:0 8px 24px;
+            border:3px solid #fff; border-radius:4px 4px 4px 22px; padding:10px 12px; }
+nav a { color:#ffe3e8; border-radius:2px; font-weight:600; }
+nav a.on { background:#fff; color:#a3001e; } nav a:hover { background:#8a0019; color:#fff; } nav a.on:hover { background:#fff; color:#a3001e; }
+nav .count { background:#1a1a1a; }
+nav .me { border-top-color:#c4334f; color:#ffd7de; } nav .me button { color:#fff; text-decoration:underline; }
+main { padding:32px 42px; }
+h1 { font:700 34px/1.05 "Avenir Next Condensed", "Arial Narrow", sans-serif; }
+.card { border-radius:2px; border:1px solid #e4e4e4; }
+th { text-transform:none; letter-spacing:0; font-size:12.5px; color:#1a1a1a; border-bottom:2px solid #1a1a1a; }
+.num { font:600 16px/1.3 "Avenir Next Condensed", "Arial Narrow", sans-serif; }
+.cheaper { color:#a3001e; }
+.btn { border-radius:2px; background:#1a1a1a; } .btn.ghost { background:#fff; }
+.chip { border-radius:2px; } .stat b { font:700 34px/1 "Avenir Next Condensed", "Arial Narrow", sans-serif; }
+.tabs a { border-radius:2px; } .tabs a.on { background:#1a1a1a; border-color:#1a1a1a; }
+@media (max-width:760px) { .shell { grid-template-columns:1fr; } nav { flex-direction:row; flex-wrap:wrap; } nav .me { margin:0; } main { padding:20px 16px; } }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #a3001e; outline-offset:2px; }
 </style>
 </head>
 <body>
