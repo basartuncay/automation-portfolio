@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Stock Sync{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#15803d; --brand-soft:#f0fdf4;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#e7e9ec; --card:#fff; --ink:#1b1f24; --mute:#5b636d; --line:#c9ced5; --brand:#1b1f24; --brand-soft:#fff5cc;
+        --ok:#1f7a3a; --ok-soft:#e6f4ec; --warn:#a35d00; --warn-soft:#fdf1dc; --bad:#c1121f; --bad-soft:#fbe9e7; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -71,6 +71,33 @@ textarea.task { min-height:90px; } .head { display:flex; justify-content:space-b
 .form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; } .form-row label { font-size:12px; color:var(--mute); display:flex; flex-direction:column; gap:4px; }
 .form-row input { border:1px solid var(--line); border-radius:8px; padding:8px 10px; font:inherit; }
 .mini { display:inline; } .mini button { background:none; border:1px solid var(--line); border-radius:6px; padding:2px 8px; font:12px inherit; cursor:pointer; }
+/* identity */
+.shell { display:block; }
+nav { flex-direction:row; align-items:center; gap:4px; padding:0 28px; position:sticky; top:0; z-index:5; overflow-x:auto; }
+nav .logo { margin:0 22px 0 0; white-space:nowrap; } nav a { white-space:nowrap; gap:8px; }
+nav .me { margin:0 0 0 auto; border:0; display:flex; gap:12px; align-items:center; white-space:nowrap; }
+main { margin:0 auto; }
+
+body { font:15px/1.45 "DIN Alternate", "DIN Next", Bahnschrift, "Arial Narrow", sans-serif; }
+nav { background:#24282d; color:#c4c9d0; height:64px; }
+nav { border-bottom:7px solid #f2c200; border-image:repeating-linear-gradient(-45deg,#f2c200 0 10px,#24282d 10px 20px) 7; }
+nav .logo { color:#f2c200; font-size:22px; font-weight:700; letter-spacing:.06em; }
+nav a { color:#c4c9d0; border-radius:0; padding:18px 14px; font-weight:600; }
+nav a.on { background:#f2c200; color:#1b1f24; } nav a:hover { background:#353a41; color:#fff; } nav a.on:hover { background:#f2c200; color:#1b1f24; }
+nav .count { border-radius:0; }
+nav .me { color:#c4c9d0; } nav .me button { color:#f2c200; }
+main { max-width:1400px; padding:34px 32px; }
+h1 { font-size:30px; font-weight:700; letter-spacing:.02em; }
+.card { border-radius:0; border:1px solid #c9ced5; border-top:4px solid #24282d; }
+th { background:#24282d; color:#e7e9ec; text-transform:none; letter-spacing:.02em; font-size:13px; border:0; }
+td { border-bottom-color:#dfe2e6; }
+.big { font-size:24px; }
+.btn { border-radius:0; background:#24282d; color:#f2c200; } .btn.ghost { background:#fff; color:#1b1f24; border:1px solid #9aa1aa; }
+.chip, .tabs a, .mini button, .form-row input, input, select, textarea { border-radius:0 !important; }
+.tabs a.on { background:#24282d; border-color:#24282d; color:#f2c200; }
+.chip.reserved, .chip.reserve { background:#fff5cc; color:#6b5300; }
+@media (max-width:760px) { main { padding:20px 16px; } }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #f2c200; outline-offset:2px; }
 </style>
 </head>
 <body>

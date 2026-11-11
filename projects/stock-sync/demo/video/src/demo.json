@@ -1,7 +1,9 @@
 {
  "file": "stock.webm",
  "who": "Real stack · local stand-ins for Shopify, Amazon SP-API and the warehouse",
- "accent": "#16a34a",
+ "accent": "#f2c200",
+ "bg": "#24282d",
+ "font": "'DIN Alternate', Bahnschrift, sans-serif",
  "kicker": "Stock Sync · real recording",
  "title": "Sell the same stock on Shopify and Amazon without overselling",
  "sub": "One stock ledger for both channels and the warehouse: bundles, safety buffers, sell-outs pushed in about a second, oversells caught.",
@@ -9,47 +11,47 @@
  "thumbKicker": "E-COMMERCE",
  "thumbTitle": "One stock, every channel",
  "thumbSub": "Stock Sync · Shopify + Amazon + warehouse",
- "trim": 1.07,
- "end": 46.75,
+ "trim": 1.1199999999999999,
+ "end": 47.68,
  "caps": [
   {
-   "from": 1.37,
+   "from": 1.42,
    "text": "Each channel shows what's available, minus its own safety buffer. Bundles follow their scarcest part"
   },
   {
-   "from": 6.37,
+   "from": 6.43,
    "text": "A Shopify customer buys the last 3 kettles…"
   },
   {
-   "from": 8.75,
+   "from": 9.01,
    "text": "…and Amazon shows 0 about a second later. The next Amazon buyer is refused"
   },
   {
-   "from": 13.54,
+   "from": 13.8,
    "text": "The worst case: Shopify's webhook is late while Amazon sells the same grinders"
   },
   {
-   "from": 18.16,
+   "from": 19.74,
    "text": "Caught: the order can't be filled, and nothing is half-reserved. The exception says exactly what's short"
   },
   {
-   "from": 23.86,
+   "from": 24.26,
    "text": "The warehouse receives 10 grinders. One click, and the order is reserved"
   },
   {
-   "from": 28.71,
+   "from": 29.43,
    "text": "Every change is a movement in the ledger, with its reference and the stock after it"
   },
   {
-   "from": 33.26,
+   "from": 34.07,
    "text": "Reconciliation: a stock count differs. It's only booked when it shows twice, so shipments in flight don't count"
   },
   {
-   "from": 38.46,
+   "from": 39.34,
    "text": "And a quantity someone typed into Shopify by hand is found and put right"
   },
   {
-   "from": 42.73,
+   "from": 43.6,
    "text": "Back to one truth on every channel"
   }
  ]
