@@ -14,7 +14,7 @@ from demo_recorder import Recorder  # noqa: E402
 
 ENV = dict(l.split("=", 1) for l in (HERE.parent / ".env").read_text().split())
 APP = "http://127.0.0.1:8116"
-META = {"file": "reviewdesk.webm", "who": "Real stack · local stand-ins for the Google Business Profile API and Slack", "accent": "#e11d48",
+META = {"file": "reviewdesk.webm", "who": "Real stack · local stand-ins for the Google Business Profile API and Slack", "accent": "#d98e04", "bg": "#14353a", "font": "'Iowan Old Style', Palatino, Georgia, serif",
         "kicker": "Reviewdesk · real recording", "title": "Every Google review answered, the hard ones by a person",
         "sub": "Drafts in the reviewer's language that fit what they wrote, praise answered on its own, criticism and serious claims held for the manager with an alert.",
         "outro": "Python · FastAPI · SQLite · Google Business Profile API · Slack webhooks · Docker · e2e in GitHub Actions.",

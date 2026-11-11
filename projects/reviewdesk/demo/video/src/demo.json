@@ -1,7 +1,9 @@
 {
  "file": "reviewdesk.webm",
  "who": "Real stack · local stand-ins for the Google Business Profile API and Slack",
- "accent": "#e11d48",
+ "accent": "#d98e04",
+ "bg": "#14353a",
+ "font": "'Iowan Old Style', Palatino, Georgia, serif",
  "kicker": "Reviewdesk · real recording",
  "title": "Every Google review answered, the hard ones by a person",
  "sub": "Drafts in the reviewer's language that fit what they wrote, praise answered on its own, criticism and serious claims held for the manager with an alert.",
@@ -9,35 +11,35 @@
  "thumbKicker": "LOCAL BUSINESS",
  "thumbTitle": "Reviews answered, nothing risky auto-posted",
  "thumbSub": "Reviewdesk · Google reviews → drafts → approval",
- "trim": 1.19,
- "end": 40.05,
+ "trim": 1.86,
+ "end": 42.22,
  "caps": [
   {
-   "from": 1.49,
+   "from": 2.16,
    "text": "New Google reviews for two locations. The serious ones wait for the manager, most urgent first"
   },
   {
-   "from": 5.5,
+   "from": 6.18,
    "text": "A food-poisoning claim: an alert went to Slack, and the draft takes it private without repeating the claim"
   },
   {
-   "from": 10.26,
+   "from": 10.98,
    "text": "A 2-star review in German: the draft answers each point, the salt, the wait and the price"
   },
   {
-   "from": 14.51,
+   "from": 15.27,
    "text": "The manager adds a personal line and posts it to Google"
   },
   {
-   "from": 18.48,
+   "from": 19.61,
    "text": "Praise is answered on its own, after a window in which anyone can still edit it"
   },
   {
-   "from": 30.29,
+   "from": 32.09,
    "text": "Posted: in English or German, by first name, mentioning what they liked"
   },
   {
-   "from": 35.13,
+   "from": 37.14,
    "text": "Per location: rating, how many got a reply, how fast, and what the complaints are about"
   }
  ]

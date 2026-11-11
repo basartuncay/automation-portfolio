@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Reviewdesk{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#be123c; --brand-soft:#fff1f2;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#f2f4f6; --card:#fff; --ink:#1e2533; --mute:#646d7c; --line:#dfe3e8; --brand:#0f5e66; --brand-soft:#e2f0f1;
+        --ok:#1d7a4e; --ok-soft:#e6f4ec; --warn:#a35d00; --warn-soft:#fdf1dc; --bad:#b3261e; --bad-soft:#fbe9e7; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -66,6 +66,32 @@ textarea.task { min-height:90px; } .head { display:flex; justify-content:space-b
 .urgent { background:var(--bad-soft); color:var(--bad); border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700; display:inline-block; margin-bottom:6px; }
 .topic { display:inline-block; background:#f3f4f6; border-radius:6px; padding:1px 7px; font-size:12px; margin-right:4px; color:#374151; }
 .mini { display:inline; } .stat b { font-size:26px; }
+/* identity */
+.shell { display:block; }
+nav { flex-direction:row; align-items:center; gap:4px; padding:0 28px; position:sticky; top:0; z-index:5; overflow-x:auto; }
+nav .logo { margin:0 22px 0 0; white-space:nowrap; } nav a { white-space:nowrap; gap:8px; }
+nav .me { margin:0 0 0 auto; border:0; display:flex; gap:12px; align-items:center; white-space:nowrap; }
+main { margin:0 auto; }
+
+body { font:15px/1.5 -apple-system, "Segoe UI", sans-serif; }
+nav { background:#f2f4f6; color:#1e2533; justify-content:center; padding:22px 28px 0; flex-wrap:wrap; position:static; }
+nav .logo { flex-basis:100%; text-align:center; margin:0 0 14px; color:#1e2533; font:600 30px/1.1 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+nav .logo::after { content:"★★★★★"; display:block; color:#d98e04; font-size:13px; letter-spacing:4px; margin-top:4px; }
+nav a { color:#646d7c; border-radius:0; padding:10px 14px; border-bottom:2px solid transparent; }
+nav a.on { background:none; color:#0f5e66; border-bottom-color:#0f5e66; font-weight:600; } nav a:hover { background:none; color:#1e2533; }
+nav .me { margin:0 0 0 22px; color:#646d7c; font-size:13px; } nav .me button { color:#0f5e66; }
+.shell > nav { border-bottom:1px solid #dfe3e8; }
+main { max-width:1080px; padding:30px 28px; }
+h1 { font:600 28px/1.2 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+.card { border-radius:10px; border-color:#dfe3e8; }
+.quote { font:17px/1.6 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+.stars { color:#d98e04; font-size:17px; }
+th { text-transform:none; letter-spacing:0; font-size:13px; }
+.btn { border-radius:8px; background:#0f5e66; } .btn.ghost { background:#fff; }
+.chip { border-radius:6px; } .tabs a.on { background:#0f5e66; border-color:#0f5e66; }
+textarea { border-radius:10px !important; }
+@media (max-width:760px) { main { padding:20px 16px; } }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #d98e04; outline-offset:2px; }
 </style>
 </head>
 <body>
