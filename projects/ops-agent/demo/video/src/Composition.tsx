@@ -101,7 +101,7 @@ export const Thumb: React.FC = () => (
     <div style={{ position: "absolute", right: -80, top: 120, width: 1100, height: 688, borderRadius: 18, overflow: "hidden", transform: "rotate(-3deg)", boxShadow: "0 30px 80px rgba(0,0,0,.6)" }}>
       <Img src={staticFile("queue.png")} style={{ width: 1100, height: 688 }} />
     </div>
-    <div style={{ position: "absolute", left: 90, top: 200, width: 820, color: "white" }}>
+    <div style={{ position: "absolute", left: 90, top: 200, width: 740, color: "white" }}>
       <div style={{ color: ACCENT, fontSize: 40, fontWeight: 800, letterSpacing: 3 }}>AI AGENTS + AUTOMATION</div>
       <div style={{ fontSize: 110, fontWeight: 900, lineHeight: 1.0, marginTop: 20 }}>Back-office AI agent</div>
       <div style={{ fontSize: 40, color: "#94a3b8", marginTop: 40 }}>Ops Agent · Claude + MCP + Docker</div>
