@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine]
+                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -169,4 +169,17 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/lead-engine
+        run: docker compose logs --tail 80
+
+  stock-sync-e2e:
+    # Stock Sync in Docker: Shopify + Amazon + warehouse on one ledger, sell-out, oversell, throttling, reconciliation.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: End-to-end test
+        working-directory: projects/stock-sync
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/stock-sync
         run: docker compose logs --tail 80

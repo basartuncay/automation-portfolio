@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Stock Sync{% endblock %}</title>
+<style>
+:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#15803d; --brand-soft:#f0fdf4;
+        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+* { box-sizing: border-box; }
+body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
+a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
+.shell { display:grid; grid-template-columns:230px 1fr; min-height:100vh; }
+nav { background:#111827; color:#d1d5db; padding:22px 16px; display:flex; flex-direction:column; gap:4px; }
+nav .logo { color:#fff; font-weight:800; font-size:18px; margin:0 8px 18px; }
+nav a { color:#d1d5db; padding:8px 10px; border-radius:8px; display:flex; justify-content:space-between; }
+nav a.on, nav a:hover { background:#1f2937; color:#fff; text-decoration:none; }
+nav .count { background:#dc2626; color:#fff; border-radius:99px; padding:0 8px; font-size:12px; line-height:20px; }
+nav .me { margin-top:auto; font-size:13px; padding:8px 10px; border-top:1px solid #374151; }
+nav .me button { background:none; border:0; color:#9ca3af; padding:0; cursor:pointer; font:inherit; }
+main { padding:28px 36px; max-width:1280px; }
+h1 { font-size:24px; margin:0 0 4px; } .sub { color:var(--mute); margin:0 0 22px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+.grid { display:grid; gap:16px; }
+.chip { display:inline-block; border-radius:99px; padding:1px 10px; font-size:12px; font-weight:600; background:#f3f4f6; color:#374151; white-space:nowrap; }
+.chip.drafted { background:var(--brand-soft); color:var(--brand); } .chip.needs_human { background:var(--warn-soft); color:var(--warn); }
+.chip.sent { background:var(--ok-soft); color:var(--ok); } .chip.high, .chip.flag { background:var(--bad-soft); color:var(--bad); }
+.chip.engine { background:#f0fdfa; color:#0f766e; }
+table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--mute); font-weight:600; }
+tr.row:hover { background:#fafafa; cursor:pointer; }
+.muted { color:var(--mute); } .small { font-size:13px; }
+.btn { border:0; border-radius:8px; padding:9px 16px; font:600 14px inherit; font-family:inherit; cursor:pointer; background:var(--brand); color:#fff; }
+.btn { white-space:nowrap; }
+.btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
+.btn:disabled { background:#c7c9d1; cursor:not-allowed; }
+textarea, input[type=email], input[type=password], input[type=text] { width:100%; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font:inherit; }
+textarea { min-height:300px; resize:vertical; }
+.alert { border-radius:8px; padding:10px 14px; margin-bottom:14px; } .alert.warn { background:var(--warn-soft); color:var(--warn); }
+.alert.bad { background:var(--bad-soft); color:var(--bad); } .alert.ok { background:var(--ok-soft); color:var(--ok); }
+pre.mail { white-space:pre-wrap; font:inherit; margin:0; }
+.tabs { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; } .tabs a { padding:6px 12px; border-radius:99px; background:#fff; border:1px solid var(--line); color:var(--ink); font-size:14px; }
+.tabs a.on { background:var(--ink); color:#fff; border-color:var(--ink); text-decoration:none; }
+.stat b { font-size:28px; display:block; } .stat span { color:var(--mute); font-size:13px; }
+ol.sources li { margin-bottom:8px; } .timeline li { margin-bottom:8px; }
+.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.cheaper { color:var(--bad); font-weight:700; } .dearer { color:var(--mute); } .oos { color:var(--mute); text-decoration:line-through; }
+.chip.ok { background:var(--ok-soft); color:var(--ok); } .chip.suspicious, .chip.price_drop, .chip.stock, .chip.scraper_check { background:var(--warn-soft); color:var(--warn); }
+.chip.failed, .chip.undercut, .chip.crawl_failed { background:var(--bad-soft); color:var(--bad); }
+.btns { display:flex; gap:10px; }
+.chip.done, .chip.approved { background:var(--ok-soft); color:var(--ok); } .chip.waiting_approval, .chip.pending, .chip.needs_approval { background:var(--warn-soft); color:var(--warn); }
+.chip.failed, .chip.rejected, .chip.error { background:var(--bad-soft); color:var(--bad); } .chip.running, .chip.queued { background:var(--brand-soft); color:var(--brand); }
+.trace { list-style:none; padding:0; margin:0; } .trace li { display:grid; grid-template-columns:120px 1fr; gap:14px; padding:12px 0; border-bottom:1px solid var(--line); }
+.trace .who { font-size:12px; color:var(--mute); } .trace .who b { display:block; color:var(--ink); font-size:13px; }
+pre.json { background:#0f172a; color:#e2e8f0; border-radius:8px; padding:10px 12px; font:12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space:pre-wrap; margin:6px 0 0; }
+.approval { border:2px solid #f59e0b; background:var(--warn-soft); border-radius:10px; padding:12px 14px; margin-top:8px; }
+textarea.task { min-height:90px; } .head { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+.chip.created, .chip.updated, .chip.resolved, .chip.connected, .chip.linked { background:var(--ok-soft); color:var(--ok); }
+.chip.conflict, .chip.open, .chip.needs_reconnect { background:var(--warn-soft); color:var(--warn); }
+.chip.dead { background:var(--bad-soft); color:var(--bad); }
+.diff del { color:var(--bad); text-decoration:line-through; } .diff ins { color:var(--ok); text-decoration:none; font-weight:600; }
+.side { display:inline-block; min-width:52px; font-weight:600; }
+
+.chip.reserved { background:var(--brand-soft); color:var(--brand); } .chip.oversold, .chip.short, .chip.push_failed { background:var(--bad-soft); color:var(--bad); }
+.chip.shipped { background:#eef2ff; color:#4338ca; } .chip.cancelled, .chip.resolved { background:#f3f4f6; color:#6b7280; }
+.chip.receipt { background:var(--ok-soft); color:var(--ok); } .chip.reserve { background:var(--brand-soft); color:var(--brand); } .chip.release { background:#f3f4f6; color:#374151; }
+.chip.ship { background:#eef2ff; color:#4338ca; } .chip.adjust { background:var(--warn-soft); color:var(--warn); } .chip.watching { background:var(--warn-soft); color:var(--warn); }
+.chip.adjusted { background:var(--bad-soft); color:var(--bad); }
+.big { font-size:20px; font-weight:800; font-variant-numeric:tabular-nums; } .low { color:var(--bad); }
+.shown { display:inline-flex; gap:6px; align-items:baseline; } .shown small { color:var(--mute); font-size:11px; }
+.stale { color:var(--warn); font-weight:700; } .zero { color:var(--bad); font-weight:700; }
+.form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; } .form-row label { font-size:12px; color:var(--mute); display:flex; flex-direction:column; gap:4px; }
+.form-row input { border:1px solid var(--line); border-radius:8px; padding:8px 10px; font:inherit; }
+.mini { display:inline; } .mini button { background:none; border:1px solid var(--line); border-radius:6px; padding:2px 8px; font:12px inherit; cursor:pointer; }
+</style>
+</head>
+<body>
+{% block body %}
+<div class="shell">
+  <nav>
+    <div class="logo">Stock Sync</div>
+    <a href="/" class="{{ 'on' if active == 'stock' }}">Stock</a>
+    <a href="/orders" class="{{ 'on' if active == 'orders' }}">Orders</a>
+    <a href="/exceptions" class="{{ 'on' if active == 'exceptions' }}">Exceptions {% if n and n.exceptions %}<span class="count">{{ n.exceptions }}</span>{% endif %}</a>
+    <a href="/reconcile" class="{{ 'on' if active == 'recon' }}">Reconciliation</a>
+    <a href="/log" class="{{ 'on' if active == 'log' }}">Sync log</a>
+    <div class="me">{{ user.name }}
+      <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Sign out</button></form>
+    </div>
+  </nav>
+  <main>{% block main %}{% endblock %}</main>
+</div>
+{% endblock %}
+</body>
+</html>

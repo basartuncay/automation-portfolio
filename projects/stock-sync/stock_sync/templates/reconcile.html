@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>Reconciliation</h1>
+<p class="sub">The warehouse count is compared with the ledger, and each channel with what we last pushed. A count difference is booked only when it shows up in two runs in a row, so a shipment still in transit isn't mistaken for missing stock.</p></div>
+<form method="post" action="/reconcile"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Run now</button></form></div>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+{% if latest %}{% set rep = latest.report|fromjson %}
+<div class="grid" style="grid-template-columns:1.3fr 1fr">
+  <div class="card"><h3 style="margin-top:0">Run #{{ latest.id }} · {{ latest.at }}</h3><table>
+    <tr><th>SKU</th><th class="num">Ledger</th><th class="num">Warehouse</th><th class="num">Difference</th><th>Action</th></tr>
+    {% for r in rep.stock %}<tr><td>{{ r.sku }}</td><td class="num">{{ r.ledger }}</td><td class="num">{{ r.warehouse }}</td><td class="num">{{ '%+d'|format(r.diff) if r.diff else '0' }}</td>
+      <td><span class="chip {{ r.action if r.action in ('watching', 'adjusted') else 'resolved' }}" data-recon="{{ r.sku }}">{{ r.action }}</span></td></tr>{% endfor %}
+  </table></div>
+  <div class="card"><h3 style="margin-top:0">Channel drift</h3>
+    {% for d in rep.drift %}<p>{% if d.error %}{{ d.channel }}: couldn't read ({{ d.error }}){% else %}<b>{{ d.channel }}</b> {{ d.sku }} showed {{ d.shown }}, we had pushed {{ d.pushed }}. Re-pushed.{% endif %}</p>
+    {% else %}<p class="muted">Every channel shows what we pushed.</p>{% endfor %}
+    <h3>Earlier runs</h3><ul class="small">{% for r in runs[1:] %}<li>#{{ r.id }} {{ r.at }}</li>{% endfor %}</ul>
+  </div>
+</div>
+{% else %}<div class="card muted">No runs yet.</div>{% endif %}
+{% endblock %}
