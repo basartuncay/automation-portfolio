@@ -1,0 +1,53 @@
+# Usage-based billing on Stripe. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8112
+name: meter
+
+x-env: &env
+  STRIPE_URL: http://stripe:8000                    # for real use: https://api.stripe.com
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:?run ./setup.sh first}
+  STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:?run ./setup.sh first}
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8112:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "meter.worker"]
+    environment:
+      <<: *env
+      REPORT_SECONDS: ${REPORT_SECONDS:-10}
+      GRACE_DAYS: ${GRACE_DAYS:-7}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      stripe: { condition: service_healthy }
+    restart: unless-stopped
+
+  stripe:
+    # Demo only: Stripe Billing with its request shapes (customers, subscriptions, meter events, invoices, webhooks).
+    build: .
+    command: ["uvicorn", "meter.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      <<: *env
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      STRIPE_WEBHOOK_URL: http://web:8000/webhooks/stripe
+    ports: ["127.0.0.1:8113:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

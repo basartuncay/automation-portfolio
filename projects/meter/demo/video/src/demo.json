@@ -1,0 +1,48 @@
+{
+ "file": "meter.webm",
+ "who": "Real stack · local stand-in for Stripe Billing",
+ "accent": "#635bff",
+ "kicker": "Meter · real recording",
+ "title": "Usage-based billing on Stripe, without surprises",
+ "sub": "Usage counted once, reported to Stripe's meter and reconciled, alerts before overage, spend caps, and failed payments handled with a grace period.",
+ "outro": "Python · FastAPI · SQLite · Stripe Billing (meters, subscriptions, signed webhooks) · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "SAAS BILLING",
+ "thumbTitle": "Usage billing that adds up",
+ "thumbSub": "Meter · usage → Stripe → invoices",
+ "trim": 1.23,
+ "end": 56.19,
+ "caps": [
+  {
+   "from": 1.53,
+   "text": "A new customer on the Starter plan: created in Stripe with a subscription, API key shown once"
+  },
+  {
+   "from": 7.93,
+   "text": "The product sends usage. A batch retried after a timeout is counted once"
+  },
+  {
+   "from": 13.5,
+   "text": "Past 80% of the included calls: the customer gets an email. Then usage runs over"
+  },
+  {
+   "from": 19.62,
+   "text": "They set a spend cap. When the bill reaches it, the product is told to pause usage"
+  },
+  {
+   "from": 26.11,
+   "text": "Every event went to Stripe's meter. Reconciliation: our count and Stripe's agree"
+  },
+  {
+   "from": 30.0,
+   "text": "The period closes. The card is declined: past due, and after the grace period, paused"
+  },
+  {
+   "from": 45.9,
+   "text": "A new card, Stripe retries, the invoice is paid, and access is back at once"
+  },
+  {
+   "from": 51.29,
+   "text": "And every email the customer got along the way"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+[project]
+name = "meter"
+version = "1.0.0"
+description = "Usage-based billing on Stripe: idempotent usage events, meters, plans with included usage, spend caps, dunning and entitlements"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "jinja2>=3.1",
+    "itsdangerous>=2.2",
+    "python-multipart>=0.0.9",
+    "tzdata>=2026.6",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

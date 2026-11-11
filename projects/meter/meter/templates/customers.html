@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Customers</h1>
+<p class="sub">This period's usage against each plan's included calls, and what the next invoice will be so far: {{ mrr|euro }} in total.</p>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+{% if new_key %}<div class="alert ok">API key for {{ new_key.customer }}, shown once (only its hash is stored):<div class="key" id="new-key">{{ new_key.key }}</div></div>{% endif %}
+<div class="card" style="margin-bottom:16px"><table>
+  <tr><th>Customer</th><th>Plan</th><th>Usage this period</th><th class="num">Next invoice so far</th><th>Status</th></tr>
+  {% for r in rows %}
+  <tr class="row" onclick="location='/customers/{{ r.c.id }}'" data-customer="{{ r.c.name }}" data-status="{{ r.c.status }}">
+    <td><a href="/customers/{{ r.c.id }}"><b>{{ r.c.name }}</b></a><div class="small muted">{{ r.c.email }}</div></td>
+    <td>{{ r.plan.name }}{% if r.pending %}<div class="small muted">→ {{ r.pending.name }} next period</div>{% endif %}</td>
+    <td><div class="bar"><i class="{{ 'over' if r.over }}" style="width:{{ r.pct }}%"></i></div><div class="small muted">{{ '{:,}'.format(r.used) }} of {{ '{:,}'.format(r.plan.included) }}</div></td>
+    <td class="num"><b>{{ r.projected|euro }}</b>{% if r.c.spend_cap_cents %}<div class="small muted">cap {{ r.c.spend_cap_cents|euro }}</div>{% endif %}</td>
+    <td><span class="chip {{ r.c.status }}">{{ r.c.status.replace('_', ' ') }}</span></td>
+  </tr>
+  {% else %}<tr><td colspan="5" class="muted">No customers yet.</td></tr>{% endfor %}
+</table></div>
+<div class="card"><h3 style="margin-top:0">New customer</h3>
+  <form method="post" action="/customers" class="form-row"><input type="hidden" name="csrf" value="{{ csrf }}">
+    <label>Name<input name="name" required></label><label>Billing email<input name="email" type="email" required></label>
+    <label>Plan<select name="plan">{% for p in plans %}<option value="{{ p.id }}">{{ p.name }}: {{ p.base_cents|euro }}/month, {{ '{:,}'.format(p.included) }} calls, then {{ p.overage_cents_per_1k|euro }}/1k</option>{% endfor %}</select></label>
+    <button class="btn">Create in Stripe</button></form></div>
+{% endblock %}

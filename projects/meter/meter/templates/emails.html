@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Emails to customers</h1><p class="sub">Usage alerts, payment problems and account pauses, queued for your email provider. In this demo they are listed here instead of sent.</p>
+<div class="card"><table>{% for e in rows %}<tr><td class="small muted" style="width:150px">{{ e.at }}</td><td><b>{{ e.subject }}</b><div class="small muted">to {{ e.to_ }}</div><div class="small">{{ e.body }}</div></td></tr>
+  {% else %}<tr><td class="muted">None yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}
