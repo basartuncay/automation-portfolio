@@ -9,19 +9,19 @@ type Clip = { file: string; trim: number; end: number; who: string; hideWhoFrom?
 
 const CLIPS: Clip[] = [
   {
-    file: "hub.webm", trim: 0.9, end: 60.3, who: "Signed in as: ops team",
+    file: "hub.webm", trim: 2.22, end: 62.94, who: "Signed in as: ops team",
     caps: [
-      { from: 0.9, text: "The store is connected. The CRM isn't yet" },
-      { from: 3.56, text: "Connect the CRM with OAuth, the way HubSpot does it" },
-      { from: 6.95, text: "The CRM's consent screen: allow access to contacts" },
-      { from: 10.36, text: "Connected. Two customers sign up in the store, and the hub creates them in the CRM" },
-      { from: 15.46, text: "Both systems side by side: store on the left, CRM on the right" },
-      { from: 18.52, text: "A sales rep edits Ana in the CRM while she places an order. Both changes arrive, each in its own direction" },
-      { from: 24.06, text: "Every decision is logged. \"No change\" is the hub's own write echoing back: recognised, so nothing loops" },
-      { from: 32.16, text: "Ana's phone was changed in both systems. The hub overwrites neither and asks a person" },
-      { from: 43.99, text: "The CRM goes down. A new customer is retried, then parked with the error" },
-      { from: 47.93, text: "The CRM is back: replay, and nothing was lost" },
-      { from: 54.73, text: "Both systems in sync" },
+      { from: 2.22, text: "The store is connected. The CRM isn't yet" },
+      { from: 5.25, text: "Connect the CRM with OAuth, the way HubSpot does it" },
+      { from: 8.76, text: "The CRM's consent screen: allow access to contacts" },
+      { from: 12.31, text: "Connected. Two customers sign up in the store, and the hub creates them in the CRM" },
+      { from: 17.49, text: "Both systems side by side: store on the left, CRM on the right" },
+      { from: 20.62, text: "A sales rep edits Ana in the CRM while she places an order. Both changes arrive, each in its own direction" },
+      { from: 26.17, text: "Every decision is logged. \"No change\" is the hub's own write echoing back: recognised, so nothing loops" },
+      { from: 34.34, text: "Ana's phone was changed in both systems. The hub overwrites neither and asks a person" },
+      { from: 46.48, text: "The CRM goes down. A new customer is retried, then parked with the error" },
+      { from: 50.46, text: "The CRM is back: replay, and nothing was lost" },
+      { from: 57.37, text: "Both systems in sync" },
     ],
   },
 ];
@@ -30,7 +30,7 @@ const INTRO = s(4), OUTRO = s(5);
 const clipLen = (c: Clip) => s(c.end - c.trim);
 const TOTAL = INTRO + CLIPS.reduce((n, c) => n + clipLen(c), 0) + OUTRO;
 
-const BG = "#0b1220", ACCENT = "#f97316", FONT = "Inter, Helvetica, Arial, sans-serif";
+const BG = "#1b2130", ACCENT = "#ff8a4c", FONT = "Verdana, Geneva, sans-serif";
 
 const Fade: React.FC<{ len: number; children: React.ReactNode }> = ({ len, children }) => {
   const f = useCurrentFrame();
@@ -56,7 +56,7 @@ const ClipScene: React.FC<{ clip: Clip }> = ({ clip }) => {
       </div>
       {t < (clip.hideWhoFrom ?? Infinity) && <div style={{ position: "absolute", left: 186, top: 320, background: ACCENT, color: "white", fontWeight: 700, fontSize: 24, padding: "8px 16px", borderRadius: 8 }}>{clip.who}</div>}
       <div style={{ position: "absolute", left: 220, right: 220, bottom: 90, display: "flex", justifyContent: "center" }}>
-        <div key={cap.from} style={{ background: "rgba(15,23,42,.92)", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
+        <div key={cap.from} style={{ background: BG + "eb", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
       </div>
     </AbsoluteFill>
   );

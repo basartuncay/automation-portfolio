@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Ops Agent{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#6d28d9; --brand-soft:#f5f3ff;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#eef2f1; --card:#fff; --ink:#14262b; --mute:#56686d; --line:#d3dddc; --brand:#0f4c55; --brand-soft:#e1eeef;
+        --ok:#1d7a4e; --ok-soft:#e6f4ec; --warn:#9a5b00; --warn-soft:#fff3d6; --bad:#b3261e; --bad-soft:#fbe9e7; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -53,6 +53,32 @@ ol.sources li { margin-bottom:8px; } .timeline li { margin-bottom:8px; }
 pre.json { background:#0f172a; color:#e2e8f0; border-radius:8px; padding:10px 12px; font:12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space:pre-wrap; margin:6px 0 0; }
 .approval { border:2px solid #f59e0b; background:var(--warn-soft); border-radius:10px; padding:12px 14px; margin-top:8px; }
 textarea.task { min-height:90px; } .head { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+/* identity */
+.shell { display:block; }
+nav { flex-direction:row; align-items:center; gap:4px; padding:0 28px; position:sticky; top:0; z-index:5; overflow-x:auto; }
+nav .logo { margin:0 22px 0 0; white-space:nowrap; } nav a { white-space:nowrap; gap:8px; }
+nav .me { margin:0 0 0 auto; border:0; display:flex; gap:12px; align-items:center; white-space:nowrap; }
+main { margin:0 auto; }
+
+body { font:14.5px/1.5 "Lucida Grande", "Lucida Sans Unicode", "Segoe UI", sans-serif; }
+nav { background:#12343b; color:#b9cfd2; padding:0 32px; height:auto; flex-wrap:wrap; row-gap:0; }
+nav .logo { color:#fff; font:700 22px/1 Rockwell, "Roboto Slab", Georgia, serif; flex-basis:100%; padding:16px 0 12px; margin:0; display:flex; align-items:center; gap:10px; }
+nav .logo::before { content:""; width:10px; height:10px; border-radius:50%; background:#f0a500; box-shadow:0 0 0 4px #f0a50033; }
+nav a { color:#b9cfd2; border-radius:6px 6px 0 0; padding:9px 16px; font-size:14px; }
+nav a.on { background:#eef2f1; color:#12343b; font-weight:700; } nav a:hover { background:#1b4750; color:#fff; } nav a.on:hover { background:#eef2f1; color:#12343b; }
+nav .count { background:#f0a500; color:#14262b; }
+nav .me { color:#b9cfd2; font-size:13px; } nav .me button { color:#f0a500; }
+main { max-width:1300px; padding:30px 32px; }
+h1, h2, h3 { font-family:Rockwell, "Roboto Slab", Georgia, serif; } h1 { font-size:28px; }
+.card { border-radius:6px; border-color:#d3dddc; }
+th { text-transform:none; letter-spacing:0; font-size:12.5px; color:#0f4c55; }
+.btn { border-radius:6px; background:#0f4c55; } .btn.ghost { background:#fff; }
+.approval { border:0; border-left:6px solid #f0a500; background:#fff3d6; border-radius:4px; }
+.trace li { grid-template-columns:130px 1fr; } .trace .who b { font-family:Rockwell, Georgia, serif; }
+pre.json { background:#12343b; }
+.tabs a.on { background:#12343b; border-color:#12343b; }
+@media (max-width:760px) { main { padding:20px 16px; } }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #f0a500; outline-offset:2px; }
 </style>
 </head>
 <body>

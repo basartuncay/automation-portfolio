@@ -9,17 +9,17 @@ type Clip = { file: string; trim: number; end: number; who: string; hideWhoFrom?
 
 const CLIPS: Clip[] = [
   {
-    file: "watch.webm", trim: 2.2, end: 49.4, who: "Pricing team", hideWhoFrom: 43.0,
+    file: "watch.webm", trim: 2.24, end: 51.45, who: "Pricing team", hideWhoFrom: 45.04,
     caps: [
-      { from: 2.2, text: "Every product we sell, against 2 competitors: right now we're the cheapest on all 12" },
-      { from: 6.51, text: "Competitors change prices. \"Crawl now\" (normally it runs on a schedule)" },
-      { from: 9.37, text: "VoltMart now undercuts us on headphones. A rival's charger went out of stock" },
-      { from: 14.46, text: "Price history per competitor, against our price (dashed)" },
-      { from: 20.41, text: "Alerts only for products we sell, and each one is also sent to Slack ✓" },
-      { from: 25.31, text: "A competitor redesigns its site: the crawl finds 0 products..." },
-      { from: 31.0, text: "...so it's marked suspicious and nothing is changed: no flood of false \"removed\" alerts" },
-      { from: 39.11, text: "Weekly digest, on schedule or on demand" },
-      { from: 43.12, text: "The digest email as it arrived: what's undercut, by how much, and crawl health" },
+      { from: 2.24, text: "Every product we sell, against 2 competitors: right now we're the cheapest on all 12" },
+      { from: 6.64, text: "Competitors change prices. \"Crawl now\" (normally it runs on a schedule)" },
+      { from: 9.53, text: "VoltMart now undercuts us on headphones. A rival's charger went out of stock" },
+      { from: 14.6, text: "Price history per competitor, against our price (dashed)" },
+      { from: 20.54, text: "Alerts only for products we sell, and each one is also sent to Slack ✓" },
+      { from: 25.4, text: "A competitor redesigns its site: the crawl finds 0 products..." },
+      { from: 31.09, text: "...so it's marked suspicious and nothing is changed: no flood of false \"removed\" alerts" },
+      { from: 41.15, text: "Weekly digest, on schedule or on demand" },
+      { from: 45.17, text: "The digest email as it arrived: what's undercut, by how much, and crawl health" },
     ],
   },
 ];
@@ -28,7 +28,7 @@ const INTRO = s(4), OUTRO = s(5);
 const clipLen = (c: Clip) => s(c.end - c.trim);
 const TOTAL = INTRO + CLIPS.reduce((n, c) => n + clipLen(c), 0) + OUTRO;
 
-const BG = "#0b1220", ACCENT = "#14b8a6", FONT = "Inter, Helvetica, Arial, sans-serif";
+const BG = "#8a0019", ACCENT = "#ffffff", FONT = "'Avenir Next Condensed', 'Arial Narrow', sans-serif";
 
 const Fade: React.FC<{ len: number; children: React.ReactNode }> = ({ len, children }) => {
   const f = useCurrentFrame();
@@ -52,9 +52,9 @@ const ClipScene: React.FC<{ clip: Clip }> = ({ clip }) => {
       <div style={{ position: "absolute", left: 160, top: 24, width: 1600, height: 1000, borderRadius: 14, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,.5)" }}>
         <OffthreadVideo src={staticFile(clip.file)} trimBefore={s(clip.trim)} muted style={{ width: 1600, height: 1000 }} />
       </div>
-      {t < (clip.hideWhoFrom ?? Infinity) && <div style={{ position: "absolute", left: 186, top: 320, background: ACCENT, color: "white", fontWeight: 700, fontSize: 24, padding: "8px 16px", borderRadius: 8 }}>{clip.who}</div>}
+      {t < (clip.hideWhoFrom ?? Infinity) && <div style={{ position: "absolute", left: 186, top: 320, background: ACCENT, color: BG, fontWeight: 700, fontSize: 24, padding: "8px 16px", borderRadius: 8 }}>{clip.who}</div>}
       <div style={{ position: "absolute", left: 220, right: 220, bottom: 90, display: "flex", justifyContent: "center" }}>
-        <div key={cap.from} style={{ background: "rgba(15,23,42,.92)", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
+        <div key={cap.from} style={{ background: BG + "eb", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
       </div>
     </AbsoluteFill>
   );
