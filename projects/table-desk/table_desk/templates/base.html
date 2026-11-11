@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Table Desk{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#0e7490; --brand-soft:#ecfeff;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#eef0ea; --card:#fff; --ink:#1c2420; --mute:#5f6b63; --line:#d9ddd3; --brand:#1e4d3a; --brand-soft:#e3ece6;
+        --ok:#2f6b3f; --ok-soft:#e6f4ec; --warn:#a35d00; --warn-soft:#fdf1dc; --bad:#b3261e; --bad-soft:#fbe9e7; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -77,6 +77,30 @@ textarea.task { min-height:90px; } .head { display:flex; justify-content:space-b
 select { border:1px solid var(--line); border-radius:8px; padding:8px 10px; font:inherit; background:#fff; }
 .stats { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:16px; }
 .mini { display:inline; } .mini button { background:none; border:1px solid var(--line); border-radius:6px; padding:2px 8px; font:12px inherit; cursor:pointer; }
+/* identity */
+.shell { display:block; }
+nav { flex-direction:row; align-items:center; gap:4px; padding:0 28px; position:sticky; top:0; z-index:5; overflow-x:auto; }
+nav .logo { margin:0 22px 0 0; white-space:nowrap; } nav a { white-space:nowrap; gap:8px; }
+nav .me { margin:0 0 0 auto; border:0; display:flex; gap:12px; align-items:center; white-space:nowrap; }
+main { margin:0 auto; }
+
+body { font:15px/1.5 Optima, Candara, "Segoe UI", sans-serif; letter-spacing:.005em; }
+nav { background:#1e3a2f; color:#cfd8cf; height:64px; border-bottom:3px solid #a87b2a; }
+nav .logo { color:#f3ead6; font-size:21px; font-weight:600; letter-spacing:.04em; font-style:italic; }
+nav .logo .small { color:#a8b5aa !important; font-style:normal; letter-spacing:0; font-size:12px; }
+nav a { color:#cfd8cf; border-radius:0; padding:20px 14px 18px; border-bottom:3px solid transparent; margin-bottom:-3px; }
+nav a.on, nav a:hover { background:none; color:#fff; border-bottom-color:#e2b65a; }
+nav .me { color:#cfd8cf; } nav .me button { color:#e2b65a; }
+main { max-width:1400px; padding:30px 40px; }
+h1 { font-size:30px; font-weight:600; color:#1e3a2f; letter-spacing:.01em; }
+.card { border-radius:4px; border-color:#d9ddd3; box-shadow:0 1px 0 #d9ddd3; }
+th { text-transform:none; letter-spacing:0; font-size:13px; color:#1e3a2f; border-bottom:2px solid #a87b2a; }
+.btn { border-radius:3px; background:#1e3a2f; letter-spacing:.03em; } .btn.ghost { border-color:#bfc7bd; }
+.tabs a { border-radius:3px; } .tabs a.on { background:#1e3a2f; border-color:#1e3a2f; }
+.chip { border-radius:3px; }
+.blk { border-radius:3px; background:#1e4d3a; } .blk.seated { background:#a87b2a; } .blk.done { background:#a3aca5; }
+.nowline { background:#c2410c; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #a87b2a; outline-offset:2px; }
 </style>
 </head>
 <body>
