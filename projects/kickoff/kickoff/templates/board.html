@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Clients</h1>
+<p class="sub">{{ pipeline|money }} in proposals out for signature · {{ won|money }} in deposits received{% if failed %} · <span style="color:var(--bad)">{{ failed }} setup step(s) failed</span>{% endif %}</p>
+<div class="board">
+  {% for key, label in stages %}
+  <div class="col"><h3><span>{{ label }}</span><span>{{ cols[key]|length }}</span></h3>
+    {% for c in cols[key] %}
+    <a class="cardlet" href="/clients/{{ c.id }}" data-stage="{{ c.stage }}"><b>{{ c.company or c.name }}</b><span class="small">{{ c.name }} · {{ c.package }}</span>
+      {% if c.total_cents %}<div class="small">{{ c.total_cents|money }}{% if c.version > 1 %} · v{{ c.version }}{% endif %}</div>{% endif %}</a>
+    {% else %}<p class="small muted">None</p>{% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

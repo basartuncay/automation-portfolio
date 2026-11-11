@@ -1,0 +1,31 @@
+{% extends "_public.html" %}
+{% block title %}Proposal for {{ c.company or c.name }}{% endblock %}
+{% block content %}
+<h1>Proposal for {{ c.company or c.name }}</h1>
+<p class="lead">Version {{ p.version }} · valid until {{ p.valid_until }}</p>
+{% if paid or c.stage in ('paid', 'onboarded') %}<div class="msg ok">Deposit received, thank you. You'll get an email with the kickoff link and your shared folder in a moment.</div>
+{% elif p.status == 'signed' %}<div class="msg ok">Signed on {{ sig.at }}. <a href="/p/{{ p.token }}/pdf">Download your signed copy</a>.</div>
+  {% if pay and pay.status == 'open' %}<form method="post" action="/p/{{ p.token }}/pay"><button class="go" style="margin-top:0">Pay the deposit ({{ deposit|money }})</button></form>{% endif %}
+{% elif p.status == 'expired' %}<div class="msg bad">This proposal has expired. Reply to the email and I'll send a fresh one.</div>{% endif %}
+{% if error %}<div class="msg bad">{{ error }}</div>{% endif %}
+<div class="doc">
+  {% if p.intro %}<p>{{ p.intro }}</p>{% endif %}
+  <table>
+    {% for i in items %}<tr><td><b>{{ i.name }}</b>{% if i.detail %}<div class="small">{{ i.detail }}</div>{% endif %}</td><td class="n">{{ i.cents|money }}</td></tr>{% endfor %}
+    <tr class="total"><td>Total <span class="small">(VAT added where applicable)</span></td><td class="n">{{ p.total_cents|money }}</td></tr>
+  </table>
+  <p>{{ p.deposit_pct }}% deposit on signing ({{ deposit|money }}), the rest on handover. About {{ pkg.weeks }} week{{ 's' if pkg.weeks != 1 }} from the kickoff call.</p>
+  <h2>Terms</h2>
+  <ol class="terms">{% for line in text.splitlines() if line[:2] in ('1.', '2.', '3.', '4.', '5.') %}<li>{{ line[3:] }}</li>{% endfor %}</ol>
+  {% if p.status in ('sent', 'viewed') %}
+  <form class="sign" method="post" action="/p/{{ p.token }}/sign">
+    <h2 style="margin-top:0">Sign</h2>
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="sha256" value="{{ sha }}">
+    <label for="typed">Type your full name</label><input class="typed" type="text" id="typed" name="typed_name" required autocomplete="name" placeholder="{{ c.name }}">
+    <label style="font-weight:400;display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="agree" value="1" required> I agree to this proposal and its terms, and to signing it electronically.</label>
+    <p class="small">Document fingerprint (SHA-256): <code>{{ sha }}</code>. It's stored with your signature and printed in your signed copy.</p>
+    <button class="go">Sign{% if deposit %} and pay the deposit{% endif %}</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
