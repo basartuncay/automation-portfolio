@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Access rules</h1><p class="sub">What each department gets. Changing a department in the HR system moves the access with it: new groups added, old ones removed.</p>
+<div class="grid" style="grid-template-columns:repeat(2,1fr)">
+  {% for dep, items in rules.items() %}<div class="card"><h3 style="margin-top:0">{{ 'Everyone' if dep == '*' else dep }}</h3><ul>{% for s, r in items %}<li>{{ s }}: {{ r }}</li>{% endfor %}</ul></div>{% endfor %}
+  <div class="card"><h3 style="margin-top:0">Privileged (manager approval)</h3><ul>{% for s, r in privileged %}<li>{{ s }}: {{ r }}</li>{% endfor %}</ul></div>
+</div>
+{% endblock %}

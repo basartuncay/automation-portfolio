@@ -1,0 +1,61 @@
+# Joiner, mover, leaver automation. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8110
+name: accessflow
+
+x-env: &env
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}          # also signs managers' approval links
+  HRIS_URL: http://apis:8000/hris                          # your HR system (Personio, BambooHR, HiBob…)
+  HRIS_TOKEN: ${HRIS_TOKEN:?run ./setup.sh first}
+  HRIS_WEBHOOK_SECRET: ${HRIS_WEBHOOK_SECRET:?run ./setup.sh first}
+  GOOGLE_URL: http://apis:8000/google                      # for real use: https://admin.googleapis.com (service account with domain-wide delegation)
+  GOOGLE_TOKEN: ${GOOGLE_TOKEN:?run ./setup.sh first}
+  SLACK_URL: http://apis:8000/slack                        # for real use: https://api.slack.com (SCIM needs Business+ or Enterprise Grid)
+  SLACK_TOKEN: ${SLACK_TOKEN:?run ./setup.sh first}
+  GITHUB_URL: http://apis:8000/github                      # for real use: https://api.github.com (GitHub App installation token)
+  GITHUB_TOKEN: ${GITHUB_TOKEN:?run ./setup.sh first}
+  PUBLIC_URL: http://127.0.0.1:8110
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8110:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "accessflow.worker"]
+    environment:
+      <<: *env
+      RUN_SECONDS: ${RUN_SECONDS:-2}
+      HRIS_POLL_SECONDS: ${HRIS_POLL_SECONDS:-300}
+      DRIFT_MINUTES: ${DRIFT_MINUTES:-60}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: an HR system, Google Workspace, Slack SCIM and GitHub with the real request shapes.
+    build: .
+    command: ["uvicorn", "accessflow.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      <<: *env
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      HRIS_WEBHOOK_URL: http://web:8000/webhooks/hris
+    ports: ["127.0.0.1:8111:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>People</h1>
+<p class="sub">Access follows the HR record: ready the day before someone starts, changed when they move teams, gone everywhere after their last day.</p>
+<div class="card"><table>
+  <tr><th>Person</th><th>Department</th><th>Status</th><th>Google</th><th>Slack</th><th>GitHub</th><th></th></tr>
+  {% for e in emps %}{% set a = access.get(e.id, []) %}{% set ph = phase(e) %}
+  <tr class="row" onclick="location='/people/{{ e.id }}'" data-person="{{ e.id }}" data-phase="{{ ph }}">
+    <td><a href="/people/{{ e.id }}"><b>{{ e.name }}</b></a><div class="small muted">{{ e.title }} · {{ e.email }}</div></td>
+    <td>{{ e.department }}</td>
+    <td><span class="chip {{ ph.replace(' ', '_') }}">{{ ph }}</span>{% if e.end_date %}<div class="small muted">last day {{ e.end_date }}{{ ' · immediate' if e.immediate }}</div>{% elif ph == 'not yet' %}<div class="small muted">starts {{ e.start_date }}</div>{% endif %}</td>
+    {% for s in ['google', 'slack', 'github'] %}<td><span class="sys"><span class="{{ 'on' if (s, 'account') in a }}" data-sys="{{ e.id }}:{{ s }}:{{ 'on' if (s, 'account') in a else 'off' }}">{{ 'account' if (s, 'account') in a else '—' }}</span>
+      {% for sy, r in a|sort if sy == s and r != 'account' %}<span class="on">{{ r.split(':')[1].split('@')[0] }}</span>{% endfor %}</span></td>{% endfor %}
+    <td>{% if pending.get(e.id) %}<span class="chip pending">{{ pending[e.id] }} pending</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table></div>
+{% endblock %}
