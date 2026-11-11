@@ -9,16 +9,16 @@ type Clip = { file: string; trim: number; end: number; who: string; hideWhoFrom?
 
 const CLIPS: Clip[] = [
   {
-    file: "pipeline.webm", trim: 2.9, end: 58.2, who: "Signed in as: finance",
+    file: "pipeline.webm", trim: 3.34, end: 69.86, who: "Signed in as: finance",
     caps: [
-      { from: 2.9, text: "Revenue from three sources: store orders, Stripe payments, Google and Meta ad spend. Every number passed 20 data tests" },
-      { from: 7.4, text: "ROAS and CAC per channel, and how many customers come back" },
-      { from: 11.36, text: "Built with dbt on DuckDB: raw copies of each source, cleaned staging, tested marts" },
-      { from: 16.33, text: "Every run extracts, builds and tests. Now an ad platform sends a negative spend row…" },
-      { from: 22.5, text: "A data test catches it. The run fails and is not published; downstream models are skipped" },
-      { from: 29.84, text: "The dashboard says so, and keeps showing the last verified numbers" },
-      { from: 34.82, text: "Someone renames a column in the Google Ads export: the run stops before loading shifted data" },
-      { from: 43.93, text: "Fixed, and a refund for a September order arrives today: that past day is corrected, all tests pass again" },
+      { from: 3.34, text: "Revenue from three sources: store orders, Stripe payments, Google and Meta ad spend. Every number passed 20 data tests" },
+      { from: 8.42, text: "ROAS and CAC per channel, and how many customers come back" },
+      { from: 12.42, text: "Built with dbt on DuckDB: raw copies of each source, cleaned staging, tested marts" },
+      { from: 17.58, text: "Every run extracts, builds and tests. Now an ad platform sends a negative spend row…" },
+      { from: 23.99, text: "A data test catches it. The run fails and is not published; downstream models are skipped" },
+      { from: 40.04, text: "The dashboard says so, and keeps showing the last verified numbers" },
+      { from: 45.71, text: "Someone renames a column in the Google Ads export: the run stops before loading shifted data" },
+      { from: 55.59, text: "Fixed, and a refund for a September order arrives today: that past day is corrected, all tests pass again" },
     ],
   },
 ];
@@ -27,7 +27,7 @@ const INTRO = s(4), OUTRO = s(5);
 const clipLen = (c: Clip) => s(c.end - c.trim);
 const TOTAL = INTRO + CLIPS.reduce((n, c) => n + clipLen(c), 0) + OUTRO;
 
-const BG = "#0b1220", ACCENT = "#0ea5e9", FONT = "Inter, Helvetica, Arial, sans-serif";
+const BG = "#0b3954", ACCENT = "#5fc4cc", FONT = "'Hoefler Text', Baskerville, Georgia, serif";
 
 const Fade: React.FC<{ len: number; children: React.ReactNode }> = ({ len, children }) => {
   const f = useCurrentFrame();
@@ -53,7 +53,7 @@ const ClipScene: React.FC<{ clip: Clip }> = ({ clip }) => {
       </div>
       {t < (clip.hideWhoFrom ?? Infinity) && <div style={{ position: "absolute", left: 186, top: 320, background: ACCENT, color: "white", fontWeight: 700, fontSize: 24, padding: "8px 16px", borderRadius: 8 }}>{clip.who}</div>}
       <div style={{ position: "absolute", left: 220, right: 220, bottom: 90, display: "flex", justifyContent: "center" }}>
-        <div key={cap.from} style={{ background: "rgba(15,23,42,.92)", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
+        <div key={cap.from} style={{ background: BG + "eb", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
       </div>
     </AbsoluteFill>
   );

@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Revenue Pipeline{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#0369a1; --brand-soft:#f0f9ff;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#f7f9fb; --card:#fff; --ink:#0b2233; --mute:#55687a; --line:#d9e1e8; --brand:#087e8b; --brand-soft:#e2f3f4;
+        --ok:#1d7a4e; --ok-soft:#e6f4ec; --warn:#a35d00; --warn-soft:#fdf1dc; --bad:#d64545; --bad-soft:#fdeaea; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -64,6 +64,28 @@ textarea.task { min-height:90px; } .head { display:flex; justify-content:space-b
 .banner { border-radius:10px; padding:12px 16px; margin-bottom:16px; display:flex; gap:10px; align-items:center; }
 .banner.ok { background:var(--ok-soft); color:var(--ok); } .banner.bad { background:var(--bad-soft); color:var(--bad); }
 .heat td { text-align:center; font-size:13px; padding:7px; } .layer { font-size:12px; color:var(--mute); }
+/* identity */
+body { font:14.5px/1.5 -apple-system, "Segoe UI", sans-serif;
+       background-image:linear-gradient(#e9eef3 1px, transparent 1px), linear-gradient(90deg, #e9eef3 1px, transparent 1px); background-size:28px 28px; }
+.shell { grid-template-columns:196px 1fr; }
+nav { background:#0b3954; color:#a9c3d3; padding:24px 12px; }
+nav .logo { color:#fff; font:italic 600 24px/1.1 "Hoefler Text", Baskerville, Georgia, serif; margin:0 10px 26px; }
+nav .logo::after { content:"pipeline"; display:block; font:500 11px/1.6 -apple-system, sans-serif; letter-spacing:.08em; color:#5fc4cc; font-style:normal; }
+nav a { color:#a9c3d3; border-radius:4px; padding:8px 10px; }
+nav a.on { background:#087e8b; color:#fff; } nav a:hover { background:#124a6a; color:#fff; } nav a.on:hover { background:#087e8b; }
+nav .count { background:#d64545; }
+nav .me { border-top-color:#1d5373; font-size:12.5px; } nav .me button { color:#5fc4cc; }
+main { padding:32px 40px; }
+h1, h2, h3 { font-family:"Hoefler Text", Baskerville, Georgia, serif; font-weight:600; } h1 { font-size:32px; }
+.card { border-radius:4px; border-color:#d9e1e8; box-shadow:0 1px 0 #d9e1e8; }
+.stat b { font:600 34px/1.1 "Hoefler Text", Baskerville, Georgia, serif; color:#0b3954; }
+h1, h2, h3, .stat b, td { font-variant-numeric:lining-nums tabular-nums; }
+th { text-transform:none; letter-spacing:0; font-size:12.5px; color:#0b3954; border-bottom:2px solid #0b3954; }
+.btn { border-radius:4px; background:#0b3954; } .btn.ghost { background:#fff; }
+.chip { border-radius:4px; } .banner { border-radius:4px; }
+.tabs a { border-radius:4px; } .tabs a.on { background:#0b3954; border-color:#0b3954; }
+@media (max-width:760px) { .shell { grid-template-columns:1fr; } nav { flex-direction:row; flex-wrap:wrap; } nav .me { margin:0; } main { padding:20px 16px; } }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #087e8b; outline-offset:2px; }
 </style>
 </head>
 <body>
