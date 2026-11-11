@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>To review</h1>
+<p class="sub">These payments weren't clear enough to book alone: no strong match, or two invoices that fit equally well. Pick the right one, choose invoices yourself, or mark it as not an invoice payment. Reminders for the suggested invoices are held until you decide.</p>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+{% for t in rows %}{% set sug = t.suggestions|fromjson or [] %}
+<div class="card tx" style="margin-bottom:14px" data-tx="{{ t.id }}">
+  <div><div class="amount">{{ t.amount_cents|euro }}</div><b>{{ t.name or 'Unknown payer' }}</b><div class="small muted">{{ t.booked }} · {{ t.iban }}</div><p>"{{ t.purpose }}"</p>
+    <form method="post" action="/review/{{ t.id }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost" name="action" value="ignore">Not an invoice payment</button></form></div>
+  <div>
+    {% for c in sug %}
+    <form class="sugg" method="post" action="/review/{{ t.id }}"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="pick" value="{{ loop.index0 }}">
+      <div><b>{{ ', '.join(c.numbers) }}</b> <span class="chip {{ c.kind }}">{{ c.kind }}</span> <span class="score">{{ c.score }}</span><ul>{% for r in c.reasons %}<li>{{ r }}</li>{% endfor %}</ul></div>
+      <button class="btn">Confirm</button></form>
+    {% else %}<p class="muted">No invoice fits. If it is one, choose it below.</p>{% endfor %}
+    <details><summary>Choose invoices yourself</summary>
+      <form method="post" action="/review/{{ t.id }}"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="manual">
+        <div class="pick">{% for i in invoices %}<label style="display:block"><input type="checkbox" name="invoice" value="{{ i.id }}"> {{ i.number }} · {{ i.customer }} · {{ i.open_cents|euro }} open</label>{% endfor %}</div>
+        <button class="btn ghost">Book against these</button></form></details>
+  </div>
+</div>
+{% else %}<div class="card muted">Nothing to review.</div>{% endfor %}
+{% endblock %}

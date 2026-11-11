@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync, kickoff]
+                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync, kickoff, paymatch]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -195,4 +195,18 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/kickoff
+        run: docker compose logs --tail 80
+
+  paymatch-e2e:
+    # Paymatch in Docker: CAMT.053 + CSV import, matching, booking through outages, review, reminders by email.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: End-to-end test
+        working-directory: projects/paymatch
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/paymatch
         run: docker compose logs --tail 80

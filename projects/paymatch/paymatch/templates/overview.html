@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head"><div><h1>Payments</h1><p class="sub">Bank statements in, invoices settled. Sure matches are booked in the accounting system on their own; the rest waits for you with suggestions.</p></div>
+  <form method="post" action="/import" enctype="multipart/form-data" class="btns" style="align-items:center"><input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="file" name="file" accept=".xml,.csv,.txt" required><button class="btn">Import statement</button></form></div>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="stats">
+  <div class="card stat"><b>{{ stats.auto }}</b><span>payments matched automatically</span></div>
+  <div class="card stat"><b>{{ stats.review }}</b><span>waiting for review</span></div>
+  <div class="card stat"><b>{{ stats.matched_cents|euro }}</b><span>settled from statements</span></div>
+  <div class="card stat"><b>{{ stats.open_cents|euro }}</b><span>still open</span></div>
+  <div class="card stat"><b style="color:var(--bad)">{{ stats.overdue_cents|euro }}</b><span>overdue</span></div>
+</div>
+{% if stats.errors %}<div class="alert bad">{{ stats.errors }} booking(s) couldn't be written to the accounting system yet; they're retried automatically.</div>{% endif %}
+<div class="card"><table>
+  <tr><th>Paid</th><th>Payer and purpose</th><th class="num">Amount</th><th>Invoice</th><th>How</th><th>Why</th><th>Booked</th></tr>
+  {% for m in recent %}<tr>
+    <td class="small muted">{{ m.day }}</td><td>{{ m.payer }}<div class="small muted">{{ m.purpose }}</div></td><td class="num">{{ m.amount_cents|euro }}{% if m.writeoff_cents %}<div class="why">+ {{ m.writeoff_cents|euro }} {{ m.writeoff_reason }}</div>{% endif %}</td>
+    <td><b>{{ m.number }}</b><div class="small muted">{{ m.customer }}</div></td>
+    <td><span class="chip {{ m.kind }}" data-kind="{{ m.number }}:{{ m.kind }}">{{ m.kind }}</span><div class="why">{{ 'auto, score ' ~ m.score if m.auto else 'by a person' }}</div></td>
+    <td class="why">{{ '; '.join(m.reasons|fromjson) }}</td>
+    <td>{% if m.booked %}<span class="chip paid">booked</span>{% else %}<span class="chip open" data-unbooked="1" title="{{ m.booking_error or '' }}">pending</span>{% endif %}</td></tr>
+  {% else %}<tr><td colspan="7" class="muted">Import a bank statement (CAMT.053 XML or your bank's CSV export) to start.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}
