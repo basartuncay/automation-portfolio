@@ -1,6 +1,10 @@
 # Automation & Integration Portfolio
 
+[![tests](https://github.com/basartuncay/automation-portfolio/actions/workflows/tests.yml/badge.svg)](https://github.com/basartuncay/automation-portfolio/actions/workflows/tests.yml) [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Production-style automation projects: scraping, data pipelines, API integrations, AI extraction and admin panels. Each one has a README, tests and realistic sample data. All are covered by CI.
+
+**▶ [See the 16 flagship systems running](https://basartuncay.github.io/automation/)**: each one recorded from the real software, each one tested end to end in Docker on every push.
 
 | Project | What it does | Stack | Tests |
 |---|---|---|---|
