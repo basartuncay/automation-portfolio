@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="head">
+  <div><h1>{{ day.strftime('%A %d %B %Y') }}</h1>
+    <p class="sub">{% if windows %}Seating {% for a, b in windows %}{{ a.strftime('%H:%M') }}–{{ b.strftime('%H:%M') }}{{ ', ' if not loop.last }}{% endfor %}{% else %}Closed{% endif %}</p></div>
+  <div class="btns"><a class="btn ghost" href="/panel?day={{ prev }}">← Previous</a><a class="btn ghost" href="/panel">Today</a><a class="btn ghost" href="/panel?day={{ next }}">Next →</a></div>
+</div>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+{% if err %}<div class="alert bad">{{ err }}</div>{% endif %}
+<div class="stats">
+  <div class="card stat"><b>{{ stats.bookings }}</b><span>bookings</span></div>
+  <div class="card stat"><b>{{ stats.covers }}</b><span>guests</span></div>
+  <div class="card stat"><b>{{ stats.phone }}</b><span>taken by the phone agent</span></div>
+  <div class="card stat"><b>{{ stats.online }}</b><span>booked online</span></div>
+  <div class="card stat"><b>{{ stats.cancelled }}</b><span>cancelled</span></div>
+  <div class="card stat"><b>{{ stats.no_show }}</b><span>no-shows</span></div>
+</div>
+{% if grid %}
+<div class="card" style="margin-bottom:16px">
+  <div class="hours">{% for h in grid.hours %}<span style="left:{{ h.left }}%">{{ h.label }}</span>{% endfor %}</div>
+  <div class="floor">
+    {% for t in tables %}
+    <div class="lane"><div class="tid">{{ t.id }}<span>{{ t.seats }} seats · {{ t.area }}</span></div>
+      <div class="track">
+        {% for c in grid.closed %}<div class="closed" style="left:{{ c.left }}%;width:{{ c.width }}%"></div>{% endfor %}
+        {% if grid.now is not none %}<div class="nowline" style="left:{{ grid.now }}%"></div>{% endif %}
+        {% for x in grid.rows[t.id] %}
+        <a class="blk {{ x.b.status }} {{ x.b.channel }}" style="left:{{ x.left }}%;width:{{ x.width }}%" href="/panel/bookings/{{ x.b.id }}"
+           title="{{ x.b.name }}, {{ x.b.party }} people, {{ x.b.start[11:] }}–{{ x.b.end_[11:] }}, {{ channel_label[x.b.channel] }}">{{ x.b.start[11:] }} {{ x.b.name }} · {{ x.b.party }}</a>
+        {% endfor %}
+      </div></div>
+    {% endfor %}
+  </div>
+  <p class="small muted" style="margin:10px 0 0">Amber edge: taken by the phone agent. Striped: no seating. Click a booking for its history and messages.</p>
+</div>
+{% endif %}
+<div class="card" style="margin-bottom:16px">
+  <form method="post" action="/panel/bookings" class="form-row">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="day" value="{{ day.isoformat() }}">
+    <label>Time<select name="time">{% for t in times %}<option>{{ t }}</option>{% endfor %}</select></label>
+    <label>Party<input type="number" name="party" min="1" max="40" value="2" style="width:70px"></label>
+    <label>Name<input name="name" required style="width:160px"></label>
+    <label>Phone<input name="phone" style="width:150px" placeholder="+49…"></label>
+    <label>Tables (optional)<input name="tables" placeholder="T4+T5" style="width:100px"></label>
+    <label>Notes<input name="notes" style="width:160px"></label>
+    <button class="btn">Add booking</button>
+    <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" name="walk_in" value="1"> walk-in, seat now</label>
+  </form>
+</div>
+<div class="card">
+<table>
+  <tr><th>Time</th><th>Guest</th><th class="num">Party</th><th>Tables</th><th>Channel</th><th>Status</th><th></th></tr>
+  {% for b in bookings %}
+  <tr>
+    <td>{{ b.start[11:] }}–{{ b.end_[11:] }}</td>
+    <td><a href="/panel/bookings/{{ b.id }}">{{ b.name }}</a>{% if b.notes %}<div class="small muted">{{ b.notes }}</div>{% endif %}</td>
+    <td class="num">{{ b.party }}</td><td>{{ b.tables or '—' }}</td><td>{{ channel_label[b.channel] }}</td>
+    <td><span class="chip {{ b.status }}" data-status="{{ b.status }}">{{ b.status.replace('_', ' ') }}</span></td>
+    <td>
+      {% set acts = {'booked': ['seated', 'no_show', 'cancel'], 'seated': ['done'], 'no_show': ['booked']}.get(b.status, []) %}
+      {% for a in acts %}<form class="mini" method="post" action="/panel/bookings/{{ b.id }}"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <button name="action" value="{{ a }}">{{ {'seated': 'Seat', 'no_show': 'No-show', 'cancel': 'Cancel', 'done': 'Done', 'booked': 'Undo'}[a] }}</button></form>{% endfor %}
+    </td>
+  </tr>
+  {% else %}<tr><td colspan="7" class="muted">No bookings yet for this day.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

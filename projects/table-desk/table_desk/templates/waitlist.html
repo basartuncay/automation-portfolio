@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Waitlist</h1>
+<p class="sub">When a table frees up (a cancellation, a no-show, a table left early), the first guest whose window fits gets a text and {{ s.offer_minutes }} minutes to reply YES. One offer per day is live at a time, so two guests are never promised the same table.</p>
+{% if err %}<div class="alert bad">{{ err }}</div>{% endif %}
+<div class="card" style="margin-bottom:16px">
+  <form method="post" action="/panel/waitlist" class="form-row">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label>Day<input type="date" name="day" required></label>
+    <label>From<input type="time" name="earliest" step="900" value="18:00"></label>
+    <label>Until<input type="time" name="latest" step="900" value="20:00"></label>
+    <label>Party<input type="number" name="party" min="1" value="2" style="width:70px"></label>
+    <label>Name<input name="name" required></label>
+    <label>Phone<input name="phone" required placeholder="+49…"></label>
+    <button class="btn">Add to waitlist</button>
+  </form>
+</div>
+<div class="card"><table>
+  <tr><th>Day</th><th>Window</th><th>Guest</th><th class="num">Party</th><th>Status</th><th></th></tr>
+  {% for w in rows %}
+  <tr><td>{{ w.day }}</td><td>{{ w.earliest }}–{{ w.latest }}</td><td>{{ w.name }}<div class="small muted">{{ w.phone }}</div></td><td class="num">{{ w.party }}</td>
+    <td><span class="chip {{ w.status }}">{{ w.status }}</span>{% if w.status == 'offered' %}<div class="small muted">offered {{ w.offered_start[11:] }}</div>{% endif %}</td>
+    <td>{% if w.status in ('waiting', 'offered') %}<form class="mini" method="post" action="/panel/waitlist/{{ w.id }}/remove"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Remove</button></form>{% endif %}</td></tr>
+  {% else %}<tr><td colspan="6" class="muted">Nobody is waiting.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

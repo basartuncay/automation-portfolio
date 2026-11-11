@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline]
+                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -143,4 +143,17 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/revenue-pipeline
+        run: docker compose logs --tail 80
+
+  table-desk-e2e:
+    # Table Desk in Docker: website, phone-agent tools, SMS cancel, waitlist offer, SMS outage, forged webhook, panel.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: End-to-end test
+        working-directory: projects/table-desk
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/table-desk
         run: docker compose logs --tail 80

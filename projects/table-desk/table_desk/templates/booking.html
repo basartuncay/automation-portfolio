@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/panel?day={{ b.start[:10] }}">← Day view</a></p>
+<h1>{{ b.name }}, {{ b.party }} people</h1>
+<p class="sub">{{ b.start }} – {{ b.end_[11:] }} · tables {{ b.tables or '—' }} · {{ channel_label[b.channel] }} · code {{ b.code }} · <span class="chip {{ b.status }}">{{ b.status.replace('_', ' ') }}</span></p>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+  <div class="card"><h3 style="margin-top:0">History</h3>
+    <ul class="timeline">{% for h in history %}<li><b>{{ h.action }}</b> by {{ h.who }} <span class="muted small">{{ h.at }} UTC</span>{% if h.detail %}<div class="small muted">{{ h.detail }}</div>{% endif %}</li>{% endfor %}</ul>
+    <p class="small muted">Phone {{ b.phone or '(removed)' }}{% if b.email %} · {{ b.email }}{% endif %}{% if b.notes %}<br>Notes: {{ b.notes }}{% endif %}</p>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Messages to the guest</h3>
+    <table>{% for m in msgs %}<tr><td><span class="chip {{ m.status }}">{{ m.status }}</span></td><td><b>{{ m.kind }}</b><div class="small">{{ m.body }}</div>{% if m.last_error %}<div class="small" style="color:var(--bad)">{{ m.last_error }}</div>{% endif %}</td></tr>
+    {% else %}<tr><td class="muted">None</td></tr>{% endfor %}</table>
+  </div>
+</div>
+{% endblock %}

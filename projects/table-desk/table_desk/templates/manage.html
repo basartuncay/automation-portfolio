@@ -1,0 +1,21 @@
+{% extends "_guest.html" %}
+{% block lead %}Your booking{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 style="font:700 24px Georgia, serif;margin:0 0 6px">{{ b.party }} people · {{ b.start[:10] }} at {{ b.start[11:] }}</h2>
+  <p class="muted">Booked for {{ b.name }} · code <span class="code" style="font-size:16px">{{ b.code }}</span></p>
+  {% if error %}<div class="msg bad">{{ error }}</div>{% endif %}
+  {% if b.status == 'cancelled' %}
+    <div class="msg ok">This booking is cancelled.</div>
+  {% elif b.status == 'booked' %}
+    <form method="post" action="/b/{{ b.code }}/cancel">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <label class="muted" for="pe">To cancel, enter the last 4 digits of the phone number you booked with</label>
+      <input id="pe" name="phone_end" inputmode="numeric" maxlength="6" required>
+      <button class="go" style="background:var(--bad)">Cancel booking</button>
+    </form>
+  {% else %}
+    <p class="muted">Status: {{ b.status.replace('_', ' ') }}.</p>
+  {% endif %}
+</div>
+{% endblock %}

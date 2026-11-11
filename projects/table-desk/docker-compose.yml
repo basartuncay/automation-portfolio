@@ -1,0 +1,58 @@
+# Restaurant reservations from every channel. One command:
+#   ./setup.sh && docker compose up --build     booking page http://127.0.0.1:8098 , staff panel http://127.0.0.1:8098/panel
+name: table-desk
+
+x-sms: &sms
+  SMS_ACCOUNT_SID: ${SMS_ACCOUNT_SID:?run ./setup.sh first}
+  SMS_AUTH_TOKEN: ${SMS_AUTH_TOKEN:?run ./setup.sh first}
+  SMS_FROM: "+4972100000"
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *sms
+      SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+      AGENT_TOOL_TOKEN: ${AGENT_TOOL_TOKEN:?run ./setup.sh first}   # the voice-agent platform sends this as a Bearer token
+      PUBLIC_URL: http://127.0.0.1:8098                              # the URL the SMS gateway signs inbound webhooks for
+      DEMO_SEED: ${DEMO_SEED:-true}
+      BOOKINGS_PER_HOUR: ${BOOKINGS_PER_HOUR:-5}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8098:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "table_desk.worker"]
+    environment:
+      <<: *sms
+      SMS_API_URL: http://sms:8000          # for real use: https://api.twilio.com
+      POLL_SECONDS: ${POLL_SECONDS:-5}
+      MAX_ATTEMPTS: ${MAX_ATTEMPTS:-5}
+      BACKOFF_SECONDS: ${BACKOFF_SECONDS:-30}
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+    restart: unless-stopped
+
+  sms:
+    # Demo only: an SMS gateway with Twilio's request shapes, so nothing touches a real account or phone.
+    build: .
+    command: ["uvicorn", "table_desk.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      <<: *sms
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+      SMS_WEBHOOK_URL: http://web:8000/webhooks/sms
+      SMS_WEBHOOK_PUBLIC_URL: http://127.0.0.1:8098/webhooks/sms
+    ports: ["127.0.0.1:8099:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+volumes:
+  data:

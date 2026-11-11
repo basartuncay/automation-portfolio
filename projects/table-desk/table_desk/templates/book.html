@@ -1,0 +1,48 @@
+{% extends "_guest.html" %}
+{% block content %}
+<div class="card" id="form">
+  <div class="step"><h2>How many people?</h2>
+    <div class="party" id="party">{% for n in range(1, s.online_max_party + 1) %}<button type="button" aria-pressed="{{ 'true' if n == 2 else 'false' }}" data-n="{{ n }}">{{ n }}</button>{% endfor %}</div>
+    <p class="muted" style="margin:8px 0 0">More than {{ s.online_max_party }}? Please call us and we'll arrange it.</p></div>
+  <div class="step"><h2>Which day?</h2><input type="date" id="day" value="{{ today }}" min="{{ today }}" max="{{ max_day }}"></div>
+  <div class="step"><h2>What time?</h2><div class="slots" id="slots"></div><p class="muted" id="slots-note"></p></div>
+  <div class="step"><h2>Your details</h2>
+    <input id="name" placeholder="Name" autocomplete="name" maxlength="80">
+    <input id="phone" placeholder="Mobile number, e.g. +49 171 1234567" autocomplete="tel" inputmode="tel">
+    <input id="email" placeholder="Email (optional)" autocomplete="email" type="email">
+    <input id="notes" placeholder="Anything we should know? (optional)" maxlength="300">
+    <input id="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+  </div>
+  <div id="err" class="msg bad" hidden></div>
+  <button class="go" id="go" disabled>Choose a time</button>
+</div>
+<div class="card done" id="done" hidden></div>
+<script>
+const $ = id => document.getElementById(id);
+let party = 2, time = null;
+function pick(group, btn) { group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn)); }
+async function load() {
+  time = null; refresh(); $('slots').innerHTML = ''; $('slots-note').textContent = 'Checking…';
+  const r = await fetch(`/api/slots?day=${$('day').value}&party=${party}`); const j = await r.json();
+  if (!r.ok) { $('slots-note').textContent = j.error; return; }
+  $('slots-note').textContent = j.times.length ? '' : 'Nothing free that day for this party size. Try another day.';
+  for (const t of j.times) { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', 'false');
+    b.onclick = () => { time = t; pick($('slots'), b); refresh(); }; $('slots').append(b); }
+}
+function refresh() { $('go').disabled = !time; $('go').textContent = time ? `Book ${time} for ${party}` : 'Choose a time'; }
+$('party').onclick = e => { const b = e.target.closest('button'); if (!b) return; party = +b.dataset.n; pick($('party'), b); load(); };
+$('day').onchange = load;
+$('go').onclick = async () => {
+  $('go').disabled = true; $('err').hidden = true;
+  const body = {party, time, day: $('day').value, name: $('name').value, phone: $('phone').value, email: $('email').value, notes: $('notes').value, website: $('website').value};
+  const r = await fetch('/api/book', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)}); const j = await r.json();
+  if (!r.ok) { $('err').textContent = j.error + (j.alternatives && j.alternatives.length ? ` Still free: ${j.alternatives.join(', ')}.` : ''); $('err').hidden = false;
+    if (r.status === 409) load(); else refresh(); return; }
+  $('form').hidden = true; $('done').hidden = false;
+  $('done').innerHTML = `<h2>See you soon!</h2><p>Table for ${j.party} on ${j.start.slice(0, 10)} at ${j.start.slice(11)}.</p>
+    <p>Your booking code is <span class="code">${j.code}</span>. A confirmation text is on its way.</p>
+    <p class="muted">Plans changed? <a href="${j.manage}">Manage or cancel your booking</a>, or reply STORNO to the text.</p>`;
+};
+load();
+</script>
+{% endblock %}
