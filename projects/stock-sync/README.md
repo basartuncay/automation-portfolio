@@ -10,6 +10,10 @@ When the same 3 kettles are listed on Shopify and Amazon, the classic failure is
                                                                     ship / adjust
 ```
 
+**▶ [Watch the 55-second demo](docs/demo.mp4)**: a real recording of the running stack, made with [`demo/record.py`](demo/record.py) (Playwright) and [`demo/video`](demo/video) (Remotion).
+
+[![Demo video](docs/demo-thumb.png)](docs/demo.mp4)
+
 | Every channel from one ledger | An oversell caught, with the fix one click away |
 |---|---|
 | ![Stock](docs/stock.png) | ![Exceptions](docs/exceptions.png) |

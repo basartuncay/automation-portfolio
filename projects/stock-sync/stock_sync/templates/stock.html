@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
 <h1>Stock</h1>
-<p class="sub">One ledger, every channel. Each listing shows what's available minus its safety buffer; a change anywhere reaches every channel within seconds. {{ open_orders }} orders are reserved and waiting to ship.</p>
+<p class="sub">One ledger, every channel. Each listing shows what's available minus its safety buffer; a change anywhere reaches every channel within seconds. {{ open_orders }} order{{ ' is' if open_orders == 1 else 's are' }} reserved and waiting to ship.</p>
 <div class="card" style="margin-bottom:16px"><table>
   <tr><th>SKU</th><th class="num">On hand</th><th class="num">Reserved</th><th class="num">Available</th>{% for c in channels %}<th class="num">{{ c|capitalize }} shows</th>{% endfor %}</tr>
   {% for r in rows %}
