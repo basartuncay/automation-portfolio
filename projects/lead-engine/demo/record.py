@@ -42,7 +42,7 @@ def answer(orig, text, subject=None, **headers):
         s.send_message(m)
 
 
-META = {"file": "leads.webm", "who": "Real stack · real SMTP/IMAP · local stand-ins for the data APIs and CRM", "accent": "#7c3aed",
+META = {"file": "leads.webm", "who": "Real stack · real SMTP/IMAP · local stand-ins for the data APIs and CRM", "accent": "#ffe94d", "bg": "#0d1a6b", "font": "Futura, 'Century Gothic', sans-serif",
         "kicker": "Lead Engine · real recording", "title": "From a CSV export to a booked call, without spamming anyone",
         "sub": "Merge, verify, enrich and score leads with reasons, send a short threaded sequence, read the replies, and hand only real interest to the CRM.",
         "outro": "Python · FastAPI · SQLite · SMTP/IMAP · HubSpot-style CRM API · Docker · e2e in GitHub Actions.",

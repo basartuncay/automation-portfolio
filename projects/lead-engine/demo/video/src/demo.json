@@ -1,7 +1,9 @@
 {
  "file": "leads.webm",
  "who": "Real stack · real SMTP/IMAP · local stand-ins for the data APIs and CRM",
- "accent": "#7c3aed",
+ "accent": "#ffe94d",
+ "bg": "#0d1a6b",
+ "font": "Futura, 'Century Gothic', sans-serif",
  "kicker": "Lead Engine · real recording",
  "title": "From a CSV export to a booked call, without spamming anyone",
  "sub": "Merge, verify, enrich and score leads with reasons, send a short threaded sequence, read the replies, and hand only real interest to the CRM.",
@@ -9,47 +11,47 @@
  "thumbKicker": "OUTBOUND",
  "thumbTitle": "Leads scored with reasons, replies sorted",
  "thumbSub": "Lead Engine · import → sequence → CRM",
- "trim": 1.06,
- "end": 54.5,
+ "trim": 1.13,
+ "end": 54.83,
  "caps": [
   {
-   "from": 1.36,
+   "from": 1.43,
    "text": "An Apollo export with 20 rows: duplicates, a broken address, a shared inbox, a personal Gmail"
   },
   {
-   "from": 4.52,
+   "from": 4.61,
    "text": "Columns recognised, 18 new leads, the duplicate merged, the broken row skipped, each with its reason"
   },
   {
-   "from": 9.02,
+   "from": 9.12,
    "text": "Each lead is verified and enriched by company domain, then scored against the ideal-customer rules"
   },
   {
-   "from": 15.86,
+   "from": 15.94,
    "text": "Every point is explained, so a salesperson can see why"
   },
   {
-   "from": 21.95,
+   "from": 22.07,
    "text": "Qualified leads get a personal first email, sent in office hours under a daily cap"
   },
   {
-   "from": 26.54,
+   "from": 26.69,
    "text": "The replies come in by email: one interested, one out of office until a date, one asking to stop"
   },
   {
-   "from": 33.24,
+   "from": 33.48,
    "text": "Lena wants a call: her sequence stops and she goes to the CRM as a contact with a deal"
   },
   {
-   "from": 39.81,
+   "from": 40.09,
    "text": "Out of office until a date: the next email waits until the day after"
   },
   {
-   "from": 44.14,
+   "from": 44.43,
    "text": "Asked to stop: suppressed for good, a later import can't bring her back"
   },
   {
-   "from": 49.46,
+   "from": 49.77,
    "text": "Everyone else gets the follow-ups as replies in the same thread"
   }
  ]
