@@ -19,11 +19,13 @@
 <div class="card done" id="done" hidden></div>
 <script>
 const $ = id => document.getElementById(id);
-let party = 2, time = null;
+let party = 2, time = null, asked = 0;
 function pick(group, btn) { group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn)); }
 async function load() {
+  const mine = ++asked;
   time = null; refresh(); $('slots').innerHTML = ''; $('slots-note').textContent = 'Checking…';
   const r = await fetch(`/api/slots?day=${$('day').value}&party=${party}`); const j = await r.json();
+  if (mine !== asked) return;  // a newer question (another day or party size) is on its way
   if (!r.ok) { $('slots-note').textContent = j.error; return; }
   $('slots-note').textContent = j.times.length ? '' : 'Nothing free that day for this party size. Try another day.';
   for (const t of j.times) { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', 'false');

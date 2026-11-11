@@ -15,6 +15,10 @@ Restaurants lose bookings in the gaps between channels. The phone rings during t
                                    waitlist, retention)
 ```
 
+**▶ [Watch the 57-second demo](docs/demo.mp4)**: a real recording of the running stack, made with [`demo/record.py`](demo/record.py) (Playwright) and [`demo/video`](demo/video) (Remotion).
+
+[![Demo video](docs/demo-thumb.png)](docs/demo.mp4)
+
 | Website booking | Day view for the staff | The guest's phone |
 |---|---|---|
 | ![Booking page](docs/booking-page.png) | ![Day view](docs/day-view.png) | ![Guest phone](docs/guest-phone.png) |
