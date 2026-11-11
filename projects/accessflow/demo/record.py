@@ -18,7 +18,7 @@ APP, APIS = "http://127.0.0.1:8110", "http://127.0.0.1:8111"
 H = {"x-admin": ENV["FAKES_ADMIN_TOKEN"], "Content-Type": "application/json"}
 admin = lambda path, body=None: json.loads(urllib.request.urlopen(urllib.request.Request(APIS + path, json.dumps(body).encode() if body is not None else None, H)).read())
 today = date.today().isoformat()
-META = {"file": "accessflow.webm", "who": "Real stack · local stand-ins for the HR system, Google Workspace, Slack and GitHub", "accent": "#6366f1",
+META = {"file": "accessflow.webm", "who": "Real stack · local stand-ins for the HR system, Google Workspace, Slack and GitHub", "accent": "#5cc8ff", "bg": "#263445", "font": "'Helvetica Neue', Helvetica, sans-serif",
         "kicker": "Accessflow · real recording", "title": "Access that follows the HR record: joiners, movers, leavers",
         "sub": "Google Workspace, Slack and GitHub kept in line with the HR system, privileged access approved by managers, drift found, every change audited.",
         "outro": "Python · FastAPI · SQLite · Google Admin SDK · Slack SCIM · GitHub API · signed webhooks · Docker · e2e in GitHub Actions.",

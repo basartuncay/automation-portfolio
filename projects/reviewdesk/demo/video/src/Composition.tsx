@@ -6,7 +6,7 @@ import demo from "./demo.json";
 type Cap = { from: number; text: string };
 type Demo = {
   file: string; trim: number; end: number; who: string; caps: Cap[]; accent: string;
-  kicker: string; title: string; sub: string; outro: string; thumbKicker: string; thumbTitle: string; thumbSub: string;
+  kicker: string; title: string; sub: string; outro: string; thumbKicker: string; thumbTitle: string; thumbSub: string; bg?: string; font?: string;
 };
 const D = demo as Demo;
 
@@ -14,7 +14,7 @@ const FPS = 30;
 const s = (sec: number) => Math.round(sec * FPS);
 const INTRO = s(4), OUTRO = s(5), CLIP = s(D.end - D.trim);
 const TOTAL = INTRO + CLIP + OUTRO;
-const BG = "#0b1220", FONT = "Inter, Helvetica, Arial, sans-serif";
+const BG = D.bg ?? "#0b1220", FONT = D.font ?? "Inter, Helvetica, Arial, sans-serif";
 
 const Fade: React.FC<{ len: number; children: React.ReactNode }> = ({ len, children }) => {
   const f = useCurrentFrame();
@@ -40,7 +40,7 @@ const ClipScene: React.FC = () => {
       </div>
       <div style={{ position: "absolute", left: 160, top: 1032, color: "#94a3b8", fontWeight: 600, fontSize: 22 }}>{D.who}</div>
       <div style={{ position: "absolute", left: 220, right: 220, bottom: 90, display: "flex", justifyContent: "center" }}>
-        <div key={cap.from} style={{ background: "rgba(15,23,42,.92)", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${D.accent}`, lineHeight: 1.3 }}>{cap.text}</div>
+        <div key={cap.from} style={{ background: BG + "eb", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${D.accent}`, lineHeight: 1.3 }}>{cap.text}</div>
       </div>
     </AbsoluteFill>
   );

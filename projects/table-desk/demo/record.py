@@ -31,7 +31,7 @@ def tool(name, args, cid, caller="+491715550101"):
 reply = lambda frm, body: call(SMS + "/_admin/reply", {"from": frm, "body": body}, {"x-admin": ENV["FAKES_ADMIN_TOKEN"]})
 phone = lambda n: f"{SMS}/phone/{n.replace('+', '%2B')}?token={ENV['FAKES_ADMIN_TOKEN']}"
 
-META = {"file": "desk.webm", "who": "Real stack · local stand-ins for SMS", "accent": "#b8860b",
+META = {"file": "desk.webm", "who": "Real stack · local stand-ins for SMS", "accent": "#c9a14a", "bg": "#1e3a2f", "font": "Optima, Candara, sans-serif",
         "kicker": "Table Desk · real recording", "title": "Every reservation, from every channel, in one book",
         "sub": "An AI phone agent, a booking page, SMS and the staff panel share one engine: table joins, no double bookings, reminders and a waitlist.",
         "outro": "Python · FastAPI · SQLite · Twilio-style SMS · voice-agent tool webhooks · Docker · e2e in GitHub Actions.",

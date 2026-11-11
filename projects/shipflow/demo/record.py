@@ -22,7 +22,7 @@ ORDERS = [({**DE}, [["EB-PRO", 1]], "standard"), ({**DE, "first_name": "Jonas", 
           ({**DE, "first_name": "Luca", "last_name": "Meier", "country_code": "CH", "zip": "8001", "city": "Zürich", "address1": "Bahnhofstrasse 21", "phone": "+41 44 123 45 67"}, [["SSD-1T", 2]], "standard"),
           ({**DE, "first_name": "Mia", "last_name": "Wagner", "address1": "Lindenallee", "city": "Berlin", "zip": "10115"}, [["CH-65W", 1]], "standard"),
           ({**DE, "first_name": "Tom", "last_name": "Hughes", "country_code": "GB", "zip": "SW1A 1AA", "city": "London", "address1": "10 Whitehall", "phone": "+44 20 7946 0000"}, [["EB-PRO", 1]], "express")]
-META = {"file": "shipflow.webm", "who": "Real stack · local stand-ins for a Sendcloud-style carrier API and the shop", "accent": "#d97706",
+META = {"file": "shipflow.webm", "who": "Real stack · local stand-ins for a Sendcloud-style carrier API and the shop", "accent": "#c9a57c", "bg": "#151515", "font": "'Trebuchet MS', sans-serif",
         "kicker": "Shipflow · real recording", "title": "From paid order to tracked parcel, without the copy-paste",
         "sub": "Carrier rules with reasons, address and customs checks, one label per order, the day's labels in one PDF, tracking back to the shop and problems surfaced.",
         "outro": "Python · FastAPI · SQLite · Sendcloud-style carrier API · Shopify fulfillments · signed webhooks · Docker · e2e in GitHub Actions.",

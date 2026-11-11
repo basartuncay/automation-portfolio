@@ -1,7 +1,9 @@
 {
  "file": "desk.webm",
  "who": "Real stack · local stand-ins for SMS",
- "accent": "#b8860b",
+ "accent": "#c9a14a",
+ "bg": "#1e3a2f",
+ "font": "Optima, Candara, sans-serif",
  "kicker": "Table Desk · real recording",
  "title": "Every reservation, from every channel, in one book",
  "sub": "An AI phone agent, a booking page, SMS and the staff panel share one engine: table joins, no double bookings, reminders and a waitlist.",
@@ -10,50 +12,50 @@
  "thumbTitle": "Restaurant bookings that run themselves",
  "thumbSub": "Table Desk · phone agent + SMS + panel",
  "trim": 0.0,
- "end": 48.26,
+ "end": 58.64,
  "caps": [
   {
    "from": 0.01,
    "text": "A guest books on the restaurant's page"
   },
   {
-   "from": 6.74,
+   "from": 7.16,
    "text": "Only times with a free table are offered. The booking is checked again when it's saved"
   },
   {
-   "from": 10.0,
+   "from": 10.46,
    "text": "Booked, with a code and a link to cancel"
   },
   {
-   "from": 12.0,
+   "from": 13.48,
    "text": "The confirmation text arrives on the guest's phone"
   },
   {
-   "from": 17.04,
+   "from": 18.59,
    "text": "Meanwhile the AI phone agent takes a call for 8 people: it checks, books and confirms"
   },
   {
-   "from": 19.65,
+   "from": 26.32,
    "text": "Two tables joined for the party of 8. The platform's retry didn't book twice"
   },
   {
-   "from": 23.92,
+   "from": 30.6,
    "text": "8 p.m. is full now. The phone agent puts the next caller on the waitlist"
   },
   {
-   "from": 27.73,
+   "from": 35.8,
    "text": "A guest texts STORNO. The table is free, and Ada gets an offer by text"
   },
   {
-   "from": 33.38,
+   "from": 42.68,
    "text": "Ada answers JA, and the table is hers"
   },
   {
-   "from": 39.5,
+   "from": 48.04,
    "text": "The staff see the whole day: who booked how, cancellations and the waitlist booking"
   },
   {
-   "from": 43.45,
+   "from": 53.57,
    "text": "Every text in and out, and anything that needs a person"
   }
  ]

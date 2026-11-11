@@ -26,7 +26,7 @@ def admin(path, body=None):
         return {"_status": e.code}
 
 
-META = {"file": "stock.webm", "who": "Real stack · local stand-ins for Shopify, Amazon SP-API and the warehouse", "accent": "#16a34a",
+META = {"file": "stock.webm", "who": "Real stack · local stand-ins for Shopify, Amazon SP-API and the warehouse", "accent": "#f2c200", "bg": "#24282d", "font": "'DIN Alternate', Bahnschrift, sans-serif",
         "kicker": "Stock Sync · real recording", "title": "Sell the same stock on Shopify and Amazon without overselling",
         "sub": "One stock ledger for both channels and the warehouse: bundles, safety buffers, sell-outs pushed in about a second, oversells caught.",
         "outro": "Python · FastAPI · SQLite · Shopify Admin API · Amazon SP-API · signed webhooks · Docker · e2e in GitHub Actions.",

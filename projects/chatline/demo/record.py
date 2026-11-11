@@ -18,7 +18,7 @@ LENA, MAX = "4917612345678", "4917699887766"
 phone = lambda n: f"{APIS}/phone/{n}?token={ENV['FAKES_ADMIN_TOKEN']}"
 ship = lambda no: urllib.request.urlopen(urllib.request.Request(APIS + "/_admin/ship", json.dumps({"number": no}).encode(),
                                                                 {"x-admin": ENV["FAKES_ADMIN_TOKEN"], "Content-Type": "application/json"}))
-META = {"file": "chatline.webm", "who": "Real stack · local stand-ins for the WhatsApp Cloud API and the shop", "accent": "#10b981",
+META = {"file": "chatline.webm", "who": "Real stack · local stand-ins for the WhatsApp Cloud API and the shop", "accent": "#7ef2c1", "bg": "#2b2870", "font": "'Avenir Next', Avenir, sans-serif",
         "kicker": "Chatline · real recording", "title": "WhatsApp customer service that knows when to hand over",
         "sub": "Order tracking and returns by tapping buttons, a person for everything else, and WhatsApp's 24-hour, template and opt-in rules built in.",
         "outro": "Python · FastAPI · SQLite · WhatsApp Cloud API · signed webhooks · Docker · e2e in GitHub Actions.",

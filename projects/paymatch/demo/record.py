@@ -16,7 +16,7 @@ ENV = dict(l.split("=", 1) for l in (HERE.parent / ".env").read_text().split())
 APP, APIS = "http://127.0.0.1:8106", "http://127.0.0.1:8107"
 urllib.request.urlopen(urllib.request.Request(APIS + "/_admin/chaos", json.dumps({"fail": 2}).encode(),
                                               {"x-admin": ENV["FAKES_ADMIN_TOKEN"], "Content-Type": "application/json"}))
-META = {"file": "paymatch.webm", "who": "Real stack · real mail server · local stand-in for the accounting system", "accent": "#2563eb",
+META = {"file": "paymatch.webm", "who": "Real stack · real mail server · local stand-in for the accounting system", "accent": "#6fb592", "bg": "#13294b", "font": "Charter, Georgia, serif",
         "kicker": "Paymatch · real recording", "title": "Bank statement in, invoices settled, reminders only where due",
         "sub": "CAMT.053 and CSV statements matched to open invoices with explained scores, booked in accounting when sure, the rest reviewed by a person.",
         "outro": "Python · FastAPI · SQLite · CAMT.053 · defusedxml · accounting API · SMTP · Docker · e2e in GitHub Actions.",

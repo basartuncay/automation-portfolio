@@ -1,7 +1,9 @@
 {
  "file": "paymatch.webm",
  "who": "Real stack · real mail server · local stand-in for the accounting system",
- "accent": "#2563eb",
+ "accent": "#6fb592",
+ "bg": "#13294b",
+ "font": "Charter, Georgia, serif",
  "kicker": "Paymatch · real recording",
  "title": "Bank statement in, invoices settled, reminders only where due",
  "sub": "CAMT.053 and CSV statements matched to open invoices with explained scores, booked in accounting when sure, the rest reviewed by a person.",
@@ -9,35 +11,35 @@
  "thumbKicker": "FINANCE",
  "thumbTitle": "Payments matched, with reasons",
  "thumbSub": "Paymatch · CAMT.053 → invoices → reminders",
- "trim": 2.22,
- "end": 41.46,
+ "trim": 2.25,
+ "end": 41.79,
  "caps": [
   {
-   "from": 2.52,
+   "from": 2.55,
    "text": "This morning's bank statement as CAMT.053, the XML format German and EU banks export"
   },
   {
-   "from": 4.39,
+   "from": 4.44,
    "text": "9 bookings read. 6 payments matched and booked on their own, through a short outage of the accounting API"
   },
   {
-   "from": 9.7,
+   "from": 9.75,
    "text": "Every match says why: a discount taken, a bank fee kept, two invoices in one transfer, a part payment"
   },
   {
-   "from": 18.33,
+   "from": 18.38,
    "text": "The bank's CSV export overlaps the CAMT file. The same bookings aren't imported twice"
   },
   {
-   "from": 23.2,
+   "from": 23.4,
    "text": "Two payments weren't clear enough. €560 from a private name fits two invoices equally"
   },
   {
-   "from": 27.52,
+   "from": 27.77,
    "text": "A person picks the right one. The marketplace payout isn't an invoice payment at all"
   },
   {
-   "from": 32.71,
+   "from": 32.98,
    "text": "Reminders go only to customers who really owe money, for what's still open"
   }
  ]
