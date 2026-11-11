@@ -11,7 +11,7 @@ jobs:
       matrix:
         project: [price-monitor, invoice-extractor, shopify-sheets-sync, email-triage, js-scraper,
                   sheet-to-crm, alert-bot, stripe-fulfillment, doc-qa, kpi-report, ai-extractor, ai-extractor-actor,
-                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync, kickoff, paymatch, chatline, accessflow, meter]
+                  invoice-platform, support-desk, price-watch, ops-agent, sync-hub, revenue-pipeline, table-desk, lead-engine, stock-sync, kickoff, paymatch, chatline, accessflow, meter, shipflow]
     defaults:
       run:
         working-directory: projects/${{ matrix.project }}
@@ -248,4 +248,17 @@ jobs:
       - name: Logs on failure
         if: failure()
         working-directory: projects/meter
+        run: docker compose logs --tail 80
+
+  shipflow-e2e:
+    # Shipflow in Docker: carrier rules, holds and fixes, labels, batch PDF, fulfilment, tracking, forged webhooks.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: End-to-end test
+        working-directory: projects/shipflow
+        run: ./e2e.sh
+      - name: Logs on failure
+        if: failure()
+        working-directory: projects/shipflow
         run: docker compose logs --tail 80

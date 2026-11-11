@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/?status={{ o.status }}">← Back</a></p>
+<h1>Order {{ o.number }}</h1>
+<p class="sub"><span class="chip {{ o.status }}" data-status="{{ o.status }}">{{ o.status }}</span>{% if o.carrier %} · {{ carriers[o.carrier] }} {{ o.service }} · <span class="rule">{{ o.rule }}</span>{% endif %}</p>
+{% if o.reason %}<div class="alert bad">{{ o.reason }}</div>{% endif %}{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Ship to</h3><p>{{ a.name }}{% if a.company %}<br>{{ a.company }}{% endif %}<br>{{ a.street }}{% if a.extra %}<br>{{ a.extra }}{% endif %}<br>{{ a.postcode }} {{ a.city }}<br>{{ a.country }}{% if a.phone %} · {{ a.phone }}{% endif %}</p>
+    {% if o.status == 'held' %}
+    <form method="post" action="/orders/{{ o.id }}/address" class="form-row"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <label>Street and number<input name="street" value="{{ a.street }}"></label><label>Postcode<input name="postcode" value="{{ a.postcode }}" style="width:110px"></label>
+      <label>City<input name="city" value="{{ a.city }}"></label><label>Phone<input name="phone" value="{{ a.phone }}" style="width:150px"></label><button class="btn">Fix and re-check</button></form>
+    {% endif %}
+    <h3>Items</h3><ul>{% for l in lines %}<li>{{ l.qty }} × {{ l.sku }} {{ l.title }}</li>{% endfor %}</ul><p class="small muted">{{ '%.2f'|format((o.weight_g or 0) / 1000) }} kg with packaging</p></div>
+  <div class="card"><h3 style="margin-top:0">Parcel</h3>
+    {% for p in parcels %}<p><b>{{ p.tracking }}</b> · <a href="{{ p.tracking_url }}">track</a>{% if p.printed_batch %} · printed in batch {{ p.printed_batch }}{% endif %}{% if p.fulfilled %} · marked shipped in the shop{% endif %}</p>{% else %}<p class="muted">No label yet.</p>{% endfor %}
+    <h3>Carrier scans</h3><ul class="timeline" style="padding-left:18px">{% for e in events %}<li><b>{{ e.code.replace('_', ' ') }}</b> {{ e.message }}</li>{% else %}<li class="muted">None yet.</li>{% endfor %}</ul></div>
+</div>
+<div class="card"><h3 style="margin-top:0">History</h3><ul class="timeline" style="padding-left:18px">{% for l in log %}<li>{{ l.what }} <span class="small muted">{{ l.who }} · {{ l.at }}</span></li>{% endfor %}</ul></div>
+{% endblock %}
