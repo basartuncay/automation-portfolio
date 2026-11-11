@@ -1,0 +1,48 @@
+{
+ "file": "kickoff.webm",
+ "who": "Real stack · real mail server · local stand-ins for Stripe, the project tool and storage",
+ "accent": "#2f7d65",
+ "kicker": "Kickoff · real recording",
+ "title": "From \"can you help us?\" to a signed, paid, set-up project",
+ "sub": "Proposal from an enquiry, e-signature bound to the exact text, signed PDF, Stripe deposit, and the project, folder and welcome email set up on their own.",
+ "outro": "Python · FastAPI · SQLite · Stripe Checkout + signed webhooks · fpdf2 · SMTP · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "CLIENT ONBOARDING",
+ "thumbTitle": "Signed, paid and set up, hands off",
+ "thumbSub": "Kickoff · proposal → e-sign → Stripe → setup",
+ "trim": 0.0,
+ "end": 52.11,
+ "caps": [
+  {
+   "from": 0.11,
+   "text": "A prospect asks for a proposal on the studio's site"
+  },
+  {
+   "from": 11.93,
+   "text": "The studio gets a draft built from the package and the options she picked"
+  },
+  {
+   "from": 15.78,
+   "text": "Adjust a line, then send. She gets a link by email"
+  },
+  {
+   "from": 22.53,
+   "text": "Lena opens the link. Signing ties her name to the SHA-256 of exactly this text"
+  },
+  {
+   "from": 31.36,
+   "text": "Signed. The signed PDF is emailed, and she lands on Stripe Checkout for the 30% deposit"
+  },
+  {
+   "from": 35.66,
+   "text": "Paid. Stripe's signed webhook, not the redirect, marks it paid"
+  },
+  {
+   "from": 40.27,
+   "text": "Then the setup runs by itself: project with tasks, shared folder, welcome email, through 2 outages"
+  },
+  {
+   "from": 47.1,
+   "text": "Signature record, deposit, setup steps, and every email: sent, or cancelled because it no longer fit"
+  }
+ ]
+}

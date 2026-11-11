@@ -16,6 +16,10 @@ enquiry form ─▶ draft proposal from a package ─▶ studio edits & sends �
                (kickoff link)    (Drive-style)     (Linear-style)     (signed webhook)
 ```
 
+**▶ [Watch the 1-minute demo](docs/demo.mp4)**: a real recording of the running stack, made with [`demo/record.py`](demo/record.py) (Playwright) and [`demo/video`](demo/video) (Remotion).
+
+[![Demo video](docs/demo-thumb.png)](docs/demo.mp4)
+
 | What the client signs | What the studio sees |
 |---|---|
 | ![Proposal](docs/proposal.png) | ![Client](docs/client.png) |
