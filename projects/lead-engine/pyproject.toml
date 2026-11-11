@@ -1,0 +1,15 @@
+[project]
+name = "lead-engine"
+version = "1.0.0"
+description = "B2B lead pipeline: import, dedupe, enrich, verify, score, sequence, reply handling, CRM handoff"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27", "tzdata>=2024.1",
+    "fastapi>=0.115", "uvicorn>=0.30", "jinja2>=3.1", "itsdangerous>=2.2", "python-multipart>=0.0.9",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block main %}
+<p><a href="/imports">← Imports</a></p>
+<h1>{{ i.filename }}</h1>
+<p class="sub">{{ i.rows }} rows read as <b>{{ i.fmt }}</b>: {{ i.created }} new, {{ i.merged }} merged into existing leads, {{ i.invalid }} invalid, {{ i.suppressed }} on the do-not-contact list.</p>
+<div class="grid" style="grid-template-columns:1fr 2fr">
+  <div class="card"><h3 style="margin-top:0">Column mapping</h3><dl class="kv">{% for f, col in report.mapping.items() %}<dt>{{ f }}</dt><dd>{{ col or '—' }}</dd>{% endfor %}</dl></div>
+  <div class="card"><h3 style="margin-top:0">Rows not added as new leads</h3><table>
+    <tr><th>Line</th><th>Email</th><th>Outcome</th><th>Filled in</th></tr>
+    {% for r in report.rows %}<tr><td class="num">{{ r.line }}</td><td>{{ r.email }}</td><td><span class="chip {{ 'bounced' if r.outcome != 'merged' else 'out' }}">{{ r.outcome }}</span></td><td class="small">{{ ', '.join(r.filled) or '—' }}</td></tr>
+    {% else %}<tr><td colspan="4" class="muted">Every row was a new lead.</td></tr>{% endfor %}
+  </table></div>
+</div>
+{% endblock %}

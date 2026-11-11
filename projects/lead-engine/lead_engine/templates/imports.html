@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Imports</h1>
+<p class="sub">Upload a CSV from Apollo, a Sales Navigator tool or any spreadsheet. Columns are recognised by name (English and German), comma, semicolon or tab separated, UTF-8 or Excel encoding. Leads are merged by email: blank fields are filled from the new file, nothing we already have is overwritten.</p>
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="card" style="margin-bottom:16px">
+  <form method="post" action="/imports" enctype="multipart/form-data" class="btns" style="align-items:center">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="file" name="file" accept=".csv,text/csv" required><button class="btn">Import</button>
+  </form>
+</div>
+<div class="card"><table>
+  <tr><th>File</th><th>Format</th><th class="num">Rows</th><th class="num">New</th><th class="num">Merged</th><th class="num">Invalid</th><th class="num">Suppressed</th><th>When</th></tr>
+  {% for i in rows %}<tr class="row" onclick="location='/imports/{{ i.id }}'"><td><a href="/imports/{{ i.id }}">{{ i.filename }}</a></td><td>{{ i.fmt }}</td>
+    <td class="num">{{ i.rows }}</td><td class="num">{{ i.created }}</td><td class="num">{{ i.merged }}</td><td class="num">{{ i.invalid }}</td><td class="num">{{ i.suppressed }}</td><td class="small muted">{{ i.at }} by {{ i.by }}</td></tr>
+  {% else %}<tr><td colspan="8" class="muted">No imports yet.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

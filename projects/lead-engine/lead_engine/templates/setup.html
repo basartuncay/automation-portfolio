@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Rules &amp; sequence</h1>
+<p class="sub">Who counts as a good lead, what they receive, and who is never contacted.</p>
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3 style="margin-top:0">Scoring rules</h3>
+    <form method="post" action="/setup/rules" class="grid"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <label class="small muted">Qualify at <input type="number" name="qualify_at" value="{{ s.qualify_at }}"> points (unverifiable addresses never qualify)</label>
+      <textarea class="code" name="rules">{{ rules_json }}</textarea>
+      <p class="small muted" style="margin:0">Fields: industry, tech, employees, country, title, email. Tests: <code>in</code> (list), <code>between</code> [min, max], <code>contains</code> (words in the title), <code>is</code> (role, catch_all, free).</p>
+      <div><button class="btn">Save rules</button></div>
+    </form>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Sequence: {{ seq.name }}</h3>
+    <form method="post" action="/setup/sequence" class="grid"><input type="hidden" name="csrf" value="{{ csrf }}">
+      {% for st in steps %}
+      <div><b>Step {{ loop.index }}</b>{% if not loop.first %} · <label class="small muted">send <input type="number" name="delay{{ loop.index0 }}" value="{{ st.delay_days }}" min="0"> days later, as a reply in the same thread</label>{% endif %}
+        {% if loop.first %}<input type="text" name="subject0" value="{{ st.subject }}" style="margin:6px 0">{% endif %}
+        <textarea name="body{{ loop.index0 }}" style="min-height:{{ 160 if loop.first else 110 }}px">{{ st.body }}</textarea></div>
+      {% endfor %}
+      <p class="small muted" style="margin:0">Placeholders: {first_name}, {company}, {tech}. Every email gets a one-click unsubscribe link and List-Unsubscribe headers.</p>
+      <div><button class="btn">Save sequence</button></div>
+    </form>
+  </div>
+</div>
+<div class="card"><h3 style="margin-top:0">Never contact</h3>
+  <form method="post" action="/setup/suppressions" class="btns" style="margin-bottom:12px"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="text" name="value" placeholder="person@company.com or company.com" required><button class="btn">Add</button></form>
+  <table>{% for x in suppressions %}<tr><td>{{ x.value }}</td><td>{{ x.reason }}</td><td class="small muted">{{ x.at }}</td></tr>{% else %}<tr><td class="muted">Nobody yet. Unsubscribes, bounces and "not interested" replies are added automatically.</td></tr>{% endfor %}</table>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+# B2B lead pipeline. One command:
+#   ./setup.sh && docker compose up --build     then open http://127.0.0.1:8100 and import samples/apollo-export.csv
+name: lead-engine
+
+x-env: &env
+  SECRET_KEY: ${SECRET_KEY:?run ./setup.sh first}
+  PUBLIC_URL: http://127.0.0.1:8100          # used in unsubscribe links
+  DATA_API_URL: http://apis:8000             # enrichment + verification provider
+  DATA_API_KEY: ${DATA_API_KEY:?run ./setup.sh first}
+  CRM_URL: http://apis:8000                  # for real use: https://api.hubapi.com
+  CRM_TOKEN: ${CRM_TOKEN:?run ./setup.sh first}
+  FORM_WEBHOOK_SECRET: ${FORM_WEBHOOK_SECRET:?run ./setup.sh first}
+  FROM_EMAIL: basar@outreach.example
+
+services:
+  web:
+    build: .
+    environment:
+      <<: *env
+      DEMO_SEED: ${DEMO_SEED:-true}
+    volumes: [data:/data]
+    ports: ["127.0.0.1:8100:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "lead_engine.worker"]
+    environment:
+      <<: *env
+      SMTP_HOST: mail
+      SMTP_PORT: "3025"
+      SMTP_STARTTLS: "false"      # local test server only; real mailboxes use 587 with STARTTLS (the default)
+      IMAP_HOST: mail
+      IMAP_PORT: "3143"
+      IMAP_SSL: "false"
+      IMAP_USER: basar@outreach.example
+      IMAP_PASSWORD: ${MAIL_PASSWORD:?run ./setup.sh first}
+      POLL_SECONDS: ${POLL_SECONDS:-30}
+      IGNORE_SEND_WINDOW: ${IGNORE_SEND_WINDOW:-true}   # demo: send at any hour. Set false for real sending.
+      DAY_SECONDS_SCALE: ${DAY_SECONDS_SCALE:-1}         # demo/e2e only: shrinks the days between steps
+    volumes: [data:/data]
+    depends_on:
+      web: { condition: service_healthy }
+      apis: { condition: service_healthy }
+      mail: { condition: service_started }
+    restart: unless-stopped
+
+  apis:
+    # Demo only: enrichment, verification and CRM APIs with the real request shapes, so nothing touches a paid account.
+    build: .
+    command: ["uvicorn", "lead_engine.fakes:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      DATA_API_KEY: ${DATA_API_KEY}
+      CRM_TOKEN: ${CRM_TOKEN}
+      FAKES_ADMIN_TOKEN: ${FAKES_ADMIN_TOKEN:?run ./setup.sh first}
+    ports: ["127.0.0.1:8101:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      retries: 20
+
+  mail:
+    # Local test mail server: every prospect's mailbox and our sales inbox (SMTP 3025, IMAP 3143). Any login works here.
+    image: greenmail/standalone:2.1.5
+    environment:
+      GREENMAIL_OPTS: >-
+        -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.hostname=0.0.0.0
+        -Dgreenmail.auth.disabled -Dgreenmail.users.login=email
+    ports: ["127.0.0.1:3027:3025", "127.0.0.1:3145:3143"]
+
+volumes:
+  data:
