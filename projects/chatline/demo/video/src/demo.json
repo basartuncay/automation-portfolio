@@ -1,0 +1,52 @@
+{
+ "file": "chatline.webm",
+ "who": "Real stack · local stand-ins for the WhatsApp Cloud API and the shop",
+ "accent": "#10b981",
+ "kicker": "Chatline · real recording",
+ "title": "WhatsApp customer service that knows when to hand over",
+ "sub": "Order tracking and returns by tapping buttons, a person for everything else, and WhatsApp's 24-hour, template and opt-in rules built in.",
+ "outro": "Python · FastAPI · SQLite · WhatsApp Cloud API · signed webhooks · Docker · e2e in GitHub Actions.",
+ "thumbKicker": "WHATSAPP",
+ "thumbTitle": "Orders and returns on WhatsApp",
+ "thumbSub": "Chatline · bot + team inbox",
+ "trim": 0.0,
+ "end": 56.06,
+ "caps": [
+  {
+   "from": 0.11,
+   "text": "A customer asks on WhatsApp where her order is"
+  },
+  {
+   "from": 4.81,
+   "text": "Two orders on her number: she picks one from a list, and gets the tracking link"
+  },
+  {
+   "from": 8.08,
+   "text": "Then a return, by tapping: the order, the item, the reason"
+  },
+  {
+   "from": 22.06,
+   "text": "Registered with the shop, free label included. No person needed"
+  },
+  {
+   "from": 25.06,
+   "text": "Another customer has a complaint. The bot hands it to a person and stays quiet"
+  },
+  {
+   "from": 32.8,
+   "text": "The team inbox: what needs a person comes first"
+  },
+  {
+   "from": 37.19,
+   "text": "Cleo answers from the inbox while the 24-hour window is open. Ticks show delivered and read"
+  },
+  {
+   "from": 43.15,
+   "text": "He opts in to updates with START. When the order ships, an approved template goes out"
+  },
+  {
+   "from": 52.02,
+   "text": "Every conversation, who solved it, and how"
+  }
+ ]
+}
