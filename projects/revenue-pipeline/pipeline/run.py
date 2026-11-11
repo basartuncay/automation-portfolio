@@ -37,7 +37,7 @@ def paths() -> dict:
 
 
 def runs_db() -> sqlite3.Connection:
-    db = sqlite3.connect(paths()["runs"], timeout=15)
+    db = sqlite3.connect(paths()["runs"], timeout=15, check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.execute("pragma journal_mode=wal")
     db.executescript(RUNS_DDL)

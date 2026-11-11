@@ -30,7 +30,7 @@ def now() -> str:
 
 
 def connect(path: str | None = None) -> sqlite3.Connection:
-    db = sqlite3.connect(path or os.environ.get("DB_PATH", "support.db"), timeout=10)
+    db = sqlite3.connect(path or os.environ.get("DB_PATH", "support.db"), timeout=10, check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.execute("pragma journal_mode=wal")
     db.execute("pragma foreign_keys=on")
