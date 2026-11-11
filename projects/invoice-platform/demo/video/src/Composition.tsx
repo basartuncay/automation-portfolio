@@ -9,22 +9,22 @@ type Clip = { file: string; trim: number; end: number; who: string; caps: Cap[] 
 
 const CLIPS: Clip[] = [
   {
-    file: "approver.webm", trim: 4.0, end: 33.5, who: "Signed in as: approver",
+    file: "approver.webm", trim: 4.07, end: 50.54, who: "Signed in as: approver",
     caps: [
-      { from: 4.0, text: "The approver's invoice queue, before any email arrives" },
-      { from: 8.07, text: "5 supplier emails land in the AP inbox (real SMTP → IMAP)" },
-      { from: 11.77, text: "The intake worker filed 4 invoices. The email with no PDF was skipped" },
-      { from: 15.78, text: "A scanned PDF was read by OCR and flagged so a human double-checks the numbers" },
-      { from: 22.87, text: "The approver approves it" },
-      { from: 28.24, text: "Four-eyes rule: whoever approved it gets no \"Mark paid\" button" },
+      { from: 4.07, text: "The approver's invoice queue, before any email arrives" },
+      { from: 13.59, text: "5 supplier emails land in the AP inbox (real SMTP → IMAP)" },
+      { from: 27.65, text: "The intake worker filed 4 invoices. The email with no PDF was skipped" },
+      { from: 31.66, text: "A scanned PDF was read by OCR and flagged so a human double-checks the numbers" },
+      { from: 39.49, text: "The approver approves it" },
+      { from: 45.28, text: "Four-eyes rule: whoever approved it gets no \"Mark paid\" button" },
     ],
   },
   {
-    file: "payer.webm", trim: 0, end: 19.6, who: "Signed in as: payer",
+    file: "payer.webm", trim: 0.82, end: 22.37, who: "Signed in as: payer",
     caps: [
-      { from: 0, text: "A second person signs in as the payer" },
-      { from: 5.37, text: "The payer marks the invoice paid" },
-      { from: 10.71, text: "Append-only history: intake bot → approver → payer, with field diffs" },
+      { from: 0.82, text: "A second person signs in as the payer" },
+      { from: 8.03, text: "The payer marks the invoice paid" },
+      { from: 13.48, text: "Append-only history: intake bot → approver → payer, with field diffs" },
     ],
   },
 ];
@@ -33,7 +33,7 @@ const INTRO = s(4), OUTRO = s(5);
 const clipLen = (c: Clip) => s(c.end - c.trim);
 const TOTAL = INTRO + CLIPS.reduce((n, c) => n + clipLen(c), 0) + OUTRO;
 
-const BG = "#0b1220", ACCENT = "#3b82f6", FONT = "Inter, Helvetica, Arial, sans-serif";
+const BG = "#292524", ACCENT = "#f04438", FONT = "'Lucida Grande', 'Lucida Sans Unicode', sans-serif";
 
 const Fade: React.FC<{ len: number; children: React.ReactNode }> = ({ len, children }) => {
   const f = useCurrentFrame();
@@ -59,7 +59,7 @@ const ClipScene: React.FC<{ clip: Clip }> = ({ clip }) => {
       </div>
       <div style={{ position: "absolute", left: 186, top: 320, background: ACCENT, color: "white", fontWeight: 700, fontSize: 24, padding: "8px 16px", borderRadius: 8 }}>{clip.who}</div>
       <div style={{ position: "absolute", left: 220, right: 220, bottom: 90, display: "flex", justifyContent: "center" }}>
-        <div key={cap.from} style={{ background: "rgba(15,23,42,.92)", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
+        <div key={cap.from} style={{ background: BG + "eb", color: "white", fontSize: 40, fontWeight: 600, padding: "18px 30px", borderRadius: 12, borderLeft: `8px solid ${ACCENT}`, lineHeight: 1.3 }}>{cap.text}</div>
       </div>
     </AbsoluteFill>
   );

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,9 +28,14 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('Invoice Desk')
+            // Accounts-payable desk look: rubber-stamp red on warm stone greys, tabs across the top,
+            // a system font served from the device (no font CDN, for German data-protection rules).
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Red,
+                'gray' => Color::Stone,
             ])
+            ->font('Lucida Grande', provider: LocalFontProvider::class)
+            ->topNavigation()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
