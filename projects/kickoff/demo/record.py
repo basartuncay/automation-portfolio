@@ -34,7 +34,7 @@ def link_from_mail(addr):
 
 urllib.request.urlopen(urllib.request.Request(APIS + "/_admin/chaos", json.dumps({"projects_fail": 2}).encode(),
                                               {"x-admin": ENV["FAKES_ADMIN_TOKEN"], "Content-Type": "application/json"}))
-META = {"file": "kickoff.webm", "who": "Real stack · real mail server · local stand-ins for Stripe, the project tool and storage", "accent": "#2f7d65",
+META = {"file": "kickoff.webm", "who": "Real stack · real mail server · local stand-ins for Stripe, the project tool and storage", "accent": "#ff9f7a", "bg": "#3d1a4f", "font": "Seravek, Calibri, sans-serif",
         "kicker": "Kickoff · real recording", "title": "From \"can you help us?\" to a signed, paid, set-up project",
         "sub": "Proposal from an enquiry, e-signature bound to the exact text, signed PDF, Stripe deposit, and the project, folder and welcome email set up on their own.",
         "outro": "Python · FastAPI · SQLite · Stripe Checkout + signed webhooks · fpdf2 · SMTP · Docker · e2e in GitHub Actions.",
