@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Shipflow{% endblock %}</title>
 <style>
-:root { --bg:#f6f7f9; --card:#fff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --brand:#b45309; --brand-soft:#fffbeb;
-        --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb; --bad:#b91c1c; --bad-soft:#fef2f2; }
+:root { --bg:#efe9e1; --card:#fff; --ink:#151515; --mute:#5e574f; --line:#cfc6ba; --brand:#151515; --brand-soft:#f1ece5;
+        --ok:#1d7a4e; --ok-soft:#e6f4ec; --warn:#a35d00; --warn-soft:#fdf1dc; --bad:#c81e1e; --bad-soft:#fbe9e7; }
 * { box-sizing: border-box; }
 body { margin:0; font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
@@ -65,6 +65,26 @@ textarea.task { min-height:90px; } .head { display:flex; justify-content:space-b
 .carrier { font-weight:700; font-size:13px; } .reason { color:var(--bad); font-size:13px; } .rule { color:var(--mute); font-size:13px; }
 .form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; } .form-row label { font-size:12px; color:var(--mute); display:flex; flex-direction:column; gap:4px; }
 .form-row input { border:1px solid var(--line); border-radius:8px; padding:8px 10px; font:inherit; }
+/* identity */
+body { font:15px/1.5 "Trebuchet MS", "Segoe UI", sans-serif; }
+.shell { grid-template-columns:230px 1fr; }
+nav { background:#c9a57c; color:#151515; padding:24px 14px; background-image:radial-gradient(#b8936a 1px, transparent 1px); background-size:7px 7px; }
+nav .logo { color:#151515; font:700 26px/1 "Arial Narrow", "Helvetica Neue Condensed", Arial, sans-serif; letter-spacing:.02em; text-transform:uppercase;
+            background:#fff; border:2px solid #151515; padding:10px 12px; margin:0 0 20px; }
+nav a { color:#151515; border-radius:0; font-weight:700; padding:8px 10px; }
+nav a.on { background:#151515; color:#fff; } nav a:hover { background:#e2c7a6; color:#151515; } nav a.on:hover { background:#151515; color:#fff; }
+nav .count { border-radius:0; }
+nav .me { border-top:2px dashed #151515; } nav .me button { color:#151515; text-decoration:underline; }
+main { padding:30px 38px; }
+h1 { font:700 32px/1.1 "Arial Narrow", "Helvetica Neue Condensed", Arial, sans-serif; text-transform:uppercase; letter-spacing:.02em; }
+.card { border-radius:0; border:2px solid #151515; box-shadow:4px 4px 0 #151515; }
+th { text-transform:none; letter-spacing:0; color:#151515; font-weight:700; border-bottom:2px solid #151515; }
+.btn { border-radius:0; background:#151515; } .btn.ghost { background:#fff; border:2px solid #151515; }
+.chip { border-radius:0; border:1px solid currentColor; } .carrier { font-family:"Arial Narrow", Arial, sans-serif; font-size:14px; letter-spacing:.03em; }
+input, select, textarea { border-radius:0 !important; border-color:#151515 !important; }
+.tabs a { border-radius:0; } .tabs a.on { background:#151515; border-color:#151515; }
+@media (max-width:760px) { .shell { grid-template-columns:1fr; } nav { flex-direction:row; flex-wrap:wrap; } nav .me { margin:0; } main { padding:20px 16px; } }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #c9a57c; outline-offset:2px; }
 </style>
 </head>
 <body>
